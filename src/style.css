@@ -1,0 +1,186 @@
+/* 1. Font and Global Styles */
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=panchang@600&display=swap');
+
+:root {
+  /* 2. Professional Color Palette (Inspired by your image) */
+  --primary-blue: #0070f3;
+  --primary-blue-dark: #0052cc;
+  
+  /* Light Mode */
+  --background-body: #f0f2fe;
+  --background-card: #ffffff;
+  --text-primary: #060f32;
+  --text-secondary: #5a6482;
+  --border-color: #eef0f5;
+  --shadow-color: rgba(0, 45, 203, 0.08);
+  --success-color: #28a745;
+  --error-color: #dc3545;
+}
+
+[data-theme="dark"] {
+  --background-body: #0d1117;
+  --background-card: #161b22;
+  --text-primary: #e6f1ff;
+  --text-secondary: #8b949e;
+  --border-color: #30363d;
+  --shadow-color: rgba(0, 82, 255, 0.15);
+}
+
+body {
+  font-family: 'Satoshi', sans-serif;
+  background-color: var(--background-body);
+  color: var(--text-primary);
+  padding: 2rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+h2, h3 {
+  font-family: 'Panchang', sans-serif;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+h1 {
+  font-family: 'Panchang', sans-serif;
+  text-align: left;
+  font-size: 2rem;
+  color: var(--primary-blue);
+  animation: glow 1.5s ease-in-out infinite alternate;
+  flex-grow: 1;
+  text-shadow: none !important; /* NEW: Removed text shadow */
+}
+
+/* 3. NEW Main Layout Container */
+.app-container {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.left-column { flex: 1; min-width: 0; }
+.right-column { flex: 1.5; min-width: 0; display: flex; flex-direction: column; gap: 1.5rem; }
+
+/* 4. NEW Header inside Right Column */
+.right-column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* 5. Modern UI Elements & Forms */
+.section, .details-container {
+  background: var(--background-card);
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px var(--shadow-color);
+  transition: all 0.3s ease;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.details-container {
+    flex-grow: 1; /* Makes console take available space */
+}
+
+input, select {
+  background-color: var(--background-body);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 100%; margin: 0.5rem 0; padding: 0.9rem 1rem; border-radius: 10px; box-sizing: border-box; font-family: 'Satoshi', sans-serif; font-size: 1rem; transition: all 0.3s ease;
+}
+input:focus, select:focus {
+  outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(0, 82, 255, 0.2);
+}
+
+button.deploy-button {
+  background-color: var(--primary-blue);
+  background-image: none;
+  color: #fff; cursor: pointer; border: none; font-weight: 700;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 82, 255, 0.2);
+}
+button.deploy-button:hover:not(:disabled) {
+  transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 82, 255, 0.3);
+}
+button:disabled {
+  background: var(--border-color); color: var(--text-secondary); cursor: not-allowed; opacity: 0.7; border: none; background-image: none;
+}
+
+/* 6. NEW Visible & Styled Buttons */
+.theme-switcher {
+  background: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: 50%; /* Circle shape */
+  padding: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.theme-switcher:hover {
+  border-color: var(--primary-blue);
+}
+.theme-switcher svg {
+  width: 22px; height: 22px; color: var(--text-primary);
+}
+
+.header-actions button[data-testid="rk-connect-button"] {
+  background-color: var(--background-card) !important;
+  color: var(--text-primary) !important;
+  font-family: 'Satoshi', sans-serif !important;
+  font-weight: 700 !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: none !important;
+}
+
+/* Other UI elements */
+.animated-icon { width: 1.2em; height: 1.2em; display: inline-block; vertical-align: -0.2em; margin-right: 8px; }
+.progress-container { width: 100%; height: 8px; background-color: var(--border-color); border-radius: 4px; margin-top: 1rem; overflow: hidden; }
+.progress-bar { width: 0%; height: 100%; background-image: linear-gradient(90deg, #a8c0ff, var(--primary-blue)); border-radius: 4px; transition: width 0.5s ease-in-out; }
+#logoPreview { max-width: 150px; max-height: 150px; margin: 1rem auto; display: none; border: 2px solid var(--primary-blue); border-radius: 50%; padding: 5px; background-color: var(--background-body); }
+.status { margin-top: 1rem; padding: 0.75rem 1rem; border-radius: 8px; word-wrap: break-word; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+.success { background-color: #28a7451a; border-left: 4px solid var(--success-color); color: var(--text-primary); }
+.error { background-color: #dc35451a; border-left: 4px solid var(--error-color); color: var(--text-primary); }
+.info { background-color: #00aeff1a; border-left: 4px solid var(--primary-blue); color: var(--text-primary); }
+.details-container a { color: var(--primary-blue); font-weight: 700; }
+.details-container a:hover { text-decoration: underline; }
+
+/* Console Log Simulation Styles */
+.console-log { font-family: 'Satoshi', sans-serif; font-size: 0.9rem; white-space: pre-wrap; word-break: break-all; height: 100%; overflow-y: auto; }
+.log-entry { display: flex; gap: 1rem; padding: 0.2rem 0; }
+.log-timestamp { color: var(--text-secondary); flex-shrink: 0; }
+.log-message { text-shadow: none !important; }
+.log-message.success { color: var(--success-color); }
+.log-message.error { color: var(--error-color); }
+.log-message.info { color: var(--text-secondary); }
+.log-message a { color: var(--primary-blue); }
+
+/* Animations */
+@keyframes glow { from { text-shadow: 0 0 10px var(--primary-blue), 0 0 20px rgba(0, 112, 243, 0.3); } to { text-shadow: 0 0 20px var(--primary-blue), 0 0 30px rgba(0, 112, 243, 0.5); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  body { padding: 1rem; align-items: flex-start; }
+  .app-container { flex-direction: column; }
+  .right-column-header { flex-direction: column; align-items: flex-start; }
+  h1 { font-size: 1.5rem; }
+  .section, .details-container { padding: 1rem; border-radius: 12px; }
+}
