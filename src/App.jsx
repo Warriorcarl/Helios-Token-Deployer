@@ -19,6 +19,12 @@ const MenuIcon = () => (
     <path d="M19 29H19.0083" stroke="#002DCB" strokeWidth="1.06" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
+const ToggleIcon = () => (
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+    <rect width="32" height="32" rx="16" fill="#D7E0FF"/>
+    <path d="M16 22V23.3334M20.24 20.24L21.1867 21.1867M10.8133 21.1867L11.76 20.24M22 16H23.3333M8.66667 16H10M20.24 11.76L21.1867 10.8134M10.8133 10.8134L11.76 11.76M16 8.66669V10M19.3333 16C19.3333 17.841 17.841 19.3334 16 19.3334C14.1591 19.3334 12.6667 17.841 12.6667 16C12.6667 14.1591 14.1591 12.6667 16 12.6667C17.841 12.6667 19.3333 14.1591 19.3333 16Z" stroke="#002DCB" strokeWidth="1.06" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
 
 const menuItems = [
   { name: "Token", active: true },
@@ -30,7 +36,6 @@ const menuItems = [
   { name: "Other", dev: true },
 ];
 
-// --- ABI PRECOMPILE ERC20
 const contractABI = [
   {
     "inputs": [
@@ -79,7 +84,8 @@ function App() {
   const [progress, setProgress] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [symbolError, setSymbolError] = useState('');
-  const [denomSeed, setDenomSeed] = useState(Date.now()); // ensures random denom
+  const [denomSeed, setDenomSeed] = useState(Date.now());
+  const [supplyError, setSupplyError] = useState('');
   const consoleEndRef = useRef(null);
 
   const { data: txHash, isPending: isWriteLoading, writeContract, isError: isWriteError, error: writeError } = useContractWrite();
@@ -94,6 +100,17 @@ function App() {
     } else {
       setSymbolError('');
     }
+  };
+
+  // --- Token Supply Validation (only positive integer, no buttons)
+  const handleTotalSupplyChange = (e) => {
+    let value = e.target.value.replace(/[^0-9]/g, '');
+    if (value === '' || value === '0') {
+      setSupplyError('Total supply must be a positive number.');
+    } else {
+      setSupplyError('');
+    }
+    setTotalSupply(value);
   };
 
   // --- Logging ---
@@ -136,7 +153,7 @@ function App() {
       if (txHash) {
         addLog(`<a href="${EXPLORER_URL}/tx/${txHash}" target="_blank" rel="noopener noreferrer">View Transaction</a>`, 'success');
       }
-      setDenomSeed(Date.now()); // reset denom seed for the next deploy
+      setDenomSeed(Date.now());
       resetForm();
     } else if (isWriteError || isTxError) {
       let errMsg = (writeError || txError)?.shortMessage || (writeError || txError)?.message || '';
@@ -161,7 +178,6 @@ function App() {
     setDeployedTokenInfo(null);
   };
 
-  // --- Generate denom with random suffix always (to avoid collision)
   const generateRandomString = (length) => {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
@@ -170,7 +186,6 @@ function App() {
   };
 
   const getRandomDenom = (symbol) => {
-    // Always use a random seed (timestamp + random string)
     return `a${symbol.toLowerCase()}-${generateRandomString(6)}-${denomSeed}`;
   };
 
@@ -182,6 +197,11 @@ function App() {
     if (tokenSymbol.length > 5) {
       setSymbolError('Token symbol cannot be more than 5 characters.');
       setStatus({ message: 'Token symbol cannot be more than 5 characters.', type: 'error' });
+      return;
+    }
+    if (!/^[1-9][0-9]*$/.test(totalSupply)) {
+      setSupplyError('Total supply must be a positive number.');
+      setStatus({ message: 'Total supply must be a positive number.', type: 'error' });
       return;
     }
     const denom = getRandomDenom(tokenSymbol);
@@ -221,7 +241,6 @@ function App() {
       ctx.stroke();
     }
     ctx.globalAlpha = 1;
-    // Font size improvisation
     let fontSize = 70;
     if (symbol.length > 3) fontSize = 45;
     if (symbol.length > 4) fontSize = 36;
@@ -269,12 +288,10 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // --- Render ---
   return (
     <div className="app-main">
       {isMobile ? (
         <>
-          {/* Mobile Header */}
           <div className="mobile-header">
             <HeliosLogo />
             <span className="right-panel-title">Helios Token Deployer</span>
@@ -295,7 +312,6 @@ function App() {
               )}
             </div>
           </div>
-          {/* Token Parameters */}
           <div className="token-card">
             <input type="text" placeholder="Token Name (e.g. My Token)" value={tokenName} onChange={e => setTokenName(e.target.value)} />
             <input
@@ -306,7 +322,17 @@ function App() {
               maxLength={5}
             />
             {symbolError && <div className="status error">{symbolError}</div>}
-            <input type="number" placeholder="Total Supply (e.g. 1000000)" value={totalSupply} onChange={e => setTotalSupply(e.target.value)} />
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              placeholder="Total Supply (e.g. 1000000)"
+              value={totalSupply}
+              onChange={handleTotalSupplyChange}
+              style={{MozAppearance:'textfield'}}
+              autoComplete="off"
+            />
+            {supplyError && <div className="status error">{supplyError}</div>}
             <div className="logo-section">
               <span className="logo-title">
                 <PaintIcon /> Token Logo
@@ -335,7 +361,7 @@ function App() {
               </div>
             </div>
             <div className="deploy-actions">
-              <button onClick={handleDeploy} disabled={!isConnected || isWriteLoading || isTxLoading || !!symbolError} className="deploy-button">
+              <button onClick={handleDeploy} disabled={!isConnected || isWriteLoading || isTxLoading || !!symbolError || !!supplyError} className="deploy-button">
                 {isWriteLoading || isTxLoading ? 'Deploying...' : 'Deploy Token'}
               </button>
             </div>
@@ -350,7 +376,6 @@ function App() {
               </div>
             )}
           </div>
-          {/* Deployment Console */}
           <div className="details-container">
             <h3>Deployment Console</h3>
             <div className="console-log">
@@ -372,6 +397,11 @@ function App() {
                 <span className="card-header-title">
                   <DiamondIcon /> Token Parameters
                 </span>
+                <span className="card-header-toggle">
+                  <button className="theme-switcher" onClick={toggleTheme} aria-label="Toggle Theme">
+                    <ToggleIcon />
+                  </button>
+                </span>
               </div>
               <input type="text" placeholder="Token Name (e.g. My Token)" value={tokenName} onChange={e => setTokenName(e.target.value)} />
               <input
@@ -382,7 +412,17 @@ function App() {
                 maxLength={5}
               />
               {symbolError && <div className="status error">{symbolError}</div>}
-              <input type="number" placeholder="Total Supply (e.g. 1000000)" value={totalSupply} onChange={e => setTotalSupply(e.target.value)} />
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="Total Supply (e.g. 1000000)"
+                value={totalSupply}
+                onChange={handleTotalSupplyChange}
+                style={{MozAppearance:'textfield'}}
+                autoComplete="off"
+              />
+              {supplyError && <div className="status error">{supplyError}</div>}
               <div className="logo-section">
                 <span className="logo-title">
                   <PaintIcon /> Token Logo
@@ -411,7 +451,7 @@ function App() {
                 </div>
               </div>
               <div className="deploy-actions">
-                <button onClick={handleDeploy} disabled={!isConnected || isWriteLoading || isTxLoading || !!symbolError} className="deploy-button">
+                <button onClick={handleDeploy} disabled={!isConnected || isWriteLoading || isTxLoading || !!symbolError || !!supplyError} className="deploy-button">
                   {isWriteLoading || isTxLoading ? 'Deploying...' : 'Deploy Token'}
                 </button>
               </div>
@@ -430,7 +470,7 @@ function App() {
           <div className="right-panel">
             <div className="right-panel-header">
               <HeliosLogo />
-              <span className="right-panel-title">Helios Token Deployer</span>
+              <span className="right-panel-title">Helios Token Deploy</span>
               <div className="connect-wallet-override">
                 <ConnectButton />
                 <button className="menu-icon-btn" aria-label="Menu" onClick={()=>setMenuOpen(m=>!m)}>
