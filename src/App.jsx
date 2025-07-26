@@ -79,6 +79,7 @@ function App() {
   const [progress, setProgress] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [symbolError, setSymbolError] = useState('');
+  const [denomSeed, setDenomSeed] = useState(Date.now()); // ensures random denom
   const consoleEndRef = useRef(null);
 
   const { data: txHash, isPending: isWriteLoading, writeContract, isError: isWriteError, error: writeError } = useContractWrite();
@@ -135,12 +136,18 @@ function App() {
       if (txHash) {
         addLog(`<a href="${EXPLORER_URL}/tx/${txHash}" target="_blank" rel="noopener noreferrer">View Transaction</a>`, 'success');
       }
+      setDenomSeed(Date.now()); // reset denom seed for the next deploy
       resetForm();
     } else if (isWriteError || isTxError) {
-        const error = writeError || txError;
-        setStatus({ message: `Error: ${error?.shortMessage || error.message}`, type: 'error' });
-        addLog(`Error: ${error?.shortMessage || error.message}`, 'error');
-        setProgress(0);
+      let errMsg = (writeError || txError)?.shortMessage || (writeError || txError)?.message || '';
+      if (errMsg.includes('Missing or invalid parameters')) {
+        setStatus({ message: 'Error: Missing or invalid parameters. Double check you have provided the correct parameters', type: 'error' });
+        addLog('Error: Missing or invalid parameters. Double check you have provided the correct parameters', 'error');
+      } else {
+        setStatus({ message: `Error: ${errMsg}`, type: 'error' });
+        addLog(`Error: ${errMsg}`, 'error');
+      }
+      setProgress(0);
     }
   }, [isWriteLoading, isTxLoading, isTxSuccess]);
 
@@ -154,11 +161,17 @@ function App() {
     setDeployedTokenInfo(null);
   };
 
+  // --- Generate denom with random suffix always (to avoid collision)
   const generateRandomString = (length) => {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
     for (let i = 0; i < length; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
     return result;
+  };
+
+  const getRandomDenom = (symbol) => {
+    // Always use a random seed (timestamp + random string)
+    return `a${symbol.toLowerCase()}-${generateRandomString(6)}-${denomSeed}`;
   };
 
   const handleDeploy = () => {
@@ -171,15 +184,15 @@ function App() {
       setStatus({ message: 'Token symbol cannot be more than 5 characters.', type: 'error' });
       return;
     }
+    const denom = getRandomDenom(tokenSymbol);
     setDeploymentLogs([]);
     addLog('Starting deployment...');
     setDeployedTokenInfo({ name: tokenName, symbol: tokenSymbol, supply: totalSupply });
-    const randomDenom = `a${tokenSymbol.toLowerCase()}-${generateRandomString(6)}`;
     writeContract({
         address: PRECOMPILE_CONTRACT_ADDRESS,
         abi: contractABI,
         functionName: 'createErc20',
-        args: [tokenName, tokenSymbol, randomDenom, parseUnits(totalSupply, 18), 18, logoOption === 'none' ? '' : logoBase64],
+        args: [tokenName, tokenSymbol, denom, parseUnits(totalSupply, 18), 18, logoOption === 'none' ? '' : logoBase64],
     });
   };
 
