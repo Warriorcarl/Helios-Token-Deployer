@@ -3,16 +3,66 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useContractWrite, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits } from 'viem';
 
-// --- Icon Components ---
-const DiamondIcon = () => <svg className="animated-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 12l10 10 10-10L12 2z" /></svg>;
-const PaintIcon = () => <svg className="animated-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 3a9 9 0 0 0-9 9c0 4.97 4.03 9 9 9s9-4.03 9-9a9 9 0 0 0-9-9zm0 16a7 7 0 1 1 0-14 7 7 0 0 1 0 14z" /><path d="M12 5a7 7 0 0 0-7 7c0 1.63.56 3.14 1.5 4.36L12 12l5.5-3.64A6.96 6.96 0 0 0 12 5z" /></svg>;
-const SunIcon = () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11 4h2v3h-2V4zM4 11h3v2H4v-2zm13 0h3v2h-3v-2zM11 17h2v3h-2v-3zM6.414 6.414l2.122-2.122 1.414 1.414-2.122 2.122-1.414-1.414zM14.05 15.464l2.122-2.122 1.414 1.414-2.122 2.122-1.414-1.414zM6.414 17.586l-1.414-1.414 2.122-2.122 1.414 1.414-2.122 2.122zM15.464 8.536l-1.414-1.414 2.122-2.122 1.414 1.414-2.122 2.122zM9 12a3 3 0 1 1 6 0 3 3 0 0 1-6 0z"/></svg>;
-const MoonIcon = () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5A9.5 9.5 0 1 0 21.5 12 9.5 9.5 0 0 0 12 2.5zm0 1.5a8 8 0 0 1 5.373 14.127A7.5 7.5 0 1 1 5.873 8.627A7.942 7.942 0 0 1 12 4z"/></svg>;
+// --- SVG Components ---
+const DiamondIcon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="#2997ff" style={{marginRight: "7px"}}><path d="M12 2L2 12l10 10 10-10L12 2z" /></svg>;
+const PaintIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="#2997ff"><circle cx="12" cy="12" r="9" stroke="#2997ff" strokeWidth="2" fill="none"/><circle cx="12" cy="12" r="4" fill="#2997ff"/></svg>;
+const FileIcon = () => <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="4" width="24" height="24" rx="6" fill="#D7E0FF"/><path d="M10 10h12v2H10zm0 6h12v2H10z" fill="#002DCB"/></svg>;
+const HeliosLogo = () => (
+  <img src="/helios-logo.svg" className="helios-logo-img" alt="Helios Logo" />
+);
+const MenuIcon = () => (
+  <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
+    <rect width="48" height="48" rx="24" fill="#D7E0FF"/>
+    <path d="M30.6667 15.6666H17.3333C16.4128 15.6666 15.6667 16.4128 15.6667 17.3333V20.6666C15.6667 21.5871 16.4128 22.3333 17.3333 22.3333H30.6667C31.5871 22.3333 32.3333 21.5871 32.3333 20.6666V17.3333C32.3333 16.4128 31.5871 15.6666 30.6667 15.6666Z" stroke="#002DCB" strokeWidth="1.06" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M30.6667 25.6666H17.3333C16.4128 25.6666 15.6667 26.4128 15.6667 27.3333V30.6666C15.6667 31.5871 16.4128 32.3333 17.3333 32.3333H30.6667C31.5871 32.3333 32.3333 31.5871 32.3333 30.6666V27.3333C32.3333 26.4128 31.5871 25.6666 30.6667 25.6666Z" stroke="#002DCB" strokeWidth="1.06" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M19 19H19.0083" stroke="#002DCB" strokeWidth="1.06" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M19 29H19.0083" stroke="#002DCB" strokeWidth="1.06" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
 
-// --- Config & ABI ---
+const menuItems = [
+  { name: "Token", active: true },
+  { name: "Cron Job", dev: true },
+  { name: "Deploy NFT", dev: true },
+  { name: "Swap", dev: true },
+  { name: "Stake", dev: true },
+  { name: "Game", dev: true },
+  { name: "Other", dev: true },
+];
+
+// --- ABI PRECOMPILE ERC20
+const contractABI = [
+  {
+    "inputs": [
+      { "internalType": "string", "name": "name", "type": "string" },
+      { "internalType": "string", "name": "symbol", "type": "string" },
+      { "internalType": "string", "name": "denom", "type": "string" },
+      { "internalType": "uint256", "name": "totalSupply", "type": "uint256" },
+      { "internalType": "uint8", "name": "decimals", "type": "uint8" },
+      { "internalType": "string", "name": "logoBase64", "type": "string" }
+    ],
+    "name": "createErc20",
+    "outputs": [
+      { "internalType": "address", "name": "tokenAddress", "type": "address" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "creator", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "tokenAddress", "type": "address" },
+      { "indexed": false, "internalType": "string", "name": "name", "type": "string" },
+      { "indexed": false, "internalType": "string", "name": "symbol", "type": "string" }
+    ],
+    "name": "ERC20Created",
+    "type": "event"
+  }
+];
+
 const PRECOMPILE_CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000806';
 const EXPLORER_URL = 'https://explorer.helioschainlabs.org';
-const contractABI = [ { "inputs": [ { "internalType": "string", "name": "name", "type": "string" }, { "internalType": "string", "name": "symbol", "type": "string" }, { "internalType": "string", "name": "denom", "type": "string" }, { "internalType": "uint256", "name": "totalSupply", "type": "uint256" }, { "internalType": "uint8", "name": "decimals", "type": "uint8" }, { "internalType": "string", "name": "logoBase64", "type": "string" } ], "name": "createErc20", "outputs": [ { "internalType": "address", "name": "tokenAddress", "type": "address" } ], "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "address", "name": "creator", "type": "address" }, { "indexed": true, "internalType": "address", "name": "tokenAddress", "type": "address" }, { "indexed": false, "internalType": "string", "name": "name", "type": "string" }, { "indexed": false, "internalType": "string", "name": "symbol", "type": "string" } ], "name": "ERC20Created", "type": "event" } ];
 
 function App() {
   const { isConnected } = useAccount();
@@ -20,34 +70,49 @@ function App() {
   const [tokenName, setTokenName] = useState('');
   const [tokenSymbol, setTokenSymbol] = useState('');
   const [totalSupply, setTotalSupply] = useState('');
-  const [logoOption, setLogoOption] = useState('none');
+  const [logoOption, setLogoOption] = useState('generate');
   const [logoBase64, setLogoBase64] = useState('');
   const [logoPreview, setLogoPreview] = useState('');
   const [deployedTokenInfo, setDeployedTokenInfo] = useState(null);
-  
   const [status, setStatus] = useState({ message: '', type: '' });
   const [deploymentLogs, setDeploymentLogs] = useState([]);
   const [progress, setProgress] = useState(0);
-
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [symbolError, setSymbolError] = useState('');
   const consoleEndRef = useRef(null);
 
   const { data: txHash, isPending: isWriteLoading, writeContract, isError: isWriteError, error: writeError } = useContractWrite();
   const { data: txReceipt, isLoading: isTxLoading, isSuccess: isTxSuccess, isError: isTxError, error: txError } = useWaitForTransactionReceipt({ hash: txHash });
 
+  // --- Token Symbol Auto Capital & Validation
+  const handleTokenSymbolChange = (e) => {
+    let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    setTokenSymbol(value);
+    if (value.length > 5) {
+      setSymbolError('Token symbol cannot be more than 5 characters.');
+    } else {
+      setSymbolError('');
+    }
+  };
+
+  // --- Logging ---
   const addLog = (message, type = 'info') => {
     const timestamp = new Date().toLocaleTimeString([], { hour12: false });
     setDeploymentLogs(prevLogs => [...prevLogs, { timestamp, message, type }]);
   };
-
-  useEffect(() => {
-    consoleEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [deploymentLogs]);
+  useEffect(() => { consoleEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [deploymentLogs]);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     setTheme(savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+  };
 
   useEffect(() => {
     if (isWriteLoading) {
@@ -61,19 +126,15 @@ function App() {
     } else if (isTxSuccess && txReceipt) {
       setProgress(100);
       setStatus({ message: '✔️ Token deployed successfully!', type: 'success' });
-      let tokenAddress = null;
-      const eventTopic = '0x8f14c26b4b73516574488b888a24c816b3b3554a999059da1f49de9079a4a79c';
-      const eventLog = txReceipt.logs.find(log => log.topics[0] === eventTopic);
-      if (eventLog) tokenAddress = `0x${eventLog.topics[2].slice(26)}`;
-      const txLink = `<a href="${EXPLORER_URL}/tx/${txHash}" target="_blank" rel="noopener noreferrer">View Transaction</a>`;
-      addLog('✔️ Deployment successful!', 'success');
       if (deployedTokenInfo) {
-        addLog(`Token Name: ${deployedTokenInfo.name}`, 'success');
-        addLog(`Token Symbol: ${deployedTokenInfo.symbol}`, 'success');
-        addLog(`Total Supply: ${deployedTokenInfo.supply}`, 'success');
+        addLog(`✔️ Token deployed!`, 'success');
+        addLog(`Name: ${deployedTokenInfo.name}`, 'success');
+        addLog(`Symbol: ${deployedTokenInfo.symbol}`, 'success');
+        addLog(`Supply: ${deployedTokenInfo.supply}`, 'success');
       }
-      if (tokenAddress) addLog(`Token Address: ${tokenAddress}`, 'success');
-      addLog(txLink, 'success');
+      if (txHash) {
+        addLog(`<a href="${EXPLORER_URL}/tx/${txHash}" target="_blank" rel="noopener noreferrer">View Transaction</a>`, 'success');
+      }
       resetForm();
     } else if (isWriteError || isTxError) {
         const error = writeError || txError;
@@ -81,21 +142,13 @@ function App() {
         addLog(`Error: ${error?.shortMessage || error.message}`, 'error');
         setProgress(0);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isWriteLoading, isTxLoading, isTxSuccess]);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-  };
 
   const resetForm = () => {
     setTokenName('');
     setTokenSymbol('');
     setTotalSupply('');
-    setLogoOption('none');
+    setLogoOption('generate');
     setLogoPreview('');
     setLogoBase64('');
     setDeployedTokenInfo(null);
@@ -113,6 +166,11 @@ function App() {
       setStatus({ message: 'Please fill in all required fields.', type: 'error' });
       return;
     }
+    if (tokenSymbol.length > 5) {
+      setSymbolError('Token symbol cannot be more than 5 characters.');
+      setStatus({ message: 'Token symbol cannot be more than 5 characters.', type: 'error' });
+      return;
+    }
     setDeploymentLogs([]);
     addLog('Starting deployment...');
     setDeployedTokenInfo({ name: tokenName, symbol: tokenSymbol, supply: totalSupply });
@@ -125,120 +183,273 @@ function App() {
     });
   };
 
-  // ... (generateLogo and handleImageUpload functions remain the same)
+  // --- Logo Generation with font size improv
   const generateLogo = () => {
     const symbol = tokenSymbol || "TKN";
     const canvas = document.createElement("canvas");
     canvas.width = 200; canvas.height = 200;
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, 200, 200);
-    const blues = ['#00aeff', '#008fcc', '#38bdf8'];
-    for (let i = 0; i < 8; i++) {
+    ctx.save();
+    ctx.shadowColor = "#00fdff";
+    ctx.shadowBlur = 18;
+    ctx.beginPath();
+    ctx.arc(100, 100, 90, 0, 2 * Math.PI);
+    ctx.strokeStyle = "#2997ff";
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    ctx.restore();
+    for (let i = 0; i < 4; i++) {
       ctx.beginPath();
-      ctx.strokeStyle = blues[Math.floor(Math.random() * blues.length)];
-      ctx.lineWidth = Math.random() * 2 + 1;
-      ctx.globalAlpha = Math.random() * 0.4 + 0.2;
-      ctx.arc(Math.random() * 200, Math.random() * 200, Math.random() * 60 + 20, 0, 2 * Math.PI);
+      ctx.arc(100 + Math.random()*50-25, 100 + Math.random()*50-25, Math.random()*35+10, 0, 2 * Math.PI);
+      ctx.strokeStyle = "#2997ff";
+      ctx.globalAlpha = 0.25;
+      ctx.lineWidth = 2;
       ctx.stroke();
     }
     ctx.globalAlpha = 1;
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = `700 70px 'Panchang', sans-serif`;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.shadowColor = '#00aeff'; ctx.shadowBlur = 15;
-    ctx.fillText(symbol.slice(0, 3).toUpperCase(), 100, 100);
+    // Font size improvisation
+    let fontSize = 70;
+    if (symbol.length > 3) fontSize = 45;
+    if (symbol.length > 4) fontSize = 36;
+    ctx.font = `bold ${fontSize}px 'Panchang', sans-serif`;
+    ctx.fillStyle = "#eaf6ff";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.shadowColor = "#00fdff";
+    ctx.shadowBlur = 12;
+    ctx.fillText(symbol.slice(0, 5).toUpperCase(), 100, 110);
+
     const pngUrl = canvas.toDataURL("image/png");
     setLogoPreview(pngUrl);
     setLogoBase64(pngUrl.replace(/^data:image\/png;base64,/, ""));
     setStatus({ message: "Generative logo created!", type: 'success' });
   };
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-            const canvas = document.createElement("canvas");
-            canvas.width = 200; canvas.height = 200;
-            const ctx = canvas.getContext("2d");
-            const scale = Math.min(200 / img.width, 200 / img.height);
-            ctx.drawImage(img, (200 - img.width * scale) / 2, (200 - img.height * scale) / 2, img.width * scale, img.height * scale);
-            const pngUrl = canvas.toDataURL("image/png");
-            setLogoPreview(pngUrl);
-            setLogoBase64(pngUrl.replace(/^data:image\/png;base64,/, ""));
-            setStatus({ message: "Image processed successfully!", type: "success" });
-        };
-        img.src = event.target.result;
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 200; canvas.height = 200;
+        const ctx = canvas.getContext("2d");
+        const scale = Math.min(200 / img.width, 200 / img.height);
+        ctx.drawImage(img, (200 - img.width * scale) / 2, (200 - img.height * scale) / 2, img.width * scale, img.height * scale);
+        const pngUrl = canvas.toDataURL("image/png");
+        setLogoPreview(pngUrl);
+        setLogoBase64(pngUrl.replace(/^data:image\/png;base64,/, ""));
+        setStatus({ message: "Image processed successfully!", type: "success" });
+      };
+      img.src = event.target.result;
     };
     reader.readAsDataURL(file);
   };
 
+  // Responsive: isMobile based on window width
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 700);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 700);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
+  // --- Render ---
   return (
-    <div className="app-container">
-      <div className="left-column">
-        <div className="section">
-          <h2><DiamondIcon /> Token Parameters</h2>
-          <input type="text" placeholder="Token Name (e.g. My Token)" value={tokenName} onChange={e => setTokenName(e.target.value)} />
-          <input type="text" placeholder="Token Symbol (e.g. MYT)" value={tokenSymbol} onChange={e => setTokenSymbol(e.target.value)} />
-          <input type="number" placeholder="Total Supply (e.g. 1000000)" value={totalSupply} onChange={e => setTotalSupply(e.target.value)} />
-
-          <div id="logoOptions" style={{marginTop: '1rem'}}>
-            <h3><PaintIcon /> Token Logo</h3>
-            <select value={logoOption} onChange={e => { setLogoOption(e.target.value); setLogoPreview(''); }}>
-              <option value="none">No logo</option>
-              <option value="upload">Upload image</option>
-              <option value="generate">Generate logo</option>
-            </select>
-            
-            {logoOption === 'upload' && <input type="file" accept="image/*" onChange={handleImageUpload} />}
-            {logoOption === 'generate' && <button onClick={generateLogo}>Generate Generative Logo</button>}
-            
-            {logoPreview && <img id="logoPreview" src={logoPreview} alt="Logo Preview" style={{display: 'block'}} />}
-          </div>
-
-          <button onClick={handleDeploy} disabled={!isConnected || isWriteLoading || isTxLoading} className="deploy-button" style={{marginTop: '1.5rem'}}>
-            {isWriteLoading || isTxLoading ? 'Deploying...' : 'Deploy Token'}
-          </button>
-          
-          {(isWriteLoading || isTxLoading || isTxSuccess) && (
-            <div className="progress-container">
-              <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+    <div className="app-main">
+      {isMobile ? (
+        <>
+          {/* Mobile Header */}
+          <div className="mobile-header">
+            <HeliosLogo />
+            <span className="right-panel-title">Helios Token Deployer</span>
+            <div className="connect-wallet-override">
+              <ConnectButton />
+              <button className="menu-icon-btn" aria-label="Menu" onClick={()=>setMenuOpen(m=>!m)}>
+                <MenuIcon />
+              </button>
+              {menuOpen && (
+                <div className="menu-dropdown">
+                  {menuItems.map((item, i) => (
+                    <button key={item.name} className={'menu-dropdown-item' + (item.active ? ' active' : '')}>
+                      {item.name}
+                      {item.dev && <span className="menu-dropdown-dev">(under development)</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-
-          {status.message && (
-            <div className={`status ${status.type}`}>
-              <span>{status.message}</span>
-            </div>
-          )}
-        </div>
-      </div>
-      
-      <div className="right-column">
-        <div className="right-column-header">
-          <h1>Helios Token Deployer</h1>
-          <div className="header-actions">
-            <button className="theme-switcher" onClick={toggleTheme} aria-label="Toggle Theme">
-              {theme === 'light' ? <MoonIcon /> : <SunIcon />}
-            </button>
-            <ConnectButton />
           </div>
-        </div>
-        <div className="details-container">
-           <h3>Deployment Console</h3>
-           <div className="console-log">
-              {deploymentLogs.length > 0 ? deploymentLogs.map((log, index) => (
-                  <div key={index} className="log-entry">
-                      <span className="log-timestamp">{log.timestamp}</span>
-                      <span className={`log-message ${log.type}`} dangerouslySetInnerHTML={{ __html: log.message }}></span>
-                  </div>
+          {/* Token Parameters */}
+          <div className="token-card">
+            <input type="text" placeholder="Token Name (e.g. My Token)" value={tokenName} onChange={e => setTokenName(e.target.value)} />
+            <input
+              type="text"
+              placeholder="Token Symbol (e.g. MYT)"
+              value={tokenSymbol}
+              onChange={handleTokenSymbolChange}
+              maxLength={5}
+            />
+            {symbolError && <div className="status error">{symbolError}</div>}
+            <input type="number" placeholder="Total Supply (e.g. 1000000)" value={totalSupply} onChange={e => setTotalSupply(e.target.value)} />
+            <div className="logo-section">
+              <span className="logo-title">
+                <PaintIcon /> Token Logo
+              </span>
+              <select value={logoOption} onChange={e => { setLogoOption(e.target.value); setLogoPreview(''); }}>
+                <option value="none">No logo</option>
+                <option value="upload">Upload image</option>
+                <option value="generate">Generate logo</option>
+              </select>
+              {logoPreview && <img className="logo-preview" src={logoPreview} alt="Logo Preview" />}
+              <div className="logo-actions">
+                {logoOption === 'generate' && (
+                  <button type="button" className="logo-generate-btn" onClick={generateLogo}>
+                    <span>Generate</span>
+                    <span>Random Logo</span>
+                  </button>
+                )}
+                {logoOption === 'upload' && (
+                  <button type="button" className="logo-generate-btn" style={{background:"#D7E0FF",color:"#002DCB"}} onClick={()=>document.getElementById('fileUpload').click()}>
+                    <FileIcon />
+                    <span>Upload</span>
+                    <span>Image</span>
+                    <input id="fileUpload" type="file" accept="image/*" style={{display:"none"}} onChange={handleImageUpload} />
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="deploy-actions">
+              <button onClick={handleDeploy} disabled={!isConnected || isWriteLoading || isTxLoading || !!symbolError} className="deploy-button">
+                {isWriteLoading || isTxLoading ? 'Deploying...' : 'Deploy Token'}
+              </button>
+            </div>
+            {(isWriteLoading || isTxLoading || isTxSuccess) && (
+              <div className="progress-container">
+                <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+              </div>
+            )}
+            {status.message && (
+              <div className={`status ${status.type}`}>
+                <span>{status.message}</span>
+              </div>
+            )}
+          </div>
+          {/* Deployment Console */}
+          <div className="details-container">
+            <h3>Deployment Console</h3>
+            <div className="console-log">
+              {deploymentLogs.length > 0 ? deploymentLogs.map((log, idx) => (
+                <div key={idx} className="log-entry">
+                  <span className="log-timestamp">{log.timestamp}</span>
+                  <span className={`log-message ${log.type}`} dangerouslySetInnerHTML={{ __html: log.message }} />
+                </div>
               )) : <span>Awaiting deployment...</span>}
               <div ref={consoleEndRef} />
-           </div>
-        </div>
-      </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="left-panel">
+            <div className="token-card">
+              <div className="card-header">
+                <span className="card-header-title">
+                  <DiamondIcon /> Token Parameters
+                </span>
+              </div>
+              <input type="text" placeholder="Token Name (e.g. My Token)" value={tokenName} onChange={e => setTokenName(e.target.value)} />
+              <input
+                type="text"
+                placeholder="Token Symbol (e.g. MYT)"
+                value={tokenSymbol}
+                onChange={handleTokenSymbolChange}
+                maxLength={5}
+              />
+              {symbolError && <div className="status error">{symbolError}</div>}
+              <input type="number" placeholder="Total Supply (e.g. 1000000)" value={totalSupply} onChange={e => setTotalSupply(e.target.value)} />
+              <div className="logo-section">
+                <span className="logo-title">
+                  <PaintIcon /> Token Logo
+                </span>
+                <select value={logoOption} onChange={e => { setLogoOption(e.target.value); setLogoPreview(''); }}>
+                  <option value="none">No logo</option>
+                  <option value="upload">Upload image</option>
+                  <option value="generate">Generate logo</option>
+                </select>
+                {logoPreview && <img className="logo-preview" src={logoPreview} alt="Logo Preview" />}
+                <div className="logo-actions">
+                  {logoOption === 'generate' && (
+                    <button type="button" className="logo-generate-btn" onClick={generateLogo}>
+                      <span>Generate</span>
+                      <span>Random Logo</span>
+                    </button>
+                  )}
+                  {logoOption === 'upload' && (
+                    <button type="button" className="logo-generate-btn" style={{background:"#D7E0FF",color:"#002DCB"}} onClick={()=>document.getElementById('fileUpload').click()}>
+                      <FileIcon />
+                      <span>Upload</span>
+                      <span>Image</span>
+                      <input id="fileUpload" type="file" accept="image/*" style={{display:"none"}} onChange={handleImageUpload} />
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className="deploy-actions">
+                <button onClick={handleDeploy} disabled={!isConnected || isWriteLoading || isTxLoading || !!symbolError} className="deploy-button">
+                  {isWriteLoading || isTxLoading ? 'Deploying...' : 'Deploy Token'}
+                </button>
+              </div>
+              {(isWriteLoading || isTxLoading || isTxSuccess) && (
+                <div className="progress-container">
+                  <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+                </div>
+              )}
+              {status.message && (
+                <div className={`status ${status.type}`}>
+                  <span>{status.message}</span>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="right-panel">
+            <div className="right-panel-header">
+              <HeliosLogo />
+              <span className="right-panel-title">Helios Token Deployer</span>
+              <div className="connect-wallet-override">
+                <ConnectButton />
+                <button className="menu-icon-btn" aria-label="Menu" onClick={()=>setMenuOpen(m=>!m)}>
+                  <MenuIcon />
+                </button>
+                {menuOpen && (
+                  <div className="menu-dropdown">
+                    {menuItems.map((item, i) => (
+                      <button key={item.name} className={'menu-dropdown-item' + (item.active ? ' active' : '')}>
+                        {item.name}
+                        {item.dev && <span className="menu-dropdown-dev">(under development)</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="details-container">
+              <h3>Deployment Console</h3>
+              <div className="console-log">
+                {deploymentLogs.length > 0 ? deploymentLogs.map((log, idx) => (
+                  <div key={idx} className="log-entry">
+                    <span className="log-timestamp">{log.timestamp}</span>
+                    <span className={`log-message ${log.type}`} dangerouslySetInnerHTML={{ __html: log.message }} />
+                  </div>
+                )) : <span>Awaiting deployment...</span>}
+                <div ref={consoleEndRef} />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
