@@ -1,5 +1,11 @@
 # Helios Token Deployer DApp
 
+## DEMO
+
+![DEMO](./DEMO.gif)
+
+---
+
 ## Overview
 
 This project is a modern, responsive DApp for deploying ERC20 tokens on the Helios blockchain. It was developed through multiple iterations and improvisations to ensure an optimal experience on both desktop and mobile devices. The DApp features an intuitive interface, a dynamic token logo generator, a robust deployment console, and a convenient dropdown menu to access future features.
@@ -69,12 +75,6 @@ This project is a modern, responsive DApp for deploying ERC20 tokens on the Heli
 - wagmi & RainbowKit (wallet integration)
 - Helios Blockchain
 - Custom SVG and Canvas-based logo generation
-
----
-
-## Screenshots
-
-*(Add screenshots for desktop and mobile views here)*
 
 ---
 
