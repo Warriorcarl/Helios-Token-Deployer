@@ -21,7 +21,7 @@ const ToggleIcon = () => (
 
 const menuItems = [
   { name: "Token", route: "/token", active: true },
-  { name: "Cron Job", route: "/cronjob", dev: true },
+  { name: "Cron Job", route: "/cronjob", active: true },
   { name: "Deploy NFT", route: "/deploy-nft", dev: true },
   { name: "Swap", route: "/swap", dev: true },
   { name: "Stake", route: "/stake", dev: true },
