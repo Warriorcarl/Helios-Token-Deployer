@@ -133,8 +133,8 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
         [],
         BigInt(freq),
         expBlk,
-        BigInt(1500000), // default
-        parseUnits("5", 9), // default
+        BigInt(2000000), // default
+        parseUnits("10", 9), // default
         amountToDeposit
       ]
     });

@@ -1,5 +1,5 @@
 {
-    "name": "helios-token-deployer-rainbowkit",
+    "name": "helios-daily",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -10,6 +10,7 @@
     },
     "dependencies": {
         "@rainbow-me/rainbowkit": "^2.1.2",
+        "@tanstack/react-query": "^5.51.1",
         "ethers": "^6.13.1",
         "html2canvas": "^1.4.1",
         "react": "^18.2.0",
@@ -19,7 +20,7 @@
         "wagmi": "^2.10.10"
     },
     "devDependencies": {
-        "@tanstack/react-query": "^5.51.1",
+        "@tanstack/react-query-devtools": "^5.51.1",
         "@types/react": "^18.2.66",
         "@types/react-dom": "^18.2.22",
         "@vitejs/plugin-react": "^4.2.1",
