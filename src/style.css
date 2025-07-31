@@ -412,6 +412,356 @@ body {
 .progress-container { width: 100%; height: 8px; background-color: var(--border-color); border-radius: 4px; margin-top: 1rem; overflow: hidden; }
 .progress-bar { width: 0%; height: 100%; background-image: linear-gradient(90deg, #2997ff, #00fdff); border-radius: 4px; transition: width 0.5s ease-in-out; }
 
+/* --- ENHANCED CONSOLE ANIMATIONS --- */
+.enhanced-console {
+  position: relative;
+}
+
+.console-placeholder-enhanced {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  gap: 1rem;
+}
+
+.loading-spinner {
+  position: relative;
+}
+
+.spinner-emoji {
+  font-size: 2rem;
+  display: inline-block;
+  animation: spinAndBounce 2s ease-in-out infinite;
+}
+
+.placeholder-text {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+/* Typing dots animation */
+.typing-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--primary-blue);
+  animation: typingDots 1.4s ease-in-out infinite;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Transaction-specific log entry animations */
+.log-entry-animated {
+  transform: translateX(20px);
+  animation: slideInFromRight 0.4s ease-out forwards;
+}
+
+.pending-transaction {
+  animation: slideInFromRight 0.4s ease-out forwards, pendingGlow 2s ease-in-out infinite;
+}
+
+.processing-transaction {
+  animation: slideInFromRight 0.4s ease-out forwards, processingPulse 1.5s ease-in-out infinite;
+}
+
+.success-transaction {
+  animation: slideInFromRight 0.4s ease-out forwards, successBounce 0.8s ease-out;
+}
+
+.error-transaction {
+  animation: slideInFromRight 0.4s ease-out forwards, errorShakeIntense 0.6s ease-out;
+}
+
+.info-transaction {
+  animation: slideInFromRight 0.4s ease-out forwards, infoFadeIn 0.8s ease-out;
+}
+
+/* Enhanced Console Animations for Transaction States */
+.console-log.enhanced-console {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: 'Courier New', monospace;
+  position: relative;
+}
+
+.log-entry-animated {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  margin: 4px 0;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+}
+
+.log-entry-animated::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+/* Pending Transaction Animation */
+.log-entry-animated.pending-transaction {
+  background: rgba(255, 165, 0, 0.1);
+  animation: pendingPulse 2s infinite, pendingBounce 0.6s ease-out;
+}
+
+.log-entry-animated.pending-transaction::before {
+  background: linear-gradient(to bottom, #ffa500, #ff8c00);
+  animation: pendingBar 2s infinite;
+}
+
+.log-entry-animated.pending-transaction .log-message {
+  animation: confirmationBlink 2s infinite;
+}
+
+/* Processing Transaction Animation */
+.log-entry-animated.processing-transaction {
+  background: rgba(41, 151, 255, 0.1);
+  animation: processingFlow 3s infinite, infoSlide 0.5s ease-out;
+}
+
+.log-entry-animated.processing-transaction::before {
+  background: linear-gradient(to bottom, var(--primary-blue), #1e7bd7);
+  animation: infoBar 0.5s ease-out, tickTock 1s infinite;
+}
+
+.log-entry-animated.processing-transaction .log-message {
+  position: relative;
+}
+
+.log-entry-animated.processing-transaction .log-message::after {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--primary-blue);
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spinContinuous 1s linear infinite;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* Success Transaction Animation */
+.log-entry-animated.success-transaction {
+  background: rgba(48, 177, 138, 0.15);
+  animation: successPulse 1s ease-out, successGlow 2s infinite;
+}
+
+.log-entry-animated.success-transaction::before {
+  background: linear-gradient(to bottom, var(--success-color), #228b5a);
+  animation: successBar 0.8s ease-out;
+}
+
+.log-entry-animated.success-transaction .log-message {
+  color: var(--success-color);
+  font-weight: 600;
+}
+
+/* Error Transaction Animation */
+.log-entry-animated.error-transaction {
+  background: rgba(239, 68, 68, 0.1);
+  animation: errorShake 0.6s ease-out, errorFlash 2s infinite;
+}
+
+.log-entry-animated.error-transaction::before {
+  background: linear-gradient(to bottom, #ef4444, #dc2626);
+  animation: errorBar 0.6s ease-out;
+}
+
+.log-entry-animated.error-transaction .log-message {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* Info Transaction Animation */
+.log-entry-animated.info-transaction {
+  background: rgba(59, 130, 246, 0.08);
+  animation: infoSlide 0.4s ease-out, infoBlink 3s infinite;
+}
+
+.log-entry-animated.info-transaction::before {
+  background: linear-gradient(to bottom, #3b82f6, #2563eb);
+  animation: infoBar 0.4s ease-out;
+}
+
+/* Enhanced Console Placeholder */
+.console-placeholder-enhanced {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #888;
+  text-align: center;
+}
+
+.loading-spinner {
+  margin-bottom: 16px;
+}
+
+.spinner-emoji {
+  font-size: 24px;
+  animation: rotateHourglass 2s infinite ease-in-out;
+  display: inline-block;
+}
+
+.placeholder-text {
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #aaa;
+}
+
+/* Enhanced Typing Dots */
+.typing-dots {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  background: var(--primary-blue);
+  border-radius: 50%;
+  animation: awaitingDots 1.5s infinite;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Transaction Status Component */
+.transaction-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 8px 0;
+  transition: all 0.3s ease;
+}
+
+.transaction-status.animated .status-emoji {
+  animation: pendingPulse 2s infinite;
+}
+
+.transaction-status.status-pending {
+  background: rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+}
+
+.transaction-status.status-processing {
+  background: rgba(41, 151, 255, 0.1);
+  border: 1px solid rgba(41, 151, 255, 0.3);
+}
+
+.transaction-status.status-success {
+  background: rgba(48, 177, 138, 0.1);
+  border: 1px solid rgba(48, 177, 138, 0.3);
+}
+
+.transaction-status.status-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.transaction-status.status-ready {
+  background: rgba(136, 136, 136, 0.1);
+  border: 1px solid rgba(136, 136, 136, 0.3);
+}
+
+/* Loading Message Component */
+.loading-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+.loading-message.pending {
+  color: #ffa500;
+}
+
+.loading-message.processing {
+  color: var(--primary-blue);
+}
+
+/* Slide in animation for new log entries */
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Hover effects for log entries */
+.log-entry-animated:hover {
+  transform: translateX(4px);
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.log-entry-animated:hover::before {
+  width: 5px;
+}
+
+/* Enhanced scrollbar for console */
+.console-log.enhanced-console::-webkit-scrollbar {
+  width: 6px;
+}
+
+.console-log.enhanced-console::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.console-log.enhanced-console::-webkit-scrollbar-thumb {
+  background: var(--primary-blue);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.console-log.enhanced-console::-webkit-scrollbar-thumb:hover {
+  background: #1e7bd7;
+}
+
 /* --- MOBILE LAYOUT --- */
 @media (max-width: 700px) {
   .app-main {
@@ -665,5 +1015,414 @@ body {
   .status.error {
     color: #d80c31;
     background: #fff6f7;
+  }
+
+  /* --- CRON DETAIL VIEW STYLES --- */
+  .cron-details {
+    margin-top: 1rem;
+  }
+
+  .toggle-details-btn {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-top: 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+
+  .toggle-details-btn:hover {
+    background: #1445d1;
+  }
+
+  .expanded-details {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--background-dark);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+  }
+
+  .expanded-details h4, .expanded-details h5 {
+    color: var(--primary-blue);
+    margin: 0 0 12px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border-color);
+    gap: 12px;
+  }
+
+  .detail-row:last-child {
+    border-bottom: none;
+  }
+
+  .detail-label {
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 160px;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+  }
+
+  .detail-value {
+    color: var(--text-primary);
+    text-align: right;
+    word-break: break-all;
+    font-size: 0.9rem;
+    flex: 1;
+  }
+
+  .detail-value a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .detail-value a:hover {
+    text-decoration: underline;
+  }
+
+  .warning-icon {
+    margin-left: 4px;
+    font-size: 0.8rem;
+  }
+
+  .balance.low-balance {
+    color: var(--error-color);
+    font-weight: 600;
+  }
+
+  /* Mobile responsiveness for detail view */
+  @media (max-width: 700px) {
+    .detail-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    
+    .detail-label {
+      min-width: auto;
+    }
+    
+    .detail-value {
+      text-align: left;
+    }
+  }
+}
+
+/* Enhanced Animation Keyframes for Transaction States */
+
+/* Pending Transaction Animations */
+@keyframes pendingPulse {
+  0%, 100% {
+    background-color: rgba(255, 165, 0, 0.1);
+    transform: scale(1);
+  }
+  50% {
+    background-color: rgba(255, 165, 0, 0.2);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes pendingBounce {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(5px);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pendingBar {
+  0%, 100% {
+    background: linear-gradient(to bottom, #ffa500, #ff8c00);
+    opacity: 0.6;
+  }
+  50% {
+    background: linear-gradient(to bottom, #ffb833, #ff9500);
+    opacity: 1;
+  }
+}
+
+@keyframes confirmationBlink {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0.7;
+  }
+}
+
+/* Processing Transaction Animations */
+@keyframes processingFlow {
+  0% {
+    background: rgba(41, 151, 255, 0.08);
+  }
+  25% {
+    background: rgba(41, 151, 255, 0.12);
+  }
+  50% {
+    background: rgba(41, 151, 255, 0.15);
+  }
+  75% {
+    background: rgba(41, 151, 255, 0.12);
+  }
+  100% {
+    background: rgba(41, 151, 255, 0.08);
+  }
+}
+
+@keyframes tickTock {
+  0%, 50%, 100% {
+    transform: scaleY(1);
+  }
+  25% {
+    transform: scaleY(1.1);
+  }
+  75% {
+    transform: scaleY(0.9);
+  }
+}
+
+@keyframes spinContinuous {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success Transaction Animations */
+@keyframes successPulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes successGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(48, 177, 138, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(48, 177, 138, 0.6);
+  }
+}
+
+@keyframes successBar {
+  0% {
+    height: 0%;
+    opacity: 0;
+  }
+  100% {
+    height: 100%;
+    opacity: 1;
+  }
+}
+
+/* Error Transaction Animations */
+@keyframes errorShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-3px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(3px);
+  }
+}
+
+@keyframes errorFlash {
+  0%, 100% {
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+  50% {
+    background-color: rgba(239, 68, 68, 0.2);
+  }
+}
+
+@keyframes errorBar {
+  0% {
+    background: linear-gradient(to bottom, #ef4444, #dc2626);
+    width: 0px;
+  }
+  100% {
+    background: linear-gradient(to bottom, #ef4444, #dc2626);
+    width: 3px;
+  }
+}
+
+/* Info Transaction Animations */
+@keyframes infoSlide {
+  0% {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes infoBlink {
+  0%, 90%, 100% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes infoBar {
+  0% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+/* Enhanced Awaiting Dots Animation */
+@keyframes awaitingDots {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Hourglass Rotation Animation */
+@keyframes rotateHourglass {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+}
+
+/* Transaction Progress Bar Animation */
+@keyframes progressBar {
+  0% {
+    width: 0%;
+  }
+  50% {
+    width: 70%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Blockchain Confirmation Animation */
+@keyframes blockchainConfirm {
+  0% {
+    opacity: 0.3;
+    transform: scale(0.9);
+  }
+  25% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(0.95);
+  }
+  75% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Deposit Transaction Animation */
+@keyframes depositFlow {
+  0% {
+    background: rgba(41, 151, 255, 0.1);
+    border-color: rgba(41, 151, 255, 0.3);
+  }
+  50% {
+    background: rgba(48, 177, 138, 0.1);
+    border-color: rgba(48, 177, 138, 0.3);
+  }
+  100% {
+    background: rgba(41, 151, 255, 0.1);
+    border-color: rgba(41, 151, 255, 0.3);
+  }
+}
+
+/* Update Transaction Animation */
+@keyframes updateTransaction {
+  0% {
+    background: rgba(138, 43, 226, 0.1);
+  }
+  50% {
+    background: rgba(138, 43, 226, 0.2);
+  }
+  100% {
+    background: rgba(138, 43, 226, 0.1);
+  }
+}
+
+/* Wallet Confirmation Animation */
+@keyframes walletConfirm {
+  0%, 100% {
+    transform: rotate(0deg);
+    opacity: 0.8;
+  }
+  25% {
+    transform: rotate(-2deg);
+    opacity: 1;
+  }
+  75% {
+    transform: rotate(2deg);
+    opacity: 1;
+  }
+}
+
+/* Transaction Hash Animation */
+@keyframes hashReveal {
+  0% {
+    width: 0%;
+    opacity: 0;
+  }
+  50% {
+    width: 50%;
+    opacity: 0.5;
+  }
+  100% {
+    width: 100%;
+    opacity: 1;
   }
 }

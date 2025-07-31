@@ -2,54 +2,31 @@ import React, { useState, useEffect, useRef } from 'react';
 import DefaultLayout from '../components/layouts/DefaultLayout';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useContractWrite, useWaitForTransactionReceipt } from 'wagmi';
-import { parseUnits } from 'viem';
 
-// SVG Components
-const DiamondIcon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="#2997ff" style={{marginRight: "7px"}}><path d="M12 2L2 12l10 10 10-10L12 2z" /></svg>;
-const PaintIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="#2997ff"><circle cx="12" cy="12" r="9" stroke="#2997ff" strokeWidth="2" fill="none"/><circle cx="12" cy="12" r="4" fill="#2997ff"/></svg>;
-const FileIcon = () => <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="4" width="24" height="24" rx="6" fill="#D7E0FF"/><path d="M10 10h12v2H10zm0 6h12v2H10z" fill="#002DCB"/></svg>;
-
-const contractABI = [
-  {
-    "inputs": [
-      { "internalType": "string", "name": "name", "type": "string" },
-      { "internalType": "string", "name": "symbol", "type": "string" },
-      { "internalType": "string", "name": "denom", "type": "string" },
-      { "internalType": "uint256", "name": "totalSupply", "type": "uint256" },
-      { "internalType": "uint8", "name": "decimals", "type": "uint8" },
-      { "internalType": "string", "name": "logoBase64", "type": "string" }
-    ],
-    "name": "createErc20",
-    "outputs": [
-      { "internalType": "address", "name": "tokenAddress", "type": "address" }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      { "indexed": true, "internalType": "address", "name": "creator", "type": "address" },
-      { "indexed": true, "internalType": "address", "name": "tokenAddress", "type": "address" },
-      { "indexed": false, "internalType": "string", "name": "name", "type": "string" },
-      { "indexed": false, "internalType": "string", "name": "symbol", "type": "string" }
-    ],
-    "name": "ERC20Created",
-    "type": "event"
-  }
-];
-
-const PRECOMPILE_CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000806';
-const EXPLORER_URL = 'https://explorer.helioschainlabs.org';
+// Import separated modules
+import { TOKEN_DEPLOYER_ADDRESS, TOKEN_DEPLOYER_ABI } from '../constants/abi';
+import { TokenDeploymentManager, LogoManager, InputSanitizer } from '../logic';
+import { EXPLORER_URL, URLUtils } from '../logic';
+import { DebugLogger, TransactionDebugger } from '../debug/debugUtils';
+import { 
+  TokenUIElements,
+  TokenFormElements,
+  TokenButtonElements,
+  TokenLayoutElements,
+  LOGO_OPTIONS
+} from '../components/ui/TokenUIComponents';
 
 export default function TokenDeployerPage() {
   const { isConnected } = useAccount();
+  
+  // Theme management
   const [theme, setTheme] = useState('dark');
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     setTheme(savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
+  
   const handleToggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
@@ -57,86 +34,129 @@ export default function TokenDeployerPage() {
     localStorage.setItem('theme', newTheme);
   };
 
+  // Form state
   const [tokenName, setTokenName] = useState('');
   const [tokenSymbol, setTokenSymbol] = useState('');
   const [totalSupply, setTotalSupply] = useState('');
   const [logoOption, setLogoOption] = useState('generate');
   const [logoBase64, setLogoBase64] = useState('');
   const [logoPreview, setLogoPreview] = useState('');
+  
+  // UI state
   const [deployedTokenInfo, setDeployedTokenInfo] = useState(null);
   const [status, setStatus] = useState({ message: '', type: '' });
   const [deploymentLogs, setDeploymentLogs] = useState([]);
   const [progress, setProgress] = useState(0);
   const [symbolError, setSymbolError] = useState('');
-  const [denomSeed, setDenomSeed] = useState(Date.now());
   const [supplyError, setSupplyError] = useState('');
+  
   const consoleEndRef = useRef(null);
 
+  // Initialize managers
+  const debugLogger = useRef(new DebugLogger()).current;
+  const deploymentManager = useRef(new TokenDeploymentManager()).current;
+  
+  // Track processed transactions to prevent duplicates
+  const processedTxRef = useRef({ lastHash: null, successLogged: false });
+
+  // Contract hooks
   const { data: txHash, isPending: isWriteLoading, writeContract, isError: isWriteError, error: writeError } = useContractWrite();
   const { data: txReceipt, isLoading: isTxLoading, isSuccess: isTxSuccess, isError: isTxError, error: txError } = useWaitForTransactionReceipt({ hash: txHash });
 
+  // Input handlers with validation using separated logic
   const handleTokenSymbolChange = (e) => {
-    let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    setTokenSymbol(value);
-    if (value.length > 5) {
-      setSymbolError('Token symbol cannot be more than 5 characters.');
-    } else {
-      setSymbolError('');
-    }
+    const sanitized = InputSanitizer.sanitizeTokenSymbol(e.target.value);
+    setTokenSymbol(sanitized);
+    
+    const validation = deploymentManager.validateTokenSymbol(sanitized);
+    setSymbolError(validation.isValid ? '' : validation.error);
   };
 
   const handleTotalSupplyChange = (e) => {
-    let value = e.target.value.replace(/[^0-9]/g, '');
-    if (value === '' || value === '0') {
-      setSupplyError('Total supply must be a positive number.');
-    } else {
-      setSupplyError('');
-    }
-    setTotalSupply(value);
+    const sanitized = InputSanitizer.sanitizeNumericInput(e.target.value);
+    setTotalSupply(sanitized);
+    
+    const validation = deploymentManager.validateTotalSupply(sanitized);
+    setSupplyError(validation.isValid ? '' : validation.error);
   };
 
+  const handleTokenNameChange = (e) => {
+    const sanitized = InputSanitizer.sanitizeTokenName(e.target.value);
+    setTokenName(sanitized);
+  };
+
+  // Logging utility using debug logger
   const addLog = (message, type = 'info') => {
-    const timestamp = new Date().toLocaleTimeString([], { hour12: false });
-    setDeploymentLogs(prevLogs => [...prevLogs, { timestamp, message, type }]);
+    const logEntry = debugLogger.addLog(message, type);
+    setDeploymentLogs(prevLogs => [...prevLogs, logEntry]);
   };
-  useEffect(() => { consoleEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [deploymentLogs]);
 
+  useEffect(() => { 
+    consoleEndRef.current?.scrollIntoView({ behavior: 'smooth' }); 
+  }, [deploymentLogs]);
+
+  // Transaction status management with debugging
   useEffect(() => {
-    if (isWriteLoading) {
+    if (isWriteLoading && !processedTxRef.current.successLogged) {
       setProgress(30);
       setStatus({ message: 'Confirm transaction in your wallet...', type: 'info' });
       addLog('Awaiting transaction confirmation...');
-    } else if (isTxLoading) {
+      TransactionDebugger.logTransactionStart('DEPLOY_TOKEN', { tokenName, tokenSymbol, totalSupply });
+      processedTxRef.current.successLogged = false;
+    } else if (isTxLoading && !processedTxRef.current.successLogged) {
       setProgress(75);
       setStatus({ message: `Transaction processing...`, type: 'info' });
       addLog('Transaction sent. Waiting for blockchain confirmation...');
-    } else if (isTxSuccess && txReceipt) {
+    } else if (isTxSuccess && txReceipt && txHash && processedTxRef.current.lastHash !== txHash) {
       setProgress(100);
       setStatus({ message: '✔️ Token deployed successfully!', type: 'success' });
+      
+      // Mark this transaction as processed
+      processedTxRef.current.lastHash = txHash;
+      processedTxRef.current.successLogged = true;
+      
+      // Single comprehensive log entry instead of multiple separate ones
+      const txLink = txHash ? URLUtils.formatTransactionLink(txHash) : '';
+      
       if (deployedTokenInfo) {
-        addLog(`✔️ Token deployed!`, 'success');
-        addLog(`Name: ${deployedTokenInfo.name}`, 'success');
-        addLog(`Symbol: ${deployedTokenInfo.symbol}`, 'success');
-        addLog(`Supply: ${deployedTokenInfo.supply}`, 'success');
+        addLog(
+          `<b>✔️ Token Deployed Successfully!</b><br/>
+          Name: ${deployedTokenInfo.name}<br/>
+          Symbol: ${deployedTokenInfo.symbol}<br/>
+          Supply: ${deployedTokenInfo.supply}<br/>
+          ${txLink ? `${txLink}` : ''}`,
+          'success'
+        );
       }
-      if (txHash) {
-        addLog(`<a href="${EXPLORER_URL}/tx/${txHash}" target="_blank" rel="noopener noreferrer">View Transaction</a>`, 'success');
-      }
-      setDenomSeed(Date.now());
+      
+      TransactionDebugger.logTransactionSuccess('DEPLOY_TOKEN', txHash, txReceipt);
+      deploymentManager.updateDenomSeed();
       resetForm();
+      
+      // Reset flags after a delay
+      setTimeout(() => {
+        processedTxRef.current.successLogged = false;
+        processedTxRef.current.lastHash = null;
+      }, 2000);
     } else if (isWriteError || isTxError) {
       let errMsg = (writeError || txError)?.shortMessage || (writeError || txError)?.message || '';
+      
       if (errMsg.includes('Missing or invalid parameters')) {
-        setStatus({ message: 'Error: Missing or invalid parameters. Double check you have provided the correct parameters', type: 'error' });
-        addLog('Error: Missing or invalid parameters. Double check you have provided the correct parameters', 'error');
+        const errorMessage = 'Error: Missing or invalid parameters. Double check you have provided the correct parameters';
+        setStatus({ message: errorMessage, type: 'error' });
+        addLog(errorMessage, 'error');
       } else {
         setStatus({ message: `Error: ${errMsg}`, type: 'error' });
         addLog(`Error: ${errMsg}`, 'error');
       }
+      
       setProgress(0);
+      TransactionDebugger.logTransactionError('DEPLOY_TOKEN', writeError || txError);
+      processedTxRef.current.successLogged = false;
     }
-  }, [isWriteLoading, isTxLoading, isTxSuccess]);
+  }, [isWriteLoading, isTxLoading, isTxSuccess, isWriteError, isTxError, txHash, txReceipt, writeError, txError]);
 
+  // Form reset utility
   const resetForm = () => {
     setTokenName('');
     setTokenSymbol('');
@@ -147,192 +167,152 @@ export default function TokenDeployerPage() {
     setDeployedTokenInfo(null);
   };
 
-  const generateRandomString = (length) => {
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
-    return result;
-  };
-
-  const getRandomDenom = (symbol) => {
-    return `a${symbol.toLowerCase()}-${generateRandomString(6)}-${denomSeed}`;
-  };
-
-  const handleDeploy = () => {
-    if (!tokenName || !tokenSymbol || !totalSupply) {
-      setStatus({ message: 'Please fill in all required fields.', type: 'error' });
-      return;
-    }
-    if (tokenSymbol.length > 5) {
-      setSymbolError('Token symbol cannot be more than 5 characters.');
-      setStatus({ message: 'Token symbol cannot be more than 5 characters.', type: 'error' });
-      return;
-    }
-    if (!/^[1-9][0-9]*$/.test(totalSupply)) {
-      setSupplyError('Total supply must be a positive number.');
-      setStatus({ message: 'Total supply must be a positive number.', type: 'error' });
-      return;
-    }
-    const denom = getRandomDenom(tokenSymbol);
-    setDeploymentLogs([]);
-    addLog('Starting deployment...');
-    setDeployedTokenInfo({ name: tokenName, symbol: tokenSymbol, supply: totalSupply });
-    writeContract({
-        address: PRECOMPILE_CONTRACT_ADDRESS,
-        abi: contractABI,
-        functionName: 'createErc20',
-        args: [tokenName, tokenSymbol, denom, parseUnits(totalSupply, 18), 18, logoOption === 'none' ? '' : logoBase64],
-    });
-  };
-
+  // Logo generation using separated logic
   const generateLogo = () => {
-    const symbol = tokenSymbol || "TKN";
-    const canvas = document.createElement("canvas");
-    canvas.width = 200; canvas.height = 200;
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, 200, 200);
-    ctx.save();
-    ctx.shadowColor = "#00fdff";
-    ctx.shadowBlur = 18;
-    ctx.beginPath();
-    ctx.arc(100, 100, 90, 0, 2 * Math.PI);
-    ctx.strokeStyle = "#2997ff";
-    ctx.lineWidth = 5;
-    ctx.stroke();
-    ctx.restore();
-    for (let i = 0; i < 4; i++) {
-      ctx.beginPath();
-      ctx.arc(100 + Math.random()*50-25, 100 + Math.random()*50-25, Math.random()*35+10, 0, 2 * Math.PI);
-      ctx.strokeStyle = "#2997ff";
-      ctx.globalAlpha = 0.25;
-      ctx.lineWidth = 2;
-      ctx.stroke();
+    try {
+      const symbol = tokenSymbol || "TKN";
+      const logoDataUrl = LogoManager.generateLogo(symbol);
+      setLogoPreview(logoDataUrl);
+      setLogoBase64(LogoManager.extractBase64(logoDataUrl));
+      setStatus({ message: "Generative logo created!", type: 'success' });
+    } catch (error) {
+      addLog(`Logo generation failed: ${error.message}`, 'error');
     }
-    ctx.globalAlpha = 1;
-    let fontSize = 70;
-    if (symbol.length > 3) fontSize = 45;
-    if (symbol.length > 4) fontSize = 36;
-    ctx.font = `bold ${fontSize}px 'Panchang', sans-serif`;
-    ctx.fillStyle = "#eaf6ff";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.shadowColor = "#00fdff";
-    ctx.shadowBlur = 12;
-    ctx.fillText(symbol.slice(0, 5).toUpperCase(), 100, 110);
-
-    const pngUrl = canvas.toDataURL("image/png");
-    setLogoPreview(pngUrl);
-    setLogoBase64(pngUrl.replace(/^data:image\/png;base64,/, ""));
-    setStatus({ message: "Generative logo created!", type: 'success' });
   };
 
-  const handleImageUpload = (e) => {
+  // Image upload handling using separated logic
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = 200; canvas.height = 200;
-        const ctx = canvas.getContext("2d");
-        const scale = Math.min(200 / img.width, 200 / img.height);
-        ctx.drawImage(img, (200 - img.width * scale) / 2, (200 - img.height * scale) / 2, img.width * scale, img.height * scale);
-        const pngUrl = canvas.toDataURL("image/png");
-        setLogoPreview(pngUrl);
-        setLogoBase64(pngUrl.replace(/^data:image\/png;base64,/, ""));
-        setStatus({ message: "Image processed successfully!", type: "success" });
-      };
-      img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
+
+    try {
+      const processedImage = await LogoManager.processUploadedImage(file);
+      setLogoPreview(processedImage);
+      setLogoBase64(LogoManager.extractBase64(processedImage));
+      setStatus({ message: "Image processed successfully!", type: "success" });
+    } catch (error) {
+      addLog(`Image processing failed: ${error.message}`, 'error');
+      setStatus({ message: `Image processing failed: ${error.message}`, type: "error" });
+    }
   };
 
+  // Deploy handler using separated logic
+  const handleDeploy = () => {
+    try {
+      const args = deploymentManager.prepareDeploymentArgs(
+        tokenName, 
+        tokenSymbol, 
+        totalSupply, 
+        logoOption === 'none' ? '' : logoBase64
+      );
+
+      setDeploymentLogs([]);
+      addLog('Starting deployment...');
+      setDeployedTokenInfo({ 
+        name: tokenName, 
+        symbol: tokenSymbol, 
+        supply: totalSupply 
+      });
+
+      writeContract({
+        address: TOKEN_DEPLOYER_ADDRESS,
+        abi: TOKEN_DEPLOYER_ABI,
+        functionName: 'createErc20',
+        args: args,
+      });
+    } catch (error) {
+      addLog(`Deployment preparation failed: ${error.message}`, 'error');
+      setStatus({ message: error.message, type: 'error' });
+    }
+  };
+
+  // Logo option change handler
+  const handleLogoOptionChange = (e) => {
+    setLogoOption(e.target.value);
+    setLogoPreview('');
+    setLogoBase64('');
+  };
+
+  // Left panel with form
   const leftPanel = (
-    <div className="token-card">
-      <div className="card-header">
-        <span className="card-header-title">
-          <DiamondIcon /> Token Parameters
-        </span>
-      </div>
-      <input type="text" placeholder="Token Name (e.g. My Token)" value={tokenName} onChange={e => setTokenName(e.target.value)} />
-      <input
-        type="text"
-        placeholder="Token Symbol (e.g. MYT)"
+    <TokenLayoutElements.TokenCard>
+      <TokenLayoutElements.CardHeader 
+        title="Token Parameters" 
+        icon={<TokenUIElements.DiamondIcon />} 
+      />
+      
+      <TokenFormElements.TokenNameInput
+        value={tokenName}
+        onChange={handleTokenNameChange}
+      />
+      
+      <TokenFormElements.TokenSymbolInput
         value={tokenSymbol}
         onChange={handleTokenSymbolChange}
         maxLength={5}
       />
-      {symbolError && <div className="status error">{symbolError}</div>}
-      <input
-        type="text"
-        inputMode="numeric"
-        pattern="[0-9]*"
-        placeholder="Total Supply (e.g. 1000000)"
+      {symbolError && <TokenUIElements.StatusMessage message={symbolError} type="error" />}
+      
+      <TokenFormElements.TotalSupplyInput
         value={totalSupply}
         onChange={handleTotalSupplyChange}
-        style={{MozAppearance:'textfield'}}
-        autoComplete="off"
       />
-      {supplyError && <div className="status error">{supplyError}</div>}
-      <div className="logo-section">
-        <span className="logo-title">
-          <PaintIcon /> Token Logo
-        </span>
-        <select value={logoOption} onChange={e => { setLogoOption(e.target.value); setLogoPreview(''); }}>
-          <option value="none">No logo</option>
-          <option value="upload">Upload image</option>
-          <option value="generate">Generate logo</option>
-        </select>
-        {logoPreview && <img className="logo-preview" src={logoPreview} alt="Logo Preview" />}
-        <div className="logo-actions">
+      {supplyError && <TokenUIElements.StatusMessage message={supplyError} type="error" />}
+      
+      <TokenLayoutElements.LogoSection>
+        <TokenFormElements.LogoSelector
+          value={logoOption}
+          onChange={handleLogoOptionChange}
+          options={LOGO_OPTIONS}
+        />
+        
+        {logoPreview && <TokenUIElements.LogoPreview src={logoPreview} />}
+        
+        <TokenLayoutElements.LogoActions>
           {logoOption === 'generate' && (
-            <button type="button" className="logo-generate-btn" onClick={generateLogo}>
-              <span>Generate</span>
-              <span>Random Logo</span>
-            </button>
+            <TokenButtonElements.GenerateLogoButton onClick={generateLogo} />
           )}
+          
           {logoOption === 'upload' && (
-            <button type="button" className="logo-generate-btn" style={{background:"#D7E0FF",color:"#002DCB"}} onClick={()=>document.getElementById('fileUpload').click()}>
-              <FileIcon />
-              <span>Upload</span>
-              <span>Image</span>
-              <input id="fileUpload" type="file" accept="image/*" style={{display:"none"}} onChange={handleImageUpload} />
-            </button>
+            <>
+              <TokenButtonElements.UploadImageButton 
+                onClick={() => document.getElementById('fileUpload').click()} 
+              />
+              <TokenFormElements.HiddenFileInput
+                id="fileUpload"
+                onChange={handleImageUpload}
+              />
+            </>
           )}
-        </div>
-      </div>
-      <div className="deploy-actions">
-        <button onClick={handleDeploy} disabled={!isConnected || isWriteLoading || isTxLoading || !!symbolError || !!supplyError} className="deploy-button">
-          {isWriteLoading || isTxLoading ? 'Deploying...' : 'Deploy Token'}
-        </button>
-      </div>
+        </TokenLayoutElements.LogoActions>
+      </TokenLayoutElements.LogoSection>
+      
+      <TokenLayoutElements.DeployActions>
+        <TokenButtonElements.DeployButton
+          onClick={handleDeploy}
+          disabled={!isConnected || isWriteLoading || isTxLoading || !!symbolError || !!supplyError}
+          loading={isWriteLoading || isTxLoading}
+        />
+      </TokenLayoutElements.DeployActions>
+      
       {(isWriteLoading || isTxLoading || isTxSuccess) && (
-        <div className="progress-container">
-          <div className="progress-bar" style={{ width: `${progress}%` }}></div>
-        </div>
+        <TokenUIElements.ProgressBar progress={progress} />
       )}
+      
       {status.message && (
-        <div className={`status ${status.type}`}>
-          <span>{status.message}</span>
-        </div>
+        <TokenUIElements.StatusMessage message={status.message} type={status.type} />
       )}
-    </div>
+    </TokenLayoutElements.TokenCard>
   );
 
+  // Right panel with console
   const rightPanel = (
-    <div className="details-container">
-      <h3>Deployment Console</h3>
-      <div className="console-log">
-        {deploymentLogs.length > 0 ? deploymentLogs.map((log, idx) => (
-          <div key={idx} className="log-entry">
-            <span className="log-timestamp">{log.timestamp}</span>
-            <span className={`log-message ${log.type}`} dangerouslySetInnerHTML={{ __html: log.message }} />
-          </div>
-        )) : <span>Awaiting deployment...</span>}
-        <div ref={consoleEndRef} />
-      </div>
-    </div>
+    <TokenLayoutElements.ConsoleContainer>
+      <TokenLayoutElements.ConsoleLog
+        logs={deploymentLogs}
+        consoleEndRef={consoleEndRef}
+      />
+    </TokenLayoutElements.ConsoleContainer>
   );
 
   return (

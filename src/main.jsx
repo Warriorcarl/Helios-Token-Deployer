@@ -12,28 +12,13 @@ import { WagmiProvider } from 'wagmi';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
-// Define Helios Testnet Chain
-const heliosTestnet = {
-  id: 42000,
-  name: 'Helios Chain Testnet',
-  nativeCurrency: {
-    name: 'Helios',
-    symbol: 'HLS',
-    decimals: 18,
-  },
-  rpcUrls: {
-    default: { http: ['https://testnet1.helioschainlabs.org'] },
-  },
-  blockExplorers: {
-    default: { name: 'Helios Explorer', url: 'https://explorer.helioschainlabs.org' },
-  },
-  testnet: true,
-};
+// Import separated network configuration using index file
+import { NETWORK_CONFIG } from './logic';
 
 const config = getDefaultConfig({
   appName: 'Helios Token Deployer',
   projectId: '4d50c7253cc77e946ec2ef8569b79ce6',
-  chains: [heliosTestnet],
+  chains: [NETWORK_CONFIG.HELIOS_TESTNET],
   ssr: false,
 });
 

@@ -15,6 +15,7 @@
   --cron-error: #ff5c5c;
   --cron-text-main: #eff6ff;
   --cron-text-sub: #b2c7e8;
+  --cron-text-color: #eff6ff; /* Added missing variable */
   --cron-tab-bg: #131a2e;
   --cron-tab-border: #23304a;
   --cron-tab-inactive: #8ca7d1;
@@ -47,6 +48,7 @@
   --cron-error: #ea2e49;
   --cron-text-main: #1a222e;
   --cron-text-sub: #5170a3;
+  --cron-text-color: #1a222e; /* Added missing variable */
   --cron-tab-bg: #e7f1ff;
   --cron-tab-border: #dde9fa;
   --cron-tab-inactive: #8199bb;
@@ -128,7 +130,7 @@ body, #root {
 }
 .cron-tab-btn.selected,
 .cron-tab-btn.active {
-  background: #fff;
+  background: var(--cron-card);
   color: var(--cron-blue);
   border-bottom: 3.2px solid var(--cron-blue);
   box-shadow: 0 4px 14px 0 #2997ff0b;
@@ -282,7 +284,7 @@ body, #root {
   margin-bottom: 5px;
 }
 .cron-action-btn.view:hover {
-  background: var(--cron-blue-light);
+  background: var(--cron-blue);
   color: #fff;
 }
 .cron-action-group {
@@ -363,4 +365,603 @@ body, #root {
   }
   .cron-header-row, .cron-content-inner { padding: 17px 11px 0 11px; }
   .cron-tab-row { margin-left: 11px; }
+}
+
+/* === DARK MODE FIXES === */
+[data-theme='dark'] .cron-action-btn.view {
+  background: var(--cron-input-bg);
+  color: var(--cron-blue-light);
+  border: 1px solid var(--cron-border);
+}
+
+[data-theme='dark'] .cron-action-btn.view:hover {
+  background: var(--cron-blue);
+  color: #fff;
+}
+
+/* Ensure edit and deposit rows use proper dark colors */
+[data-theme='dark'] .cron-edit-row input,
+[data-theme='dark'] .cron-deposit-row input {
+  background: var(--cron-input-bg);
+  color: var(--cron-text-main);
+  border: 1px solid var(--cron-input-border);
+}
+
+[data-theme='dark'] .cron-edit-row button,
+[data-theme='dark'] .cron-deposit-row button {
+  background: var(--cron-btn-bg);
+  color: var(--cron-btn-txt);
+  border: none;
+}
+
+/* Fix cronid value color for dark mode */
+[data-theme='dark'] .cronid-value {
+  color: var(--cron-blue-light);
+}
+
+/* === CRON DETAIL VIEW STYLES === */
+.cron-details {
+  width: 100%;
+}
+
+.toggle-details-btn {
+  background: var(--cron-input-bg);
+  color: var(--cron-blue);
+  border: 1px solid var(--cron-border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  transition: all 0.15s;
+}
+
+.toggle-details-btn:hover {
+  background: var(--cron-blue);
+  color: #fff;
+}
+
+.expanded-details {
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.expanded-details h4 {
+  color: var(--cron-blue);
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  font-family: "Panchang", sans-serif;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--cron-border);
+  margin-bottom: 6px;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: var(--cron-text-sub);
+  font-size: 0.9rem;
+}
+
+.detail-value {
+  font-weight: 700;
+  color: var(--cron-text-main);
+  font-size: 0.9rem;
+  max-width: 60%;
+  word-break: break-all;
+}
+
+/* Balance and warning indicators */
+.balance {
+  color: var(--cron-green);
+  font-weight: 700;
+}
+
+.balance.low-balance {
+  color: var(--cron-error);
+}
+
+.warning-icon {
+  margin-left: 4px;
+  font-size: 0.9rem;
+}
+
+/* Links in detail view */
+.cron-list-detail a {
+  color: var(--cron-blue);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.cron-list-detail a:hover {
+  color: var(--cron-blue-light);
+}
+
+/* Dark mode specific fixes for detail view */
+[data-theme='dark'] .toggle-details-btn {
+  background: var(--cron-input-bg);
+  color: var(--cron-blue-light);
+  border: 1px solid var(--cron-border);
+}
+
+[data-theme='dark'] .toggle-details-btn:hover {
+  background: var(--cron-blue);
+  color: #fff;
+}
+
+[data-theme='dark'] .expanded-details {
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-border);
+}
+
+/* === DARK MODE COMPREHENSIVE FIXES === */
+
+/* Dark mode for cron list items */
+[data-theme='dark'] .cron-list-item {
+  background: var(--cron-input-bg) !important;
+  border: 1px solid var(--cron-border) !important;
+  color: var(--cron-text-color) !important;
+}
+
+/* Dark mode for cron header */
+[data-theme='dark'] .cron-header {
+  color: var(--cron-text-color) !important;
+}
+
+[data-theme='dark'] .cronid-label {
+  color: var(--cron-text-color) !important;
+}
+
+[data-theme='dark'] .cronid-value {
+  color: var(--cron-blue-light) !important;
+}
+
+/* Dark mode for cron details */
+[data-theme='dark'] .cron-list-detail {
+  color: var(--cron-text-color) !important;
+}
+
+[data-theme='dark'] .cron-list-detail strong {
+  color: var(--cron-blue-light) !important;
+}
+
+/* Dark mode for balance text */
+[data-theme='dark'] .balance {
+  color: var(--cron-text-color) !important;
+}
+
+[data-theme='dark'] .low-balance {
+  color: #ff6b6b !important;
+}
+
+/* Dark mode for action buttons */
+[data-theme='dark'] .cron-action-btn {
+  background: var(--cron-btn-bg) !important;
+  color: #fff !important;
+  border: 1px solid var(--cron-border) !important;
+}
+
+[data-theme='dark'] .cron-action-btn:hover {
+  background: var(--cron-blue) !important;
+  border-color: var(--cron-blue) !important;
+}
+
+[data-theme='dark'] .cron-action-btn.view {
+  background: var(--cron-input-bg) !important;
+  color: var(--cron-blue-light) !important;
+  border: 1px solid var(--cron-border) !important;
+}
+
+[data-theme='dark'] .cron-action-btn.view:hover {
+  background: var(--cron-blue) !important;
+  color: #fff !important;
+}
+
+/* Dark mode for expanded details */
+[data-theme='dark'] .expanded-details {
+  background: var(--cron-input-bg) !important;
+  border: 1px solid var(--cron-border) !important;
+  color: var(--cron-text-color) !important;
+}
+
+[data-theme='dark'] .expanded-details h4 {
+  color: var(--cron-blue-light) !important;
+}
+
+[data-theme='dark'] .detail-row {
+  color: var(--cron-text-color) !important;
+}
+
+[data-theme='dark'] .detail-label {
+  color: var(--cron-blue-light) !important;
+}
+
+[data-theme='dark'] .detail-value {
+  color: var(--cron-text-color) !important;
+}
+
+/* Dark mode for toggle button */
+[data-theme='dark'] .toggle-details-btn {
+  background: var(--cron-input-bg) !important;
+  color: var(--cron-blue-light) !important;
+  border: 1px solid var(--cron-border) !important;
+}
+
+[data-theme='dark'] .toggle-details-btn:hover {
+  background: var(--cron-blue) !important;
+  color: #fff !important;
+}
+
+/* Dark mode for warning icons */
+[data-theme='dark'] .warning-icon {
+  filter: brightness(1.2) !important;
+}
+
+/* Dark mode for form elements inside cron items */
+[data-theme='dark'] .cron-edit-row {
+  background: var(--cron-input-bg) !important;
+  border: 1px solid var(--cron-border) !important;
+  color: var(--cron-text-color) !important;
+}
+
+[data-theme='dark'] .cron-edit-row label {
+  color: var(--cron-blue-light) !important;
+}
+
+[data-theme='dark'] .cron-edit-row input {
+  background: var(--cron-input-bg) !important;
+  border: 1px solid var(--cron-border) !important;
+  color: var(--cron-text-color) !important;
+}
+
+[data-theme='dark'] .cron-edit-row .hint {
+  color: var(--cron-tab-inactive) !important;
+}
+
+[data-theme='dark'] .current-block {
+  color: var(--cron-text-color) !important;
+}
+
+/* Dark mode for deposit form */
+[data-theme='dark'] .cron-deposit-row {
+  background: var(--cron-input-bg) !important;
+  border: 1px solid var(--cron-border) !important;
+  color: var(--cron-text-color) !important;
+}
+
+[data-theme='dark'] .cron-deposit-row label {
+  color: var(--cron-blue-light) !important;
+}
+
+[data-theme='dark'] .cron-deposit-row input {
+  background: var(--cron-input-bg) !important;
+  border: 1px solid var(--cron-border) !important;
+  color: var(--cron-text-color) !important;
+}
+
+/* Dark mode for save/cancel buttons */
+[data-theme='dark'] .cron-action-btn.save {
+  background: var(--cron-green) !important;
+  color: #fff !important;
+  border: 1px solid var(--cron-green) !important;
+}
+
+[data-theme='dark'] .cron-action-btn.cancel-edit {
+  background: var(--cron-input-bg) !important;
+  color: var(--cron-text-color) !important;
+  border: 1px solid var(--cron-border) !important;
+}
+
+[data-theme='dark'] .cron-action-btn.cancel-edit:hover {
+  background: #6c757d !important;
+  color: #fff !important;
+}
+
+/* Dark mode for links in details */
+[data-theme='dark'] .cron-list-detail a {
+  color: var(--cron-blue-light) !important;
+}
+
+[data-theme='dark'] .cron-list-detail a:hover {
+  color: var(--cron-blue) !important;
+}
+
+/* Dark mode for debug info */
+[data-theme='dark'] details summary {
+  color: var(--cron-blue-light) !important;
+}
+
+[data-theme='dark'] pre {
+  background: var(--cron-input-bg) !important;
+  color: var(--cron-text-color) !important;
+  border: 1px solid var(--cron-border) !important;
+}
+
+/* Make sure all text is visible in dark mode */
+[data-theme='dark'] * {
+  color: inherit;
+}
+
+/* Override any remaining light backgrounds */
+[data-theme='dark'] .cron-list-item * {
+  background-color: transparent;
+}
+
+[data-theme='dark'] .cron-list-item .expanded-details {
+  background-color: var(--cron-input-bg) !important;
+}
+
+/* === CONSOLE LOG ANIMATIONS === */
+
+/* Slide in animation for log entries */
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Log entry animations */
+.log-entry-animated {
+  transform: translateX(100%);
+  opacity: 0;
+  transition: all 0.3s ease-out;
+}
+
+.log-entry-animated.success {
+  border-left: 3px solid var(--cron-green);
+  background: linear-gradient(90deg, rgba(48, 177, 138, 0.1) 0%, transparent 50%);
+  animation: slideInFromRight 0.5s ease-out forwards, successPulse 0.3s ease-out 0.5s;
+}
+
+.log-entry-animated.error {
+  border-left: 3px solid var(--cron-error);
+  background: linear-gradient(90deg, rgba(255, 92, 92, 0.1) 0%, transparent 50%);
+  animation: slideInFromRight 0.5s ease-out forwards, errorShake 0.3s ease-out 0.5s;
+}
+
+.log-entry-animated.info {
+  border-left: 3px solid var(--cron-blue);
+  background: linear-gradient(90deg, rgba(41, 151, 255, 0.1) 0%, transparent 50%);
+  animation: slideInFromRight 0.5s ease-out forwards;
+}
+
+/* Success pulse animation */
+@keyframes successPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* Error shake animation */
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* Typing dots animation for placeholder */
+.console-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cron-tab-inactive);
+  font-style: italic;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 2px;
+}
+
+.typing-dots span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--cron-blue);
+  animation: typingDot 1.4s infinite;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: 0s; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingDot {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Enhanced log entry styling */
+.log-entry {
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.log-entry:hover {
+  background: var(--cron-input-bg);
+  transform: translateX(2px);
+}
+
+.log-timestamp {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85em;
+  color: var(--cron-tab-inactive);
+  margin-right: 8px;
+  min-width: 60px;
+  display: inline-block;
+}
+
+.log-message {
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.log-message.success {
+  color: var(--cron-green);
+}
+
+.log-message.error {
+  color: var(--cron-error);
+}
+
+.log-message.info {
+  color: var(--cron-text-main);
+}
+
+/* Progress bar animations */
+.progress-container {
+  width: 100%;
+  height: 4px;
+  background: var(--cron-input-bg);
+  border-radius: 2px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cron-blue), var(--cron-blue-light));
+  border-radius: 2px;
+  transition: width 0.3s ease-out;
+  animation: progressShimmer 2s infinite linear;
+}
+
+@keyframes progressShimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.progress-bar {
+  background: linear-gradient(
+    90deg,
+    var(--cron-blue) 0%,
+    var(--cron-blue-light) 50%,
+    var(--cron-blue) 100%
+  );
+  background-size: 200px 100%;
+}
+
+/* Status message animations */
+.status {
+  padding: 8px 12px;
+  margin: 8px 0;
+  border-radius: 6px;
+  font-size: 0.9em;
+  animation: fadeInUp 0.4s ease-out;
+  border-left: 3px solid;
+}
+
+.status.success {
+  background: rgba(48, 177, 138, 0.1);
+  border-left-color: var(--cron-green);
+  color: var(--cron-green);
+}
+
+.status.error {
+  background: rgba(255, 92, 92, 0.1);
+  border-left-color: var(--cron-error);
+  color: var(--cron-error);
+}
+
+.status.info {
+  background: rgba(41, 151, 255, 0.1);
+  border-left-color: var(--cron-blue);
+  color: var(--cron-blue);
+}
+
+/* Button press animations */
+.cron-btn-main:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+.cron-action-btn:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* Loading spinner for buttons */
+.cron-btn-main[disabled] {
+  position: relative;
+  overflow: hidden;
+}
+
+.cron-btn-main[disabled]::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: buttonShimmer 1.5s infinite;
+}
+
+@keyframes buttonShimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Dark mode specific animation adjustments */
+[data-theme='dark'] .log-entry-animated.success {
+  background: linear-gradient(90deg, rgba(48, 177, 138, 0.15) 0%, transparent 50%);
+}
+
+[data-theme='dark'] .log-entry-animated.error {
+  background: linear-gradient(90deg, rgba(255, 92, 92, 0.15) 0%, transparent 50%);
+}
+
+[data-theme='dark'] .log-entry-animated.info {
+  background: linear-gradient(90deg, rgba(41, 151, 255, 0.15) 0%, transparent 50%);
+}
+
+[data-theme='dark'] .log-entry:hover {
+  background: var(--cron-input-bg);
+  box-shadow: 0 2px 8px rgba(41, 151, 255, 0.1);
 }

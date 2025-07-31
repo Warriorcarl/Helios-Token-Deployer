@@ -3,8 +3,10 @@ import { useAccount } from "wagmi";
 import useCronData from "../hooks/useCronData";
 import useCronOperations from "../hooks/useCronOperations";
 import CronListItem from "./cron/CronListItem";
-import EmptyState from "./cron/EmptyState";
 import { cronStyles } from "../styles/cronStyles";
+
+// Import separated UI components
+import { ListElements } from "./ui/CronUIComponents";
 
 export default function MyCronsList({ onAction, blockNumber }) {
   const { address, isConnected } = useAccount();
@@ -51,15 +53,15 @@ export default function MyCronsList({ onAction, blockNumber }) {
     handleDeposit(cronId, aliasAddr);
   };
   
-  // Render states
-  if (!isConnected) return <EmptyState message="Connect your wallet to see your cron jobs." />;
-  if (loading) return <EmptyState message="Loading your cron jobs..." />;
-  if (error) return <EmptyState message={error} type="error" />;
-  if (!crons.length) return <EmptyState message="No cron jobs found for this wallet." />;
+  // Render states using separated UI components
+  if (!isConnected) return <ListElements.EmptyState message="Connect your wallet to see your cron jobs." />;
+  if (loading) return <ListElements.LoadingState message="Loading your cron jobs..." />;
+  if (error) return <ListElements.EmptyState message={error} type="error" />;
+  if (!crons.length) return <ListElements.EmptyState message="No cron jobs found for this wallet." />;
 
   return (
     <div>
-      <div className="cron-list-wrap">
+      <ListElements.ListWrapper>
         {crons.map((cron) => (
           <CronListItem 
             key={cron.id}
@@ -84,7 +86,7 @@ export default function MyCronsList({ onAction, blockNumber }) {
             isDepositing={depositStatus.isPending || depositStatus.isLoading}
           />
         ))}
-      </div>
+      </ListElements.ListWrapper>
       <style>{cronStyles}</style>
     </div>
   );
