@@ -1,6 +1,7 @@
 import { parseUnits, parseEther } from 'viem';
 import { CHRONOS_ADDRESS } from '../constants/abi/chronosAbi';
 import { COUNTER_CONTRACT_ADDRESS, getIncrementAbiString } from '../constants/abi/counterAbi';
+import { SIMPLE_TEST_CONTRACT_CONFIG, SIMPLE_TEST_CONTRACT_BYTECODE, getSimpleContractAbiString } from '../constants/abi/simpleTestAbi';
 
 // Cron job creation logic
 export class CronJobManager {
@@ -274,6 +275,187 @@ export class DepositManager {
       to: aliasAddress,
       value: parseUnits(amount.toString(), 18),
       gas: BigInt(21000)
+    };
+  }
+}
+
+// Simple Test Contract deployment logic
+export class SimpleTestDeploymentManager {
+  constructor() {
+    this.deployedContracts = new Map();
+    this.availableMethods = ['increment', 'ping', 'trigger'];
+  }
+
+  // Generate random method name for deployment
+  generateRandomMethodName() {
+    const methods = this.availableMethods;
+    const randomIndex = Math.floor(Math.random() * methods.length);
+    return methods[randomIndex];
+  }
+
+  // Validate deployment parameters
+  validateDeploymentParams() {
+    return {
+      isValid: true,
+      errors: []
+    };
+  }
+
+  // Prepare deployment arguments (no constructor args needed)
+  prepareDeploymentArgs() {
+    return [];
+  }
+
+  // Get bytecode for deployment
+  getBytecode() {
+    try {
+      if (!SIMPLE_TEST_CONTRACT_BYTECODE || !SIMPLE_TEST_CONTRACT_BYTECODE.startsWith('0x')) {
+        throw new Error('Invalid bytecode format');
+      }
+
+      return {
+        bytecode: SIMPLE_TEST_CONTRACT_BYTECODE,
+        isValid: true
+      };
+    } catch (error) {
+      return {
+        isValid: false,
+        error: error.message
+      };
+    }
+  }
+
+  // Prepare complete deployment data
+  prepareDeploymentData() {
+    const bytecodeData = this.getBytecode();
+    
+    if (!bytecodeData.isValid) {
+      throw new Error(`Bytecode error: ${bytecodeData.error}`);
+    }
+
+    return {
+      bytecode: bytecodeData.bytecode,
+      args: this.prepareDeploymentArgs()
+    };
+  }
+
+  // Store deployed contract information
+  storeDeployedContract(address, txHash, blockNumber, selectedMethod) {
+    const contractInfo = {
+      address,
+      txHash,
+      blockNumber,
+      selectedMethod,
+      deployedAt: Date.now(),
+      type: 'SimpleTestContract'
+    };
+    
+    this.deployedContracts.set(address, contractInfo);
+    return contractInfo;
+  }
+
+  // Get deployed contract info
+  getDeployedContract(address) {
+    return this.deployedContracts.get(address);
+  }
+
+  // Prepare cron creation args with deployed Simple Test Contract
+  prepareCronArgsWithContract(contractAddress, methodName, frequency, expirationOffset, blockNumber) {
+    if (!contractAddress || !contractAddress.startsWith('0x')) {
+      throw new Error('Invalid contract address');
+    }
+
+    if (!this.availableMethods.includes(methodName)) {
+      throw new Error(`Invalid method. Supported methods: ${this.availableMethods.join(', ')}`);
+    }
+
+    const freq = parseInt(frequency, 10);
+    const expOffset = parseInt(expirationOffset, 10);
+    
+    if (isNaN(freq) || freq < 1 || freq > 10) {
+      throw new Error('Frequency must be between 1-10');
+    }
+
+    if (isNaN(expOffset) || expOffset < 1 || expOffset > 10000) {
+      throw new Error('Expiration offset must be between 1-10000');
+    }
+
+    const amountToDeposit = parseEther("1");
+    const abiString = getSimpleContractAbiString(methodName);
+    const expirationBlock = blockNumber + expOffset;
+
+    return [
+      contractAddress,
+      abiString,
+      methodName,
+      [], // params - no parameters needed for these methods
+      BigInt(freq),
+      BigInt(expirationBlock),
+      BigInt(SIMPLE_TEST_CONTRACT_CONFIG.GAS_LIMIT),
+      parseUnits("10", 9), // maxGasPrice
+      amountToDeposit
+    ];
+  }
+}
+
+// Contract deployment steps manager
+export class DeploymentStepManager {
+  constructor() {
+    this.currentStep = 1;
+    this.maxSteps = 2;
+    this.stepData = new Map();
+  }
+
+  // Set current step
+  setStep(step) {
+    if (step < 1 || step > this.maxSteps) {
+      throw new Error(`Invalid step. Must be between 1-${this.maxSteps}`);
+    }
+    this.currentStep = step;
+  }
+
+  // Get current step
+  getCurrentStep() {
+    return this.currentStep;
+  }
+
+  // Check if step is completed
+  isStepCompleted(step) {
+    return this.stepData.has(`step${step}_completed`);
+  }
+
+  // Mark step as completed
+  completeStep(step, data = {}) {
+    this.stepData.set(`step${step}_completed`, true);
+    this.stepData.set(`step${step}_data`, data);
+    
+    // Auto advance to next step if available
+    if (step < this.maxSteps) {
+      this.setStep(step + 1);
+    }
+  }
+
+  // Get step data
+  getStepData(step) {
+    return this.stepData.get(`step${step}_data`) || {};
+  }
+
+  // Reset deployment
+  reset() {
+    this.currentStep = 1;
+    this.stepData.clear();
+  }
+
+  // Get deployment progress
+  getProgress() {
+    const completedSteps = Array.from({ length: this.maxSteps }, (_, i) => i + 1)
+      .filter(step => this.isStepCompleted(step)).length;
+    
+    return {
+      current: this.currentStep,
+      completed: completedSteps,
+      total: this.maxSteps,
+      percentage: Math.round((completedSteps / this.maxSteps) * 100)
     };
   }
 }
