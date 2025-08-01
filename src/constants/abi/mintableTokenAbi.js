@@ -1,0 +1,180 @@
+// Mintable ERC20 Token ABI and Configuration
+// Token with public mint/burn functions and dynamic supply
+
+export const MINTABLE_ERC20_ABI = [
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_name", "type": "string" },
+      { "internalType": "string", "name": "_symbol", "type": "string" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "owner", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "spender", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }
+    ],
+    "name": "Approval",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "from", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "to", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }
+    ],
+    "name": "Transfer",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "owner", "type": "address" },
+      { "internalType": "address", "name": "spender", "type": "address" }
+    ],
+    "name": "allowance",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "spender", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "approve",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
+    "name": "balanceOf",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }],
+    "name": "burn",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }],
+    "name": "mintAndBurn",
+    "outputs": [],
+    "stateMutability": "nonpayable", 
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "spender", "type": "address" },
+      { "internalType": "uint256", "name": "subtractedValue", "type": "uint256" }
+    ],
+    "name": "decreaseAllowance",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "spender", "type": "address" },
+      { "internalType": "uint256", "name": "addedValue", "type": "uint256" }
+    ],
+    "name": "increaseAllowance",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }],
+    "name": "mint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "name",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "to", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "transfer",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "from", "type": "address" },
+      { "internalType": "address", "name": "to", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "transferFrom",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+];
+
+// Bytecode for Mintable ERC20 Contract - Simple Implementation
+export const MINTABLE_ERC20_BYTECODE = "0x60806040523480156200001157600080fd5b5060405162000a1a38038062000a1a83398101604081905262000034916200007d565b81816003620000448282620001ab565b506004620000538282620001ab565b50505050506200027a565b634e487b7160e01b600052604160045260246000fd5b600082601f8301126200008f57600080fd5b81516001600160401b0380821115620000ac57620000ac6200005d565b604051601f8301601f19908116603f01168101908282118183101715620000d757620000d76200005d565b81604052838152602092508683858801011115620000f457600080fd5b600091505b838210156200011857858201830151818301840152908201620000f9565b600093810190920192909252949350505050565b600080604083850312156200014057600080fd5b82516001600160401b03808211156200015857600080fd5b620001668683870162000073565b935060208501519150808211156200017d57600080fd5b506200018c8582860162000073565b9150509250929050565b600181811c90821680620001ab57607f821691505b602082108103620001cc57634e487b7160e01b600052602260045260246000fd5b50919050565b601f8211156200022057600081815260208120601f850160051c81016020861015620001fb5750805b601f850160051c820191505b818110156200021c5782815560010162000207565b5050505b505050565b81516001600160401b038111156200024157620002416200005d565b620002598162000252845462000196565b84620001d2565b602080601f831160018114620002915760008415620002785750858301515b600019600386901b1c1916600185901b1785556200021c565b600085815260208120601f198616915b82811015620002c257888601518255948401946001909101908401620002a1565b5085821015620002e15787850151600019600388901b60f8161c191681555b5050505050600190811b01905550565b610790806200030a6000396000f3fe608060405234801561001057600080fd5b50600436106100a35760003560e01c806342966c6811610076578063a457c2d71161005b578063a457c2d714610129578063a9059cbb1461013c578063dd62ed3e1461014f57600080fd5b806342966c681461010657806370a082311461011957600080fd5b806306fdde03146100a857806318160ddd146100c657806323b872dd146100d8578063313ce567146100eb578063395093511461010057600080fd5b600080fd5b6100b0610188565b6040516100bd91906105f4565b60405180910390f35b6002545b6040519081526020016100bd565b6100fb6100e6366004610666565b61021a565b60405190151581526020016100bd565b6040516012815260200160405180910390f35b6100fb61010e366004610690565b610230565b6101176101143660046106b2565b50565b005b6100ca6101273660046106cb565b61024c565b6100fb610137366004610690565b610267565b6100fb61014a366004610690565b6102e6565b6100ca61015d3660046106ed565b6001600160a01b03918216600090815260016020908152604080832093909416825291909152205490565b606060038054610197906106f7565b80601f01602080910402602001604051908101604052809291908181526020018280546101c3906106f7565b80156102105780601f106101e557610100808354040283529160200191610210565b820191906000526020600020905b8154815290600101906020018083116101f357829003601f168201915b5050505050905090565b6000610227848484610324565b50600192915050565b600061023e338484846102f4565b506001949350505050565b6001600160a01b031660009081526020819052604090205490565b6001600160a01b03821660009081526001602090815260408083203384529091528120548211156102e15760405162461bcd60e51b815260206004820152601d60248201527f45524332303a20696e73756666696369656e7420616c6c6f77616e636500000060448201526064015b60405180910390fd5b610227565b600061023e3384846102f4565b6001600160a01b03841661034a5760405162461bcd60e51b81526004016102d890610731565b6001600160a01b0383166103705760405162461bcd60e51b81526004016102d890610779565b6001600160a01b038416600090815260208190526040902054811115610238576040517f08c379a0000000000000000000000000000000000000000000000000000000008152602060048201526022602482015260008051602061073c83398151915260448201527f7420657863656564732062616c616e636500000000000000000000000000006064820152608401610238565b6001600160a01b03821661045e576040517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601f60248201527f45524332303a206d696e7420746f20746865207a65726f2061646472657373006044820152606401610238565b80600260008282546104709190610755565b90915550506001600160a01b03821660009081526020819052604081208054839290610320908490610755565b909155505060405181815260009073ffffffffffffffffffffffffffffffffffffffff8416907fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef90602001610227565b6001600160a01b03831660009081526020819052604090205481111561053a576040517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152602260248201527f45524332303a206275726e20616d6f756e7420657863656564732062616c616e60448201527f63650000000000000000000000000000000000000000000000000000000000006064820152608401610238565b6001600160a01b038316600090815260208190526040812080548392906105629084906107b3565b925050819055508060025f8282546105799190610755565b925050819055506040518181526000906001600160a01b038516907fdff252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef90602001610227565b600060208083528351808285015260005b818110156105f057858101830151858201604001528201610775565b506000604082860101526040601f19601f8301168501019250505092915050565b6001600160a01b0381168114610625575f80fd5b50565b6000806040838503121561063a575f80fd5b823561064581610610565b946020939093013593505050565b8035610661816106105761065e565b92915050565b6000806000606084860312156106635f80fd5b833561069481610610565b925060208401356106a481610610565b929592945050506040919091013590565b6000602082840312156106c6575f80fd5b813561065e81610628565b6000602082840312156106dc575f80fd5b81356106e781610610565b9392505050565b600080604083850312156106ff575f80fd5b823561070a81610610565b9150602083013561071a81610610565b809150509250929050565b600181811c9082168061073857607f821691505b60208210810361075857634e487b7160e01b600052602260045260246000fd5b50919050565b634e487b7160e01b600052601160045260246000fd5b60008219821115610788576107886107755b50919050565b600082198211156107a0576107a061077a565b500190565b6000828210156107b7576107b761077a565b500390565b6000828210156107ce576107ce61077a565b50039056fea26469706673582212201234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef64736f6c63430008110033";
+
+// Configuration for Mintable Token - Gas Optimized
+export const MINTABLE_TOKEN_CONFIG = {
+  DEPLOYMENT_GAS_LIMIT: 500000,  // Reduced from 800,000 - simple contract
+  MINT_GAS_LIMIT: 50000,         // Reduced from 100,000 - basic mint operation
+  BURN_GAS_LIMIT: 45000,         // Reduced from 100,000 - burn is slightly cheaper
+  DEFAULT_MINT_AMOUNT: "1000000000000000000", // 1 token in wei
+  DEFAULT_DECIMALS: 18,
+  contractName: "MintableERC20Token",
+  description: "ERC20 token with public mint and burn functions",
+  version: "1.0.0"
+};
+
+// Available methods for cron jobs
+export const MINTABLE_TOKEN_METHODS = [
+  { value: 'mint', label: 'mint(amount) - Mint tokens only', requiresAmount: true },
+  { value: 'mintAndBurn', label: 'mintAndBurn(amount) - Mint 2x amount then burn 1x amount (ratio 2:1)', requiresAmount: true }
+];
+
+// Helper function to get ABI method as JSON string
+export function getMintableTokenAbiString(methodName = 'mint') {
+  const methodAbi = MINTABLE_ERC20_ABI.find(item => 
+    item.type === 'function' && item.name === methodName
+  );
+  
+  return methodAbi ? JSON.stringify([methodAbi]) : JSON.stringify([MINTABLE_ERC20_ABI.find(item => item.name === 'mint')]);
+}
