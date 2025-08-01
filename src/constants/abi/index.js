@@ -9,3 +9,10 @@ export {
   SIMPLE_CONTRACT_METHODS,
   getSimpleContractAbiString 
 } from './simpleTestAbi';
+export {
+  MINTABLE_ERC20_ABI,
+  MINTABLE_ERC20_BYTECODE,
+  MINTABLE_TOKEN_CONFIG,
+  MINTABLE_TOKEN_METHODS,
+  getMintableTokenAbiString
+} from './mintableTokenAbi';

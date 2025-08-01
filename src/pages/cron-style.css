@@ -1409,6 +1409,662 @@ body, #root {
   color: var(--cron-text-color);
 }
 
+/* === MINTABLE TOKEN STYLES === */
+.deployment-mode-selector {
+  background: var(--cron-card);
+  border: 1px solid var(--cron-border);
+  border-radius: var(--cron-radius);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.mode-selector-header h3 {
+  color: var(--cron-text-main);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.mode-selector-header p {
+  color: var(--cron-text-sub);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.mode-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.mode-option {
+  padding: 16px;
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-border);
+  border-radius: 12px;
+  color: var(--cron-text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.mode-option:hover {
+  border-color: var(--cron-blue);
+  transform: translateY(-1px);
+}
+
+.mode-option.active {
+  background: var(--cron-blue);
+  border-color: var(--cron-blue);
+  color: #fff;
+}
+
+.mode-option.active:hover {
+  background: var(--cron-blue-dark);
+}
+
+/* Deploy Form Styles */
+.oracle-warrior-deploy-form {
+  background: var(--cron-card);
+  border: 1px solid var(--cron-border);
+  border-radius: var(--cron-radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.deploy-step-header h3 {
+  color: var(--cron-text-main);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.deploy-step-header p {
+  color: var(--cron-text-sub);
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.deploy-section {
+  margin-bottom: 24px;
+}
+
+.method-selection {
+  margin-bottom: 20px;
+}
+
+.method-selection label {
+  display: block;
+  color: var(--cron-text-main);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.method-selector {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-input-border);
+  border-radius: 12px;
+  color: var(--cron-text-main);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.method-selector:focus {
+  border-color: var(--cron-blue);
+  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.1);
+  outline: none;
+}
+
+.method-hint {
+  color: var(--cron-text-sub);
+  font-size: 12px;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+.deploy-info {
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.info-item:not(:last-child) {
+  border-bottom: 1px solid var(--cron-border);
+  margin-bottom: 6px;
+  padding-bottom: 12px;
+}
+
+.info-label {
+  color: var(--cron-text-sub);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.info-value {
+  color: var(--cron-text-main);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.deploy-warrior-btn,
+.deploy-token-btn {
+  width: 100%;
+  padding: 16px 24px;
+  background: var(--cron-blue);
+  color: var(--cron-btn-txt);
+  border: none;
+  border-radius: var(--cron-btn-radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.deploy-warrior-btn:hover:not(:disabled),
+.deploy-token-btn:hover:not(:disabled) {
+  background: var(--cron-blue-dark);
+  transform: translateY(-1px);
+}
+
+.deploy-warrior-btn:disabled,
+.deploy-token-btn:disabled {
+  background: var(--cron-btn-bg-disabled);
+  color: var(--cron-btn-txt-disabled);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.deployment-error {
+  background: rgba(255, 92, 92, 0.1);
+  border: 1px solid rgba(255, 92, 92, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cron-error);
+  font-size: 14px;
+}
+
+.error-icon {
+  font-size: 16px;
+}
+
+.deployment-success {
+  background: rgba(48, 177, 138, 0.1);
+  border: 1px solid rgba(48, 177, 138, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+}
+
+.success-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.success-icon {
+  font-size: 24px;
+}
+
+.success-header h4 {
+  color: var(--cron-text-main);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.deployed-info {
+  margin-bottom: 16px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.info-row:not(:last-child) {
+  border-bottom: 1px solid var(--cron-border);
+}
+
+.address-value a {
+  color: var(--cron-blue);
+  text-decoration: none;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.address-value a:hover {
+  text-decoration: underline;
+}
+
+.continue-btn {
+  width: 100%;
+  padding: 14px 24px;
+  background: var(--cron-green);
+  color: #fff;
+  border: none;
+  border-radius: var(--cron-btn-radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.continue-btn:hover {
+  background: #28a674;
+  transform: translateY(-1px);
+}
+
+/* Token Configuration Sections */
+.token-config-section {
+  margin-bottom: 24px;
+}
+
+.token-config-section h4 {
+  color: var(--cron-text-main);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cron-border);
+}
+
+.cron-config-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--cron-border);
+}
+
+.cron-config-section h4 {
+  color: var(--cron-text-main);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.amount-input-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-input-border);
+  border-radius: 12px;
+  padding: 4px;
+  transition: all 0.2s ease;
+}
+
+.amount-input-container:focus-within {
+  border-color: var(--cron-blue);
+  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.1);
+}
+
+.amount-input {
+  flex: 1;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  color: var(--cron-text-main);
+  font-size: 14px;
+}
+
+.amount-input:focus {
+  outline: none;
+}
+
+.token-unit {
+  color: var(--cron-text-sub);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 8px 12px;
+  background: var(--cron-border);
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Input overrides for token forms */
+.token-name-input,
+.token-symbol-input {
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-border);
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--cron-text-main);
+  font-size: 0.9rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.token-name-input:focus,
+.token-symbol-input:focus {
+  outline: none;
+  border-color: var(--cron-blue);
+}
+
+/* Input Groups for Token Configuration */
+.input-group {
+  margin-bottom: 16px;
+}
+
+.input-group label {
+  display: block;
+  color: var(--cron-text-main);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-input-border);
+  border-radius: 12px;
+  color: var(--cron-text-main);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: var(--cron-blue);
+  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.1);
+  outline: none;
+}
+
+.input-hint {
+  color: var(--cron-text-sub);
+  font-size: 12px;
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+.mintable-token-deploy-form {
+  background: var(--cron-card);
+  border: 1px solid var(--cron-border);
+  border-radius: var(--cron-radius);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.token-config-section {
+  margin-bottom: 24px;
+}
+
+.token-config-section h4 {
+  color: var(--cron-text-main);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.token-name-input,
+.token-symbol-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-input-border);
+  border-radius: 12px;
+  color: var(--cron-text-main);
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.token-name-input:focus,
+.token-symbol-input:focus {
+  border-color: var(--cron-blue);
+  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.1);
+  outline: none;
+}
+
+.cron-config-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--cron-border);
+}
+
+.cron-config-section h4 {
+  color: var(--cron-text-main);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.amount-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.amount-input {
+  flex: 1;
+  padding: 12px 16px;
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-input-border);
+  border-radius: 12px;
+  color: var(--cron-text-main);
+  font-size: 16px;
+}
+
+.token-unit {
+  color: var(--cron-text-sub);
+  font-weight: 500;
+  padding: 0 8px;
+}
+
+.deploy-token-btn {
+  width: 100%;
+  padding: 16px 24px;
+  background: var(--cron-blue);
+  color: var(--cron-btn-txt);
+  border: none;
+  border-radius: var(--cron-btn-radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 24px;
+}
+
+.deploy-token-btn:hover:not(:disabled) {
+  background: var(--cron-blue-dark);
+  transform: translateY(-1px);
+}
+
+.deploy-token-btn:disabled {
+  background: var(--cron-btn-bg-disabled);
+  color: var(--cron-btn-txt-disabled);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.next-steps-info {
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(41, 151, 255, 0.08);
+  border: 1px solid rgba(41, 151, 255, 0.2);
+  border-radius: 12px;
+}
+
+.next-steps-info h5 {
+  color: var(--cron-text-main);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.next-steps-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.next-steps-info li {
+  color: var(--cron-text-sub);
+  font-size: 14px;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+
+/* Mintable Token Cron Form Styles */
+.mintable-token-cron-form {
+  background: var(--cron-card);
+  border: 1px solid var(--cron-border);
+  border-radius: var(--cron-radius);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.method-details-section {
+  margin: 24px 0;
+}
+
+.method-card {
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.method-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.method-icon {
+  font-size: 24px;
+}
+
+.method-header h4 {
+  color: var(--cron-text-main);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.method-description {
+  color: var(--cron-text-sub);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.method-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-label {
+  color: var(--cron-text-sub);
+  font-size: 14px;
+}
+
+.stat-value {
+  color: var(--cron-text-main);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.projected-impact {
+  margin: 24px 0;
+  padding: 20px;
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-border);
+  border-radius: 16px;
+}
+
+.projected-impact h4 {
+  color: var(--cron-text-main);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.impact-calculation {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.impact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.impact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--cron-text-sub);
+  font-size: 14px;
+}
+
+.positive {
+  color: var(--cron-green);
+  font-weight: 600;
+}
+
+.negative {
+  color: var(--cron-error);
+  font-weight: 600;
+}
+
+.impact-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255, 92, 92, 0.1);
+  border: 1px solid rgba(255, 92, 92, 0.2);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--cron-error);
+}
+
+.note-icon {
+  font-size: 16px;
+}
+
+.description-value {
+  font-style: italic;
+  color: var(--cron-blue-light);
+}
+
 /* Mobile responsiveness for deployment components */
 @media (max-width: 768px) {
   .steps-container {
@@ -1433,5 +2089,22 @@ body, #root {
   .back-btn,
   .create-cron-btn {
     flex: none;
+  }
+
+  .method-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .amount-input-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .token-unit {
+    text-align: center;
+    padding: 8px;
+    background: var(--cron-border);
+    border-radius: 6px;
   }
 }

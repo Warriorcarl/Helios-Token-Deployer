@@ -12,6 +12,10 @@ export {
   LogoManager, 
   InputSanitizer 
 } from './tokenLogic';
+export {
+  MintableTokenManager,
+  MintableTokenUtils
+} from './mintableTokenLogic';
 export { 
   NETWORK_CONFIG, 
   EXPLORER_URL, 
