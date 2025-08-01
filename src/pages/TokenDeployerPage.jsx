@@ -317,7 +317,9 @@ export default function TokenDeployerPage() {
 
   return (
     <DefaultLayout
-      title="Helios Token Deployer"
+      title="Helios Token Creator"
+      description="Create and deploy your own ERC20 tokens easily (PRECOMPILED)."
+      
       left={leftPanel}
       right={rightPanel}
       connectButton={<ConnectButton />}

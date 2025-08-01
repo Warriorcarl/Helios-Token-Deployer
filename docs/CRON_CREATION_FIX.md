@@ -40,7 +40,7 @@ writeCreate({
 ```javascript
 // ❌ SEBELUM:
 return [
-  COUNTER_CONTRACT_ADDRESS,
+  SIMPLE_CONTRACT_ADDRESS,
   incrementAbi,
   "increment",
   [],
@@ -53,7 +53,7 @@ return [
 
 // ✅ SESUDAH:
 return [
-  COUNTER_CONTRACT_ADDRESS,
+  SIMPLE_CONTRACT_ADDRESS,
   incrementAbi,
   "increment",
   [],

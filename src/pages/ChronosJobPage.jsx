@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import DefaultLayout from '../components/layouts/DefaultLayout';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, useContractWrite, useSendTransaction, useWaitForTransactionReceipt, usePublicClient, useContractRead } from 'wagmi';
+import { useAccount, useContractWrite, useSendTransaction, useWaitForTransactionReceipt, usePublicClient } from 'wagmi';
 import { ethers } from 'ethers';
 import { parseUnits } from 'viem';
 import MyCronsList from '../components/MyCronsList';
@@ -22,8 +22,6 @@ import {
 import { 
   CHRONOS_ADDRESS, 
   CHRONOS_ABI, 
-  COUNTER_CONTRACT_ADDRESS, 
-  COUNTER_ABI, 
   SIMPLE_TEST_CONTRACT_CONFIG,
   MINTABLE_TOKEN_CONFIG
 } from '../constants/abi';
@@ -411,7 +409,7 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
       
       addLog('Starting Simple Test Contract deployment...', 'info');
       addLog(`Selected method: ${method}`, 'info');
-      addLog('Using simple counter-like contract with random methods', 'info');
+      addLog('Using simple test contract with random methods', 'info');
       
       // Actual deployment call dengan format yang benar untuk deployment
       sendDeployTx({
@@ -724,24 +722,9 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
   );
 
   const footerLinks = [
-    { text: 'Helios Chain Info', url: 'https://hub.helioschain.network' },
-    { text: 'Explorer', url: EXPLORER_URL }
+    { text: 'Helios Testnet Dashboard', url: 'https://testnet.helioschain.network/?code=COSMOS-TITAN-230' },
+    { text: 'Helios Gate Portal', url: 'https://portal.helioschain.network' }
   ];
-
-  function CounterStatus() {
-    const { data, isLoading } = useContractRead({
-      address: COUNTER_CONTRACT_ADDRESS,
-      abi: COUNTER_ABI,
-      functionName: "counter"
-    });
-    
-    return (
-      <div style={{fontSize:'15px',marginTop:'7px',color:'var(--cron-blue)',fontWeight:'bold'}}>
-        Counter Value:{' '}
-        {isLoading ? <span style={{color:'var(--cron-tab-inactive)'}}>Loading...</span> : <span>{String(data)}</span>}
-      </div>
-    );
-  }
 
   const rightPanel = (
     <ConsoleElements.ConsoleContainer>
@@ -753,9 +736,6 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
       <div ref={consoleEndRef} />
       
       <ConsoleElements.FooterLinks links={footerLinks} />
-      
-      <hr style={{margin:'16px 0',borderColor:'#2223'}}/>
-      <CounterStatus />
     </ConsoleElements.ConsoleContainer>
   );
 
@@ -778,7 +758,7 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
 
   return (
     <DefaultLayout
-      title="Helios Chronos Cron Job"
+      title="Helios Chronos Manager"
       left={leftPanel}
       right={rightPanel}
       connectButton={connectButton || <ConnectButton />}

@@ -1,6 +1,5 @@
 import { parseUnits, parseEther } from 'viem';
 import { CHRONOS_ADDRESS } from '../constants/abi/chronosAbi';
-import { COUNTER_CONTRACT_ADDRESS, getIncrementAbiString } from '../constants/abi/counterAbi';
 import { SIMPLE_TEST_CONTRACT_CONFIG, SIMPLE_TEST_CONTRACT_BYTECODE, getSimpleContractAbiString } from '../constants/abi/simpleTestAbi';
 import { getOptimizedGasLimit, getOptimizedGasPrice } from '../utils/gasOptimization';
 
@@ -63,30 +62,6 @@ export class CronJobManager {
   // Calculate expiration block
   calculateExpirationBlock(expirationOffset) {
     return this.currentBlock + parseInt(expirationOffset, 10);
-  }
-
-  // Prepare create cron transaction arguments
-  prepareCronCreationArgs(frequency, expirationOffset) {
-    const validation = this.validateCronParams(frequency, expirationOffset);
-    
-    if (!validation.isValid) {
-      throw new Error(`Invalid parameters: ${validation.errors.join(', ')}`);
-    }
-
-    const incrementAbi = getIncrementAbiString();
-    const expirationBlock = this.calculateExpirationBlock(validation.expirationOffset);
-
-    return [
-      COUNTER_CONTRACT_ADDRESS,
-      incrementAbi,
-      "increment",
-      [], // params
-      BigInt(validation.frequency),
-      BigInt(expirationBlock),
-      BigInt(2000000), // gasLimit
-      parseUnits("10", 9), // maxGasPrice
-      parseEther("0.001") // amountToDeposit = 0.001 HLS (minimal valid untuk precompile)
-    ];
   }
 }
 

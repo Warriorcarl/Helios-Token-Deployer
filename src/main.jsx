@@ -16,7 +16,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { NETWORK_CONFIG } from './logic';
 
 const config = getDefaultConfig({
-  appName: 'Helios Token Deployer',
+  appName: 'Helios Daily Tasks assistant',
   projectId: '4d50c7253cc77e946ec2ef8569b79ce6',
   chains: [NETWORK_CONFIG.HELIOS_TESTNET],
   ssr: false,
@@ -51,7 +51,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <Routes>
                   <Route path="/" element={<TokenDeployerPage />} />
                   <Route path="/token" element={<TokenDeployerPage />} />
-                  <Route path="/cronjob" element={<ChronosJobPage title="Cron Job" connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />
+                  <Route path="/chronos" element={<ChronosJobPage title="Cron Job" connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />
                   <Route path="/deploy-nft" element={<PlaceholderPage title="Deploy NFT" connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />
                   <Route path="/swap" element={<PlaceholderPage title="Swap" connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />
                   <Route path="/stake" element={<PlaceholderPage title="Stake" connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />
