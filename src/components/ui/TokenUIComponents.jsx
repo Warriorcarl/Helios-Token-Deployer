@@ -48,7 +48,7 @@ export const TokenUIElements = {
 // Form components for token deployment
 export const TokenFormElements = {
   // Token name input
-  TokenNameInput: ({ value, onChange, placeholder = "Token Name (e.g. My Token)" }) => (
+  TokenNameInput: ({ value, onChange, placeholder = "Token Name (e.g. MyToken)" }) => (
     <input 
       type="text" 
       placeholder={placeholder}

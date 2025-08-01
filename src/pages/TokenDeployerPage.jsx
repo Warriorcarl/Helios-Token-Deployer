@@ -47,6 +47,7 @@ export default function TokenDeployerPage() {
   const [status, setStatus] = useState({ message: '', type: '' });
   const [deploymentLogs, setDeploymentLogs] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [nameError, setNameError] = useState('');
   const [symbolError, setSymbolError] = useState('');
   const [supplyError, setSupplyError] = useState('');
   
@@ -83,6 +84,9 @@ export default function TokenDeployerPage() {
   const handleTokenNameChange = (e) => {
     const sanitized = InputSanitizer.sanitizeTokenName(e.target.value);
     setTokenName(sanitized);
+    
+    const validation = deploymentManager.validateTokenName(sanitized);
+    setNameError(validation.isValid ? '' : validation.error);
   };
 
   // Logging utility using debug logger
@@ -165,6 +169,9 @@ export default function TokenDeployerPage() {
     setLogoPreview('');
     setLogoBase64('');
     setDeployedTokenInfo(null);
+    setNameError('');
+    setSymbolError('');
+    setSupplyError('');
   };
 
   // Logo generation using separated logic
@@ -245,6 +252,7 @@ export default function TokenDeployerPage() {
         value={tokenName}
         onChange={handleTokenNameChange}
       />
+      {nameError && <TokenUIElements.StatusMessage message={nameError} type="error" />}
       
       <TokenFormElements.TokenSymbolInput
         value={tokenSymbol}
@@ -290,7 +298,7 @@ export default function TokenDeployerPage() {
       <TokenLayoutElements.DeployActions>
         <TokenButtonElements.DeployButton
           onClick={handleDeploy}
-          disabled={!isConnected || isWriteLoading || isTxLoading || !!symbolError || !!supplyError}
+          disabled={!isConnected || isWriteLoading || isTxLoading || !!nameError || !!symbolError || !!supplyError}
           loading={isWriteLoading || isTxLoading}
         />
       </TokenLayoutElements.DeployActions>

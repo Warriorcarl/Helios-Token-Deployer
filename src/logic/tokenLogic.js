@@ -20,6 +20,14 @@ export class TokenDeploymentManager {
     if (name.length > 50) {
       return { isValid: false, error: 'Token name too long (max 50 characters)' };
     }
+    // Check for spaces - not allowed in precompile tokens
+    if (/\s/.test(name)) {
+      return { isValid: false, error: 'Token name cannot contain spaces (precompile requirement)' };
+    }
+    // Only allow alphanumeric characters for precompile compatibility
+    if (!/^[a-zA-Z0-9]+$/.test(name)) {
+      return { isValid: false, error: 'Token name can only contain letters and numbers' };
+    }
     return { isValid: true };
   }
 
@@ -223,8 +231,8 @@ export class InputSanitizer {
     return input.replace(/[^0-9]/g, '');
   }
 
-  // Sanitize token name input
+  // Sanitize token name input - remove spaces for precompile compatibility
   static sanitizeTokenName(input) {
-    return input.replace(/[<>]/g, ''); // Remove potentially dangerous characters
+    return input.replace(/[<>\s]/g, ''); // Remove potentially dangerous characters and spaces
   }
 }
