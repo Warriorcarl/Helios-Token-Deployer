@@ -24,6 +24,8 @@ export default function MintableTokenCronForm({
       return `Mint ${tokenInfo.mintAmount} ${tokenInfo.tokenSymbol} tokens every ${frequency} blocks`;
     } else if (targetMethod === 'burn') {
       return `Burn ${tokenInfo.mintAmount} ${tokenInfo.tokenSymbol} tokens every ${frequency} blocks`;
+    } else if (targetMethod === 'mintAndBurn') {
+      return `Mint & Burn ${tokenInfo.mintAmount} ${tokenInfo.tokenSymbol} tokens every ${frequency} blocks (net +${tokenInfo.mintAmount})`;
     }
     return `Execute ${targetMethod}() every ${frequency} blocks`;
   };
@@ -44,6 +46,14 @@ export default function MintableTokenCronForm({
         description: "Destroys tokens from the caller's balance",
         effect: "Supply decreases",
         gasUsage: MINTABLE_TOKEN_CONFIG.BURN_GAS_LIMIT
+      };
+    } else if (targetMethod === 'mintAndBurn') {
+      return {
+        icon: "🔄",
+        action: "Minting & Burning",
+        description: "Creates new tokens and destroys existing tokens from the caller's balance",
+        effect: "Net supply change",
+        gasUsage: MINTABLE_TOKEN_CONFIG.MINT_GAS_LIMIT + MINTABLE_TOKEN_CONFIG.BURN_GAS_LIMIT
       };
     }
     return {
@@ -162,7 +172,7 @@ export default function MintableTokenCronForm({
           </div>
           <div className="info-row">
             <span className="info-label">Deposit Amount:</span>
-            <span className="info-value">1 HLS</span>
+            <span className="info-value">0.001 HLS</span>
           </div>
           <div className="info-row">
             <span className="info-label">Job Description:</span>
@@ -189,7 +199,7 @@ export default function MintableTokenCronForm({
                 <span className="positive">+{(parseFloat(tokenInfo.mintAmount) * 100).toFixed(2)} {tokenInfo.tokenSymbol}</span>
               </div>
             </div>
-          ) : (
+          ) : targetMethod === 'burn' ? (
             <div className="impact-info">
               <div className="impact-row">
                 <span>Per execution:</span>
@@ -198,6 +208,32 @@ export default function MintableTokenCronForm({
               <div className="impact-note">
                 <span className="note-icon">⚠️</span>
                 <span>Burn operations require sufficient token balance</span>
+              </div>
+            </div>
+          ) : targetMethod === 'mintAndBurn' ? (
+            <div className="impact-info">
+              <div className="impact-row">
+                <span>Per execution:</span>
+                <span className="positive">+{tokenInfo.mintAmount} {tokenInfo.tokenSymbol} (net effect)</span>
+              </div>
+              <div className="impact-row">
+                <span>After 10 executions:</span>
+                <span className="positive">+{(parseFloat(tokenInfo.mintAmount) * 10).toFixed(2)} {tokenInfo.tokenSymbol}</span>
+              </div>
+              <div className="impact-row">
+                <span>After 100 executions:</span>
+                <span className="positive">+{(parseFloat(tokenInfo.mintAmount) * 100).toFixed(2)} {tokenInfo.tokenSymbol}</span>
+              </div>
+              <div className="impact-note">
+                <span className="note-icon">🔄</span>
+                <span>Mint & Burn operations: Creates 2x amount, burns 1x amount (net +1x)</span>
+              </div>
+            </div>
+          ) : (
+            <div className="impact-info">
+              <div className="impact-row">
+                <span>Per execution:</span>
+                <span className="neutral">Unknown impact</span>
               </div>
             </div>
           )}

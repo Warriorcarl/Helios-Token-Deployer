@@ -66,6 +66,10 @@ export function getOptimizedGasLimit(operation, options = {}) {
       baseGasLimit = OPTIMIZED_GAS_LIMITS.ERC20_BURN;
       break;
       
+    case 'mintandburn':
+      baseGasLimit = OPTIMIZED_GAS_LIMITS.ERC20_MINT + OPTIMIZED_GAS_LIMITS.ERC20_BURN; // 95,000 gas
+      break;
+      
     case 'transfer':
       baseGasLimit = OPTIMIZED_GAS_LIMITS.ERC20_TRANSFER;
       break;

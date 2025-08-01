@@ -286,6 +286,13 @@ export class MintableTokenManager {
         symbol: '-',
         description: `Supply will decrease by ${totalImpact} tokens after ${executions} executions (if sufficient balance exists)`
       };
+    } else if (method === 'mintAndBurn') {
+      return {
+        type: 'increase',
+        amount: totalImpact,
+        symbol: '+',
+        description: `Supply will increase by ${totalImpact} tokens after ${executions} executions (net effect: mint 2x, burn 1x)`
+      };
     }
     
     return {
@@ -304,8 +311,8 @@ export class MintableTokenManager {
       throw new Error('Invalid contract address');
     }
 
-    if (!['mint', 'mintAndBurn'].includes(methodName)) {
-      throw new Error(`Invalid method. Supported methods: mint, mintAndBurn`);
+    if (!['mint', 'burn', 'mintAndBurn'].includes(methodName)) {
+      throw new Error(`Invalid method. Supported methods: mint, burn, mintAndBurn`);
     }
 
     const freq = parseInt(frequency, 10);
@@ -319,7 +326,6 @@ export class MintableTokenManager {
       throw new Error('Expiration offset must be between 1-10000');
     }
 
-    const amountToDeposit = ethers.parseEther("1");
     const abiString = this.getCronJobAbi(methodName);
     const expirationBlock = blockNumber + expOffset;
 
@@ -332,7 +338,7 @@ export class MintableTokenManager {
       BigInt(expirationBlock),
       BigInt(this.getOptimizedGasLimit(methodName)), // optimized gas limit
       getOptimizedGasPrice('standard', 'cron_creation'), // optimized maxGasPrice
-      amountToDeposit
+      ethers.parseEther("0.1") // amountToDeposit = 0.001 HLS (minimal tapi valid untuk precompile)
     ];
   }
 }

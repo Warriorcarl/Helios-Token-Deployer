@@ -547,8 +547,7 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
         address: CHRONOS_ADDRESS,
         abi: CHRONOS_ABI,
         functionName: 'createCron',
-        args: args,
-        value: ethers.parseEther('1') // 1 HLS deposit
+        args: args
       });
     } catch (error) {
       addLog(`Mintable Token cron creation failed: ${error.message}`, 'error');

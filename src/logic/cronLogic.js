@@ -73,7 +73,6 @@ export class CronJobManager {
       throw new Error(`Invalid parameters: ${validation.errors.join(', ')}`);
     }
 
-    const amountToDeposit = parseEther("1");
     const incrementAbi = getIncrementAbiString();
     const expirationBlock = this.calculateExpirationBlock(validation.expirationOffset);
 
@@ -86,7 +85,7 @@ export class CronJobManager {
       BigInt(expirationBlock),
       BigInt(2000000), // gasLimit
       parseUnits("10", 9), // maxGasPrice
-      amountToDeposit
+      parseEther("0.001") // amountToDeposit = 0.001 HLS (minimal valid untuk precompile)
     ];
   }
 }
@@ -381,7 +380,6 @@ export class SimpleTestDeploymentManager {
       throw new Error('Expiration offset must be between 1-10000');
     }
 
-    const amountToDeposit = parseEther("1");
     const abiString = getSimpleContractAbiString(methodName);
     const expirationBlock = blockNumber + expOffset;
 
@@ -394,7 +392,7 @@ export class SimpleTestDeploymentManager {
       BigInt(expirationBlock),
       BigInt(getOptimizedGasLimit('simple_method_call')), // optimized gas limit
       getOptimizedGasPrice('standard', 'cron_creation'), // optimized maxGasPrice
-      amountToDeposit
+      parseEther("0.1") // amountToDeposit = 0.001 HLS (minimal valid untuk precompile)
     ];
   }
 }
