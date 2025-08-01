@@ -58,13 +58,18 @@ export const TokenFormElements = {
     />
   ),
 
-  // Token symbol input with validation
+  // Token symbol input with validation and auto-capitalization
   TokenSymbolInput: ({ value, onChange, maxLength = 5, placeholder = "Token Symbol (e.g. MYT)" }) => (
     <input
       type="text"
       placeholder={placeholder}
       value={value}
-      onChange={onChange}
+      onChange={(e) => {
+        // Auto-capitalize and pass to onChange
+        const capitalizedValue = e.target.value.toUpperCase();
+        const syntheticEvent = { ...e, target: { ...e.target, value: capitalizedValue } };
+        onChange(syntheticEvent);
+      }}
       maxLength={maxLength}
       className="token-input"
     />

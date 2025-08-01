@@ -23,7 +23,7 @@ export default function MintableTokenDeployForm({
   };
 
   const handleTokenSymbolChange = (e) => {
-    const value = e.target.value.replace(/[^A-Z]/g, '');
+    const value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
     if (value.length <= 5) {
       setTokenSymbol(value);
     }

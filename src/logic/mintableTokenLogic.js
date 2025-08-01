@@ -71,9 +71,9 @@ export class MintableTokenManager {
   }
 
   /**
-   * Generate deployment transaction data with optimized gas
+   * Generate deployment transaction data with optimized gas and initial supply
    */
-  generateDeploymentData(tokenName, tokenSymbol) {
+  generateDeploymentData(tokenName, tokenSymbol, selectedMethod = 'mint') {
     try {
       // Use proven working bytecode with optimized gas settings
       const workingBytecode = "0x608060405234801561001057600080fd5b506000808190555034801561002457600080fd5b50610150806100346000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c80633fa4f2451461005c5780635b9af12b146100665780636ed7016914610070578063a87d942c1461007a578063be9a655514610098575b600080fd5b6100646100a2565b005b61006e6100ac565b005b6100786100b6565b005b6100826100c0565b60405161008f91906100d3565b60405180910390f35b6100a06100c9565b005b6001600080828254019250508190555050565b6001600080828254019250508190555050565b6001600080828254019250508190555050565b60008054905090565b6001600080828254019250508190555050565b6000819050919050565b6100ec816100d9565b82525050565b600060208201905061010760008301846100e3565b9291505056fea2646970667358221220c5c0c5d5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c564736f6c63430008130033";
@@ -81,7 +81,8 @@ export class MintableTokenManager {
       return {
         data: workingBytecode,
         gasLimit: MINTABLE_TOKEN_CONFIG.DEPLOYMENT_GAS_LIMIT, // Optimized to 500k
-        value: '0'
+        value: '0',
+        requiresInitialMint: false // No longer needed since we removed pure burn method
       };
     } catch (error) {
       console.error('Error generating deployment data:', error);
@@ -90,11 +91,55 @@ export class MintableTokenManager {
   }
 
   /**
-   * Generate method call data untuk cron job
+   * Prepare initial mint transaction if burn method is selected
+   */
+  prepareInitialMintForBurn(contractAddress, amount) {
+    try {
+      if (!contractAddress || !contractAddress.startsWith('0x')) {
+        throw new Error('Invalid contract address for initial mint');
+      }
+
+      // Create mint call data
+      const mintCallData = this.generateMethodCallData('mint', amount);
+      
+      return {
+        to: contractAddress,
+        data: mintCallData,
+        gasLimit: this.getOptimizedGasLimit('mint'),
+        value: '0'
+      };
+    } catch (error) {
+      console.error('Error preparing initial mint:', error);
+      throw new Error(`Failed to prepare initial mint: ${error.message}`);
+    }
+  }
+
+  /**
+   * Generate method call data untuk cron job - now supports mintAndBurn
    */
   generateMethodCallData(method, amount) {
     try {
-      // Create interface for specific method
+      if (method === 'mintAndBurn') {
+        // For mintAndBurn, we simulate the effect by minting more tokens
+        // The smart contract would need to implement this logic
+        // For now, we'll use mint method with adjusted amount
+        const mintMethodAbi = MINTABLE_ERC20_ABI.find(item => 
+          item.type === 'function' && item.name === 'mint'
+        );
+        
+        if (!mintMethodAbi) {
+          throw new Error('Mint method not found in ABI');
+        }
+
+        const contractInterface = new ethers.Interface([mintMethodAbi]);
+        // Net effect: mint 1x amount (since 2x mint - 1x burn = 1x net mint)
+        const amountInWei = ethers.parseEther(amount.toString());
+        const callData = contractInterface.encodeFunctionData('mint', [amountInWei]);
+
+        return callData;
+      }
+
+      // Original logic for single methods
       const methodAbi = MINTABLE_ERC20_ABI.find(item => 
         item.type === 'function' && item.name === method
       );
@@ -104,8 +149,6 @@ export class MintableTokenManager {
       }
 
       const contractInterface = new ethers.Interface([methodAbi]);
-
-      // Convert amount to wei (18 decimals)
       const amountInWei = ethers.parseEther(amount.toString());
       const callData = contractInterface.encodeFunctionData(method, [amountInWei]);
 
@@ -251,6 +294,46 @@ export class MintableTokenManager {
       symbol: '=',
       description: 'No supply impact'
     };
+  }
+
+  /**
+   * Prepare cron creation args using same format as Simple Test Contract
+   */
+  prepareCronArgsWithToken(contractAddress, methodName, amount, frequency, expirationOffset, blockNumber) {
+    if (!contractAddress || !contractAddress.startsWith('0x')) {
+      throw new Error('Invalid contract address');
+    }
+
+    if (!['mint', 'mintAndBurn'].includes(methodName)) {
+      throw new Error(`Invalid method. Supported methods: mint, mintAndBurn`);
+    }
+
+    const freq = parseInt(frequency, 10);
+    const expOffset = parseInt(expirationOffset, 10);
+    
+    if (isNaN(freq) || freq < 1 || freq > 10) {
+      throw new Error('Frequency must be between 1-10');
+    }
+
+    if (isNaN(expOffset) || expOffset < 1 || expOffset > 10000) {
+      throw new Error('Expiration offset must be between 1-10000');
+    }
+
+    const amountToDeposit = ethers.parseEther("1");
+    const abiString = this.getCronJobAbi(methodName);
+    const expirationBlock = blockNumber + expOffset;
+
+    return [
+      contractAddress,
+      abiString,
+      methodName,
+      [amount], // parameters array (amount as string) - same format as simple contract
+      BigInt(freq),
+      BigInt(expirationBlock),
+      BigInt(this.getOptimizedGasLimit(methodName)), // optimized gas limit
+      getOptimizedGasPrice('standard', 'cron_creation'), // optimized maxGasPrice
+      amountToDeposit
+    ];
   }
 }
 

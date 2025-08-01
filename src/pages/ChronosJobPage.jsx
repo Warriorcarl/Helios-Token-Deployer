@@ -214,6 +214,25 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
           "success"
         );
         
+        // If burn method is selected, perform initial mint
+        if (selectedMethod === 'burn') {
+          addLog('🔄 Performing initial mint for burn method...', 'info');
+          
+          try {
+            const initialMintTx = mintableTokenManager.prepareInitialMintForBurn(
+              deployedAddress, 
+              tokenInfo.mintAmount
+            );
+            
+            // Send initial mint transaction
+            sendDeployTx(initialMintTx);
+            addLog(`📝 Initial mint of ${tokenInfo.mintAmount} ${tokenInfo.tokenSymbol} sent`, 'info');
+            
+          } catch (error) {
+            addLog(`❌ Initial mint failed: ${error.message}`, 'error');
+          }
+        }
+        
         TransactionDebugger.logTransactionSuccess('DEPLOY_MINTABLE_TOKEN', deployTxHash, deployTxReceipt);
         
       } else {
@@ -428,18 +447,28 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
         throw new Error(amountValidation.error);
       }
       
-      // Store token info
-      setTokenInfo({ tokenName, tokenSymbol, mintAmount });
+      // Store token info with method selection
+      setTokenInfo({ 
+        tokenName, 
+        tokenSymbol, 
+        mintAmount, 
+        selectedMethod,
+        requiresInitialMint: selectedMethod === 'burn' 
+      });
       setSelectedMethod(selectedMethod);
       setDeploymentError('');
       
       // Get deployment data from manager
-      const deploymentData = mintableTokenManager.generateDeploymentData(tokenName, tokenSymbol);
+      const deploymentData = mintableTokenManager.generateDeploymentData(tokenName, tokenSymbol, selectedMethod);
       
       addLog('Starting Mintable ERC20 Token deployment...', 'info');
       addLog(`Token Name: ${tokenName}`, 'info');
       addLog(`Token Symbol: ${tokenSymbol}`, 'info');
       addLog(`Selected Cron Method: ${selectedMethod}(${mintAmount} ${tokenSymbol})`, 'info');
+      
+      if (selectedMethod === 'burn') {
+        addLog('⚠️  Burn method selected - Initial mint will be performed after deployment', 'warning');
+      }
       
       // Actual deployment call
       sendDeployTx({
@@ -492,38 +521,27 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
     }
   };
 
-  // Handle cron job creation with Mintable Token
+  // Handle cron job creation with Mintable Token - using standardized format
   const handleCreateCronWithMintableToken = () => {
     try {
-      // Generate encoded method call data
-      const encodedMethodCall = mintableTokenManager.generateMethodCallData(
+      // Use standardized cron creation format (same as Simple Test Contract)
+      const args = mintableTokenManager.prepareCronArgsWithToken(
+        deployedWarriorAddress, 
         selectedMethod, 
-        tokenInfo.mintAmount
+        tokenInfo.mintAmount,
+        frequency, 
+        expirationOffset, 
+        blockNumber
       );
-      
-      // Get ABI string for the method
-      const abiString = mintableTokenManager.getCronJobAbi(selectedMethod);
-      
-      // Calculate expiration block
-      const expirationBlock = Number(blockNumber) + Number(expirationOffset);
-      
-      // Prepare arguments in the same format as Simple Test Contract
-      const args = [
-        deployedWarriorAddress, // target contract address
-        abiString, // method ABI as JSON string
-        selectedMethod, // method name
-        [tokenInfo.mintAmount], // parameters array (amount as string)
-        BigInt(frequency), // frequency in blocks
-        BigInt(expirationBlock), // expiration block
-        BigInt(mintableTokenManager.getOptimizedGasLimit(selectedMethod)), // optimized gas limit
-        getOptimizedGasPrice('standard', 'cron_creation'), // optimized maxGasPrice
-        ethers.parseEther('1') // deposit amount (1 HLS)
-      ];
       
       addLog(`Creating cron job with Mintable Token ${deployedWarriorAddress}...`, 'info');
       addLog(`Method: ${selectedMethod}(${tokenInfo.mintAmount} ${tokenInfo.tokenSymbol})`, 'info');
       addLog(`Frequency: Every ${frequency} blocks`, 'info');
-      addLog(`Expiration: Block ${expirationBlock}`, 'info');
+      addLog(`Expiration: Block ${blockNumber + Number(expirationOffset)}`, 'info');
+      
+      if (selectedMethod === 'burn') {
+        addLog('⚠️  Burn operations will only succeed if sufficient token balance exists', 'warning');
+      }
       
       writeCreate({
         address: CHRONOS_ADDRESS,

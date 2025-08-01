@@ -65,6 +65,13 @@ export const MINTABLE_ERC20_ABI = [
     "type": "function"
   },
   {
+    "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }],
+    "name": "mintAndBurn",
+    "outputs": [],
+    "stateMutability": "nonpayable", 
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "decimals",
     "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
@@ -159,8 +166,8 @@ export const MINTABLE_TOKEN_CONFIG = {
 
 // Available methods for cron jobs
 export const MINTABLE_TOKEN_METHODS = [
-  { value: 'mint', label: 'mint(amount) - Mint tokens', requiresAmount: true },
-  { value: 'burn', label: 'burn(amount) - Burn tokens', requiresAmount: true }
+  { value: 'mint', label: 'mint(amount) - Mint tokens only', requiresAmount: true },
+  { value: 'mintAndBurn', label: 'mintAndBurn(amount) - Mint 2x amount then burn 1x amount (ratio 2:1)', requiresAmount: true }
 ];
 
 // Helper function to get ABI method as JSON string
