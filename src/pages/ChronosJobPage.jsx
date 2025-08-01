@@ -9,6 +9,7 @@ import SimpleTestDeployForm from '../components/cron/SimpleTestDeployForm';
 import MintableTokenDeployForm from '../components/cron/MintableTokenDeployForm';
 import CronJobCreateForm from '../components/cron/CronJobCreateForm';
 import MintableTokenCronForm from '../components/cron/MintableTokenCronForm';
+import SimpleCronForm from '../components/cron/SimpleCronForm';
 import DeploymentStepIndicator from '../components/cron/DeploymentStepIndicator';
 import '../pages/cron-style.css';
 
@@ -46,7 +47,10 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
   const [status, setStatus] = useState({ message: '', type: '' });
   
   // Deployment mode selection
-  const [deploymentMode, setDeploymentMode] = useState('simple-test'); // 'simple-test' or 'mintable-token'
+  const [deploymentMode, setDeploymentMode] = useState('simple-test'); // 'simple-test', 'mintable-token', or 'simple-cron'
+  
+  // Create cron tab mode
+  const [createCronTab, setCreateCronTab] = useState('simple'); // 'simple' or 'advanced'
   
   // Original create cron states
   const [frequency, setFrequency] = useState('1');
@@ -553,6 +557,34 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
     }
   };
 
+  // Handle simple cron creation with predefined contracts
+  const handleCreateSimpleCron = (targetAddress, targetMethod) => {
+    try {
+      const args = deploymentManager.prepareCronArgsWithContract(
+        targetAddress, 
+        targetMethod, 
+        frequency, 
+        expirationOffset, 
+        blockNumber
+      );
+      
+      addLog(`Creating simple cron job with Simple Test Contract ${targetAddress}...`, 'info');
+      addLog(`Method: ${targetMethod}()`, 'info');
+      addLog(`Frequency: Every ${frequency} blocks`, 'info');
+      addLog(`Expiration: Block ${blockNumber + Number(expirationOffset)}`, 'info');
+      
+      writeCreate({
+        address: CHRONOS_ADDRESS,
+        abi: CHRONOS_ABI,
+        functionName: 'createCron',
+        args: args
+      });
+    } catch (error) {
+      addLog(`Simple cron creation failed: ${error.message}`, 'error');
+      setStatus({ message: `Cron Creation Error: ${error.message}`, type: 'error' });
+    }
+  };
+
   // Handle back to step 1
   const handleBackToStep1 = () => {
     setDeploymentStep(1);
@@ -561,8 +593,8 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
 
   // Tab configuration
   const tabs = [
-    { key: 'create', label: 'Create' },
-    { key: 'mycrons', label: 'My Cron Jobs' }
+    { key: 'create', label: '⚡ Create Cron' },
+    { key: 'mycrons', label: '📋 My Cron Jobs' }
   ];
 
   const leftPanel = (
@@ -582,125 +614,192 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
         {tab === "create" && (
           <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
             
-            {/* Deployment Mode Selector - Only show on step 1 */}
-            {deploymentStep === 1 && (
-              <div className="deployment-mode-selector" style={{marginBottom: "20px", width: "100%"}}>
-                <div className="mode-selector-header">
-                  <h3 style={{color: "var(--cron-text-main)", fontSize: "18px", fontWeight: "600", marginBottom: "12px"}}>
-                    Choose Deployment Type
-                  </h3>
-                  <p style={{color: "var(--cron-text-sub)", fontSize: "14px", marginBottom: "16px"}}>
-                    Select the type of contract to deploy and create cron jobs for
-                  </p>
-                </div>
-                
-                <div className="mode-options" style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px"}}>
-                  <button
-                    className={`mode-option ${deploymentMode === 'simple-test' ? 'active' : ''}`}
-                    onClick={() => setDeploymentMode('simple-test')}
-                    style={{
-                      padding: "16px",
-                      background: deploymentMode === 'simple-test' ? "var(--cron-blue)" : "var(--cron-input-bg)",
-                      border: `1px solid ${deploymentMode === 'simple-test' ? "var(--cron-blue)" : "var(--cron-border)"}`,
-                      borderRadius: "12px",
-                      color: deploymentMode === 'simple-test' ? "#fff" : "var(--cron-text-main)",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease"
-                    }}
-                  >
-                    <div style={{textAlign: "left"}}>
-                      <div style={{fontSize: "16px", fontWeight: "600", marginBottom: "4px"}}>
-                        🧪 Simple Test Contract
-                      </div>
-                      <div style={{fontSize: "12px", opacity: "0.8"}}>
-                        Deploy basic contract with simple functions
-                      </div>
-                    </div>
-                  </button>
-                  
-                  <button
-                    className={`mode-option ${deploymentMode === 'mintable-token' ? 'active' : ''}`}
-                    onClick={() => setDeploymentMode('mintable-token')}
-                    style={{
-                      padding: "16px",
-                      background: deploymentMode === 'mintable-token' ? "var(--cron-blue)" : "var(--cron-input-bg)",
-                      border: `1px solid ${deploymentMode === 'mintable-token' ? "var(--cron-blue)" : "var(--cron-border)"}`,
-                      borderRadius: "12px",
-                      color: deploymentMode === 'mintable-token' ? "#fff" : "var(--cron-text-main)",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease"
-                    }}
-                  >
-                    <div style={{textAlign: "left"}}>
-                      <div style={{fontSize: "16px", fontWeight: "600", marginBottom: "4px"}}>
-                        🪙 Mintable ERC20 Token
-                      </div>
-                      <div style={{fontSize: "12px", opacity: "0.8"}}>
-                        Deploy token with public mint/burn functions
-                      </div>
-                    </div>
-                  </button>
-                </div>
+            {/* Create Cron Tab Selector */}
+            <div className="create-cron-tabs" style={{marginBottom: "4px", width: "100%"}}>
+              <div className="tab-selector" style={{
+                display: "flex",
+                background: "var(--cron-tab-bg)",
+                borderRadius: "12px",
+                padding: "4px",
+                border: "1px solid var(--cron-tab-border)",
+                maxWidth: "400px",
+                margin: "0 auto",
+                gap: "1px"
+              }}>
+                <button
+                  className={`tab-btn ${createCronTab === 'simple' ? 'active' : ''}`}
+                  onClick={() => setCreateCronTab('simple')}
+                  style={{
+                    flex: 1,
+                    padding: "12px 20px",
+                    background: createCronTab === 'simple' ? "var(--cron-blue)" : "transparent",
+                    color: createCronTab === 'simple' ? "#fff" : "var(--cron-tab-inactive)",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  ⚡ Simple Cron
+                </button>
+                <button
+                  className={`tab-btn ${createCronTab === 'advanced' ? 'active' : ''}`}
+                  onClick={() => setCreateCronTab('advanced')}
+                  style={{
+                    flex: 1,
+                    padding: "12px 20px",
+                    background: createCronTab === 'advanced' ? "var(--cron-blue)" : "transparent",
+                    color: createCronTab === 'advanced' ? "#fff" : "var(--cron-tab-inactive)",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  🔧 Advanced
+                </button>
               </div>
-            )}
-            
-            {/* Step Indicator */}
-            <DeploymentStepIndicator 
-              currentStep={deploymentStep}
-              completedSteps={completedSteps}
-            />
-            
-            {/* Step 1: Deploy Contract based on selected mode */}
-            {deploymentStep === 1 && deploymentMode === 'simple-test' && (
-              <SimpleTestDeployForm
-                onDeploy={handleDeployWarrior}
-                isDeploying={isDeployPending || isDeployTxLoading}
-                deployedAddress={deployedWarriorAddress}
-                onContinue={handleContinueToStep2}
-                deploymentError={deploymentError}
-              />
-            )}
-            
-            {deploymentStep === 1 && deploymentMode === 'mintable-token' && (
-              <MintableTokenDeployForm
-                onDeploy={handleDeployMintableToken}
-                isDeploying={isDeployPending || isDeployTxLoading}
-                deployedAddress={deployedWarriorAddress}
-                onContinue={handleContinueToStep2}
-                deploymentError={deploymentError}
-              />
-            )}
-            
-            {/* Step 2: Create Cron Job based on deployment mode */}
-            {deploymentStep === 2 && deployedWarriorAddress && deploymentMode === 'simple-test' && (
-              <CronJobCreateForm
-                targetAddress={deployedWarriorAddress}
-                targetMethod={selectedMethod}
+            </div>
+
+            {/* Simple Cron Tab Content */}
+            {createCronTab === 'simple' && (
+              <SimpleCronForm
                 frequency={frequency}
                 setFrequency={setFrequency}
                 expirationOffset={expirationOffset}
                 setExpirationOffset={setExpirationOffset}
                 blockNumber={blockNumber}
-                onCreateCron={handleCreateCronWithWarrior}
+                onCreateCron={handleCreateSimpleCron}
                 isCreating={isCreatePending || isCreateTxLoading}
-                onBack={handleBackToStep1}
               />
             )}
-            
-            {deploymentStep === 2 && deployedWarriorAddress && deploymentMode === 'mintable-token' && (
-              <MintableTokenCronForm
-                targetAddress={deployedWarriorAddress}
-                targetMethod={selectedMethod}
-                tokenInfo={tokenInfo}
-                frequency={frequency}
-                setFrequency={setFrequency}
-                expirationOffset={expirationOffset}
-                setExpirationOffset={setExpirationOffset}
-                blockNumber={blockNumber}
-                onCreateCron={handleCreateCronWithMintableToken}
-                isCreating={isCreatePending || isCreateTxLoading}
-                onBack={handleBackToStep1}
-              />
+
+            {/* Advanced Cron Tab Content */}
+            {createCronTab === 'advanced' && (
+              <div className="advanced-cron-content">
+                {/* Deployment Mode Selector - Only show for advanced mode */}
+                <div className="deployment-mode-selector" style={{marginBottom: "12px", width: "100%"}}>
+                  <div className="mode-selector-header">
+                    <h3 style={{color: "var(--cron-text-main)", fontSize: "18px", fontWeight: "600", marginBottom: "8px"}}>
+                      Choose Deployment Type
+                    </h3>
+                    <p style={{color: "var(--cron-text-sub)", fontSize: "14px", marginBottom: "12px"}}>
+                      Select the type of contract to deploy and create cron jobs for
+                    </p>
+                  </div>
+                  
+                  <div className="mode-options" style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px"}}>
+                    <button
+                      className={`mode-option ${deploymentMode === 'simple-test' ? 'active' : ''}`}
+                      onClick={() => setDeploymentMode('simple-test')}
+                      style={{
+                        padding: "16px",
+                        background: deploymentMode === 'simple-test' ? "var(--cron-blue)" : "var(--cron-input-bg)",
+                        border: `1px solid ${deploymentMode === 'simple-test' ? "var(--cron-blue)" : "var(--cron-border)"}`,
+                        borderRadius: "12px",
+                        color: deploymentMode === 'simple-test' ? "#fff" : "var(--cron-text-main)",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease"
+                      }}
+                    >
+                      <div style={{textAlign: "left"}}>
+                        <div style={{fontSize: "16px", fontWeight: "600", marginBottom: "4px"}}>
+                          � Simple Test Contract
+                        </div>
+                        <div style={{fontSize: "12px", opacity: "0.8"}}>
+                          Deploy basic contract with simple functions
+                        </div>
+                      </div>
+                    </button>
+                    
+                    <button
+                      className={`mode-option ${deploymentMode === 'mintable-token' ? 'active' : ''}`}
+                      onClick={() => setDeploymentMode('mintable-token')}
+                      style={{
+                        padding: "16px",
+                        background: deploymentMode === 'mintable-token' ? "var(--cron-blue)" : "var(--cron-input-bg)",
+                        border: `1px solid ${deploymentMode === 'mintable-token' ? "var(--cron-blue)" : "var(--cron-border)"}`,
+                        borderRadius: "12px",
+                        color: deploymentMode === 'mintable-token' ? "#fff" : "var(--cron-text-main)",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease"
+                      }}
+                    >
+                      <div style={{textAlign: "left"}}>
+                        <div style={{fontSize: "16px", fontWeight: "600", marginBottom: "4px"}}>
+                          🪙 Mintable ERC20 Token
+                        </div>
+                        <div style={{fontSize: "12px", opacity: "0.8"}}>
+                          Deploy token with public mint/burn functions
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Step Indicator - Only show for advanced mode */}
+                <DeploymentStepIndicator 
+                  currentStep={deploymentStep}
+                  completedSteps={completedSteps}
+                />
+                
+                {/* Step 1: Deploy Contract based on selected mode */}
+                {deploymentStep === 1 && deploymentMode === 'simple-test' && (
+                  <SimpleTestDeployForm
+                    onDeploy={handleDeployWarrior}
+                    isDeploying={isDeployPending || isDeployTxLoading}
+                    deployedAddress={deployedWarriorAddress}
+                    onContinue={handleContinueToStep2}
+                    deploymentError={deploymentError}
+                  />
+                )}
+                
+                {deploymentStep === 1 && deploymentMode === 'mintable-token' && (
+                  <MintableTokenDeployForm
+                    onDeploy={handleDeployMintableToken}
+                    isDeploying={isDeployPending || isDeployTxLoading}
+                    deployedAddress={deployedWarriorAddress}
+                    onContinue={handleContinueToStep2}
+                    deploymentError={deploymentError}
+                  />
+                )}
+                
+                {/* Step 2: Create Cron Job based on deployment mode */}
+                {deploymentStep === 2 && deployedWarriorAddress && deploymentMode === 'simple-test' && (
+                  <CronJobCreateForm
+                    targetAddress={deployedWarriorAddress}
+                    targetMethod={selectedMethod}
+                    frequency={frequency}
+                    setFrequency={setFrequency}
+                    expirationOffset={expirationOffset}
+                    setExpirationOffset={setExpirationOffset}
+                    blockNumber={blockNumber}
+                    onCreateCron={handleCreateCronWithWarrior}
+                    isCreating={isCreatePending || isCreateTxLoading}
+                    onBack={handleBackToStep1}
+                  />
+                )}
+                
+                {deploymentStep === 2 && deployedWarriorAddress && deploymentMode === 'mintable-token' && (
+                  <MintableTokenCronForm
+                    targetAddress={deployedWarriorAddress}
+                    targetMethod={selectedMethod}
+                    tokenInfo={tokenInfo}
+                    frequency={frequency}
+                    setFrequency={setFrequency}
+                    expirationOffset={expirationOffset}
+                    setExpirationOffset={setExpirationOffset}
+                    blockNumber={blockNumber}
+                    onCreateCron={handleCreateCronWithMintableToken}
+                    isCreating={isCreatePending || isCreateTxLoading}
+                    onBack={handleBackToStep1}
+                  />
+                )}
+              </div>
             )}
             
             {/* Progress and Status */}

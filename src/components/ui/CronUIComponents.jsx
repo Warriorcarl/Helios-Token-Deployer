@@ -169,16 +169,39 @@ export const LayoutElements = {
 
   // Tab navigation
   TabNavigation: ({ tabs, activeTab, onTabChange, style = {} }) => (
-    <div className="cron-tab-row" style={{ marginBottom: '16px', ...style }}>
-      {tabs.map(tab => (
-        <ButtonElements.TabButton
-          key={tab.key}
-          active={activeTab === tab.key}
-          onClick={() => onTabChange(tab.key)}
-        >
-          {tab.label}
-        </ButtonElements.TabButton>
-      ))}
+    <div className="create-cron-tabs" style={{ marginBottom: '2px', ...style }}>
+      <div className="tab-selector" style={{
+        display: "flex",
+        background: "var(--cron-tab-bg)",
+        borderRadius: "12px",
+        padding: "4px",
+        border: "1px solid var(--cron-tab-border)",
+        maxWidth: "400px",
+        margin: "0 auto",
+        gap: "1px"
+      }}>
+        {tabs.map(tab => (
+          <button
+            key={tab.key}
+            className={`tab-btn ${activeTab === tab.key ? 'active' : ''}`}
+            onClick={() => onTabChange(tab.key)}
+            style={{
+              flex: 1,
+              padding: "12px 20px",
+              background: activeTab === tab.key ? "var(--cron-blue)" : "transparent",
+              color: activeTab === tab.key ? "#fff" : "var(--cron-tab-inactive)",
+              border: "none",
+              borderRadius: "8px",
+              fontSize: "14px",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "all 0.2s ease"
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
     </div>
   ),
 
