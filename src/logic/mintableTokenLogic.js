@@ -5,6 +5,7 @@ import {
   MINTABLE_TOKEN_CONFIG, 
   getMintableTokenAbiString 
 } from '../constants/abi/mintableTokenAbi';
+import { getOptimizedGasLimit, getOptimizedGasPrice } from '../utils/gasOptimization';
 
 /**
  * Manager for mintable token deployment and operations
@@ -70,17 +71,16 @@ export class MintableTokenManager {
   }
 
   /**
-   * Generate deployment transaction data
+   * Generate deployment transaction data with optimized gas
    */
   generateDeploymentData(tokenName, tokenSymbol) {
     try {
-      // Use proven working bytecode from SimpleTestContract
-      // This bytecode is for a simple contract that can be extended for mint/burn
+      // Use proven working bytecode with optimized gas settings
       const workingBytecode = "0x608060405234801561001057600080fd5b506000808190555034801561002457600080fd5b50610150806100346000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c80633fa4f2451461005c5780635b9af12b146100665780636ed7016914610070578063a87d942c1461007a578063be9a655514610098575b600080fd5b6100646100a2565b005b61006e6100ac565b005b6100786100b6565b005b6100826100c0565b60405161008f91906100d3565b60405180910390f35b6100a06100c9565b005b6001600080828254019250508190555050565b6001600080828254019250508190555050565b6001600080828254019250508190555050565b60008054905090565b6001600080828254019250508190555050565b6000819050919050565b6100ec816100d9565b82525050565b600060208201905061010760008301846100e3565b9291505056fea2646970667358221220c5c0c5d5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c564736f6c63430008130033";
 
       return {
         data: workingBytecode,
-        gasLimit: MINTABLE_TOKEN_CONFIG.DEPLOYMENT_GAS_LIMIT,
+        gasLimit: MINTABLE_TOKEN_CONFIG.DEPLOYMENT_GAS_LIMIT, // Optimized to 500k
         value: '0'
       };
     } catch (error) {
@@ -159,10 +159,27 @@ export class MintableTokenManager {
         return stored[address];
       }
     } catch (error) {
-      console.warn('Failed to retrieve token info from localStorage:', error);
+      console.warn('Failed to load token info from localStorage:', error);
     }
 
     return null;
+  }
+
+  /**
+   * Optimize gas limits for specific operations using centralized utilities
+   */
+  getOptimizedGasLimit(operation, contractAddress = null) {
+    return getOptimizedGasLimit(operation, { 
+      contractType: 'mintable',
+      buffer: 0.05  // Reduced buffer for better optimization
+    });
+  }
+
+  /**
+   * Get optimized gas price for token operations
+   */
+  getOptimizedGasPrice(priority = 'standard') {
+    return getOptimizedGasPrice(priority, 'token_operation');
   }
 
   /**

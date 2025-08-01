@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { MINTABLE_TOKEN_METHODS, MINTABLE_TOKEN_CONFIG } from "../../constants/abi/mintableTokenAbi";
+import { getOptimizedGasLimit, getOptimizedGasPrice } from "../../utils/gasOptimization";
+import GasMonitor from "../ui/GasMonitor";
 
 export default function MintableTokenDeployForm({
   onDeploy,
@@ -137,6 +139,14 @@ export default function MintableTokenDeployForm({
               <span className="info-value">{MINTABLE_TOKEN_CONFIG.DEPLOYMENT_GAS_LIMIT.toLocaleString()}</span>
             </div>
           </div>
+
+          {/* Gas Monitor */}
+          <GasMonitor 
+            operation="deployment"
+            gasLimit={getOptimizedGasLimit('deployment', { contractType: 'mintable' })}
+            gasPrice={getOptimizedGasPrice('standard', 'deployment')}
+            showRecommendations={true}
+          />
 
           {deploymentError && (
             <div className="deployment-error">

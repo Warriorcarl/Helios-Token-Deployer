@@ -36,6 +36,7 @@ import {
   LayoutElements, 
   ConsoleElements 
 } from '../components/ui/CronUIComponents';
+import { getOptimizedGasPrice } from '../utils/gasOptimization';
 
 export default function ChronosJobManager({ theme: themeProp, onToggleTheme, connectButton }) {
   const { address, isConnected } = useAccount();
@@ -397,7 +398,7 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
       sendDeployTx({
         to: null, // null untuk contract creation
         data: deploymentData.bytecode, // bytecode sebagai data
-        gas: BigInt(SIMPLE_TEST_CONTRACT_CONFIG.DEPLOYMENT_GAS_LIMIT)
+        gas: BigInt(mintableTokenManager.getOptimizedGasLimit('deployment'))
       });
       
     } catch (error) {
@@ -444,7 +445,7 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
       sendDeployTx({
         to: null, // null untuk contract creation
         data: deploymentData.data,
-        gas: BigInt(deploymentData.gasLimit)
+        gas: BigInt(mintableTokenManager.getOptimizedGasLimit('deployment'))
       });
       
     } catch (error) {
@@ -514,8 +515,8 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
         [tokenInfo.mintAmount], // parameters array (amount as string)
         BigInt(frequency), // frequency in blocks
         BigInt(expirationBlock), // expiration block
-        BigInt(MINTABLE_TOKEN_CONFIG.MINT_GAS_LIMIT), // gas limit
-        parseUnits("10", 9), // maxGasPrice in wei
+        BigInt(mintableTokenManager.getOptimizedGasLimit(selectedMethod)), // optimized gas limit
+        getOptimizedGasPrice('standard', 'cron_creation'), // optimized maxGasPrice
         ethers.parseEther('1') // deposit amount (1 HLS)
       ];
       

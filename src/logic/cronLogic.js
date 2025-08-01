@@ -2,6 +2,7 @@ import { parseUnits, parseEther } from 'viem';
 import { CHRONOS_ADDRESS } from '../constants/abi/chronosAbi';
 import { COUNTER_CONTRACT_ADDRESS, getIncrementAbiString } from '../constants/abi/counterAbi';
 import { SIMPLE_TEST_CONTRACT_CONFIG, SIMPLE_TEST_CONTRACT_BYTECODE, getSimpleContractAbiString } from '../constants/abi/simpleTestAbi';
+import { getOptimizedGasLimit, getOptimizedGasPrice } from '../utils/gasOptimization';
 
 // Cron job creation logic
 export class CronJobManager {
@@ -391,8 +392,8 @@ export class SimpleTestDeploymentManager {
       [], // params - no parameters needed for these methods
       BigInt(freq),
       BigInt(expirationBlock),
-      BigInt(SIMPLE_TEST_CONTRACT_CONFIG.GAS_LIMIT),
-      parseUnits("10", 9), // maxGasPrice
+      BigInt(getOptimizedGasLimit('simple_method_call')), // optimized gas limit
+      getOptimizedGasPrice('standard', 'cron_creation'), // optimized maxGasPrice
       amountToDeposit
     ];
   }
