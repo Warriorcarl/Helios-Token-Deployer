@@ -15,11 +15,11 @@ export default function CronEditForm({
         <input
           type="number"
           min="1"
-          max="10"
+          max="1000"
           value={formVals.newFrequency}
           onChange={e => setFormVals(v => ({ ...v, newFrequency: e.target.value }))}
         />
-        <span className="hint">1-10</span>
+        <span className="hint">1-1000</span>
       </div>
       
       <div className="input-group">
@@ -43,7 +43,7 @@ export default function CronEditForm({
           disabled={
             isUpdating ||
             parseInt(formVals.newFrequency) < 1 || 
-            parseInt(formVals.newFrequency) > 10 ||
+            parseInt(formVals.newFrequency) > 1000 ||
             parseInt(formVals.newExpiration) < 1 || 
             parseInt(formVals.newExpiration) > 10000
           }

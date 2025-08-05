@@ -1,4 +1,4 @@
-import { parseUnits, parseEther } from 'viem';
+import { parseEther, parseUnits, formatEther } from "viem";
 import { CHRONOS_ADDRESS } from '../constants/abi/chronosAbi';
 import { SIMPLE_TEST_CONTRACT_CONFIG, SIMPLE_TEST_CONTRACT_BYTECODE, getSimpleContractAbiString } from '../constants/abi/simpleTestAbi';
 import { getOptimizedGasLimit, getOptimizedGasPrice } from '../utils/gasOptimization';
@@ -15,22 +15,22 @@ export class CronJobManager {
   }
 
   // Validate cron job parameters
-  validateCronParams(frequency, expirationOffset) {
+  validateCronParams(frequency, amountToDeposit) {
     const validatedParams = {
       frequency: this.validateFrequency(frequency),
-      expirationOffset: this.validateExpirationOffset(expirationOffset),
+      amountToDeposit: this.validateAmountToDeposit(amountToDeposit),
       isValid: true,
       errors: []
     };
 
     if (validatedParams.frequency === null) {
       validatedParams.isValid = false;
-      validatedParams.errors.push('Frequency must be between 1-10');
+      validatedParams.errors.push('Frequency must be between 1-1000');
     }
 
-    if (validatedParams.expirationOffset === null) {
+    if (validatedParams.amountToDeposit === null) {
       validatedParams.isValid = false;
-      validatedParams.errors.push('Expiration offset must be between 1-10000');
+      validatedParams.errors.push('Amount to deposit must be greater than 0.001 HLS');
     }
 
     if (!this.currentBlock || this.currentBlock <= 0) {
@@ -41,27 +41,80 @@ export class CronJobManager {
     return validatedParams;
   }
 
-  // Validate frequency parameter
+  // Validate frequency parameter - updated range 1-1000
   validateFrequency(frequency) {
     const freq = parseInt(frequency, 10);
-    if (isNaN(freq) || freq < 1 || freq > 10) {
+    if (isNaN(freq) || freq < 1 || freq > 1000) {
       return null;
     }
     return freq;
   }
 
-  // Validate expiration offset parameter
-  validateExpirationOffset(expirationOffset) {
-    const exp = parseInt(expirationOffset, 10);
-    if (isNaN(exp) || exp < 1 || exp > 10000) {
+  // Validate amount to deposit parameter
+  validateAmountToDeposit(amount) {
+    if (!amount) return null;
+    const numAmount = parseFloat(amount);
+    if (isNaN(numAmount) || numAmount < 0.001) {
       return null;
     }
-    return exp;
+    return numAmount;
   }
 
-  // Calculate expiration block
-  calculateExpirationBlock(expirationOffset) {
-    return this.currentBlock + parseInt(expirationOffset, 10);
+  // Calculate expiration block based on amount and frequency
+  calculateExpirationBlockFromAmount(amountToDeposit, frequency) {
+    if (!amountToDeposit || !frequency || !this.currentBlock) return 0;
+    
+    try {
+      const amountWei = parseEther(amountToDeposit.toString());
+      const gasCostPerExecution = parseEther("0.0001"); // Base gas cost
+      
+      const possibleExecutions = Number(amountWei / gasCostPerExecution);
+      const totalBlocks = possibleExecutions * parseInt(frequency);
+      
+      // Maximum 3 months (approximately 2,592,000 blocks)
+      const maxBlocks = 2592000;
+      const cappedBlocks = Math.min(totalBlocks, maxBlocks);
+      
+      return this.currentBlock + cappedBlocks;
+    } catch (error) {
+      console.error("Error calculating expiration block:", error);
+      return this.currentBlock + 1000; // Default fallback
+    }
+  }
+
+  // Create simple cron args with amount-based expiration
+  createSimpleCronArgs(frequency, amountToDeposit) {
+    const validation = this.validateCronParams(frequency, amountToDeposit);
+    
+    if (!validation.isValid) {
+      throw new Error(`Invalid parameters: ${validation.errors.join(', ')}`);
+    }
+
+    const expirationBlock = this.calculateExpirationBlockFromAmount(amountToDeposit, frequency);
+    const amountToDepositWei = parseEther(amountToDeposit.toString());
+
+    // Simple Test Contract ABI for increment function
+    const incrementAbi = JSON.stringify([{
+      "inputs": [],
+      "name": "increment",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }]);
+
+    const SIMPLE_CONTRACT_ADDRESS = "0xAecE8330ae7AEecc6A5e59B9d1cCCa02f2dC6c38";
+
+    return [
+      SIMPLE_CONTRACT_ADDRESS,
+      incrementAbi,
+      "increment",
+      [],
+      BigInt(validation.frequency),
+      BigInt(expirationBlock),
+      BigInt(getOptimizedGasLimit('simple_method_call')),
+      getOptimizedGasPrice('standard', 'cron_creation'),
+      amountToDepositWei // Amount to deposit in wei
+    ];
   }
 }
 
@@ -93,7 +146,7 @@ export class CronUpdateManager {
 
     if (validation.frequency === null) {
       validation.isValid = false;
-      validation.errors.push('Frequency must be between 1-10');
+      validation.errors.push('Frequency must be between 1-1000');
     }
 
     if (validation.expirationOffset === null) {
@@ -113,10 +166,10 @@ export class CronUpdateManager {
     return id;
   }
 
-  // Validate frequency for update
+  // Validate frequency for update - updated range 1-1000
   validateFrequency(frequency) {
     const freq = parseInt(frequency, 10);
-    if (isNaN(freq) || freq < 1 || freq > 10) {
+    if (isNaN(freq) || freq < 1 || freq > 1000) {
       return null;
     }
     return freq;

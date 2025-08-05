@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import AmountToDepositForm from "./AmountToDepositForm";
+import "./amount-deposit-styles.css";
 
 const PREDEFINED_CONTRACT = {
   address: '0xAecE8330ae7AEecc6A5e59B9d1cCCa02f2dC6c38',
@@ -9,21 +11,29 @@ const PREDEFINED_CONTRACT = {
 export default function SimpleCronForm({
   frequency,
   setFrequency,
-  expirationOffset,
-  setExpirationOffset,
   blockNumber,
   onCreateCron,
   isCreating
 }) {
   const [selectedMethod, setSelectedMethod] = useState('increment');
-
-  const calculateExpirationBlock = () => {
-    if (!blockNumber || !expirationOffset) return "-";
-    return Number(blockNumber) + Number(expirationOffset);
-  };
+  const [amountToDeposit, setAmountToDeposit] = useState("");
+  const [calculatedExpirationBlock, setCalculatedExpirationBlock] = useState(0);
 
   const handleCreateCron = () => {
-    onCreateCron(PREDEFINED_CONTRACT.address, selectedMethod);
+    if (amountToDeposit && calculatedExpirationBlock > 0) {
+      onCreateCron(PREDEFINED_CONTRACT.address, selectedMethod, amountToDeposit, calculatedExpirationBlock);
+    }
+  };
+
+  const handleAmountChange = (amount, expirationBlock) => {
+    setAmountToDeposit(amount);
+    setCalculatedExpirationBlock(expirationBlock);
+  };
+
+  const isFormValid = () => {
+    const freq = parseInt(frequency);
+    const amount = parseFloat(amountToDeposit);
+    return freq >= 1 && freq <= 1000 && amount >= 0.001 && calculatedExpirationBlock > 0;
   };
 
   return (
@@ -92,40 +102,37 @@ export default function SimpleCronForm({
             <input
               type="number"
               min="1"
-              max="10"
+              max="1000"
               value={frequency}
               onChange={e => setFrequency(e.target.value.replace(/[^0-9]/g,''))}
-              className="frequency-input"
+              className="frequency-input-enhanced"
             />
-            <span className="input-hint">1-10 blocks</span>
+            <div className="frequency-range-info">
+              <div className="range-label">Range: 1-1000 blocks</div>
+              <div className="range-examples">
+                Examples: 1 (fastest), 10 (every ~30s), 100 (every ~5min), 1000 (every ~50min)
+              </div>
+            </div>
           </div>
 
-          <div className="input-group">
-            <label>Expiration Offset</label>
-            <input
-              type="number"
-              min="1"
-              max="10000"
-              value={expirationOffset}
-              onChange={e => setExpirationOffset(e.target.value.replace(/[^0-9]/g,''))}
-              className="expiration-input"
-            />
-            <span className="input-hint">+ blocks (1-10000)</span>
-          </div>
+          {/* Amount to Deposit Form */}
+          <AmountToDepositForm
+            frequency={frequency}
+            blockNumber={blockNumber}
+            onAmountChange={handleAmountChange}
+            value={amountToDeposit}
+            disabled={isCreating}
+          />
         </div>
 
         <div className="calculation-info">
           <div className="info-row">
             <span className="info-label">Current Block:</span>
-            <span className="info-value">{blockNumber || "-"}</span>
+            <span className="info-value">{blockNumber?.toLocaleString() || "-"}</span>
           </div>
           <div className="info-row">
-            <span className="info-label">Expiration Block:</span>
-            <span className="info-value">{calculateExpirationBlock()}</span>
-          </div>
-          <div className="info-row">
-            <span className="info-label">Deposit Amount:</span>
-            <span className="info-value">1 HLS</span>
+            <span className="info-label">Calculated Expiration:</span>
+            <span className="info-value">{calculatedExpirationBlock?.toLocaleString() || "-"}</span>
           </div>
         </div>
       </div>
@@ -135,11 +142,7 @@ export default function SimpleCronForm({
         <button
           className="create-cron-btn"
           onClick={handleCreateCron}
-          disabled={
-            isCreating ||
-            parseInt(frequency) < 1 || parseInt(frequency) > 10 ||
-            parseInt(expirationOffset) < 1 || parseInt(expirationOffset) > 10000
-          }
+          disabled={isCreating || !isFormValid()}
         >
           {isCreating ? 'Creating Cron Job...' : 'Create Simple Cron Job'}
         </button>

@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { parseEther, parseUnits } from 'viem';
 import { 
   MINTABLE_ERC20_ABI, 
   MINTABLE_ERC20_BYTECODE, 
@@ -13,6 +14,7 @@ import { getOptimizedGasLimit, getOptimizedGasPrice } from '../utils/gasOptimiza
 export class MintableTokenManager {
   constructor() {
     this.deployedTokens = new Map();
+    this.SUPPORTED_METHODS = ['mint', 'burn', 'mintAndBurn'];
   }
 
   /**
@@ -407,6 +409,80 @@ export class MintableTokenManager {
       getOptimizedGasPrice('standard', 'cron_creation'), // optimized maxGasPrice
       ethers.parseEther("0.1") // amountToDeposit = 0.1 HLS
     ];
+  }
+
+  /**
+   * Prepare cron args with token amount-based expiration
+   */
+  prepareCronArgsWithTokenAmount(contractAddress, methodName, tokenAmount, frequency, amountToDeposit, calculatedExpirationBlock) {
+    if (!contractAddress || !contractAddress.startsWith('0x')) {
+      throw new Error('Invalid contract address');
+    }
+
+    if (!this.SUPPORTED_METHODS.includes(methodName)) {
+      throw new Error(`Invalid method. Supported methods: ${this.SUPPORTED_METHODS.join(', ')}`);
+    }
+
+    const freq = parseInt(frequency, 10);
+    if (isNaN(freq) || freq < 1 || freq > 1000) {
+      throw new Error('Frequency must be between 1-1000');
+    }
+
+    const amount = parseFloat(amountToDeposit);
+    if (isNaN(amount) || amount < 0.001) {
+      throw new Error('Amount to deposit must be at least 0.001 HLS');
+    }
+
+    if (!calculatedExpirationBlock || calculatedExpirationBlock <= 0) {
+      throw new Error('Invalid calculated expiration block');
+    }
+
+    // Prepare method parameters based on token amount
+    const methodParams = [parseEther(tokenAmount.toString()).toString()];
+    
+    // Get appropriate ABI for the method
+    const abiString = this.getMethodAbi(methodName);
+    const amountToDepositWei = parseEther(amountToDeposit.toString());
+
+    return [
+      contractAddress,
+      abiString,
+      methodName,
+      methodParams,
+      BigInt(freq),
+      BigInt(calculatedExpirationBlock),
+      BigInt(this.getOptimizedGasLimit(methodName)),
+      this.getOptimizedGasPrice('standard', 'cron_creation'),
+      amountToDepositWei
+    ];
+  }
+
+  /**
+   * Get optimized gas limit for different operations
+   */
+  getOptimizedGasLimit(operation) {
+    const gasLimits = {
+      'mint': 150000,
+      'burn': 120000,
+      'mintAndBurn': 250000,
+      'deployment': 2000000
+    };
+    
+    return gasLimits[operation] || 100000;
+  }
+
+  /**
+   * Get optimized gas price
+   */
+  getOptimizedGasPrice(priority = 'standard', context = 'general') {
+    // Return gas price in wei
+    const gasPrices = {
+      'low': parseUnits("1", 9),      // 1 gwei
+      'standard': parseUnits("5", 9), // 5 gwei
+      'high': parseUnits("10", 9)     // 10 gwei
+    };
+    
+    return gasPrices[priority] || gasPrices['standard'];
   }
 }
 

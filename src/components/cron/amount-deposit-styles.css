@@ -1,0 +1,358 @@
+/* Amount to Deposit Form Styles - Fixed Layout */
+.amount-deposit-form {
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.amount-input-container {
+  display: flex;
+  align-items: center;
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-input-border);
+  border-radius: 12px;
+  padding: 0;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  height: 48px;
+  box-sizing: border-box;
+}
+
+.amount-input-container:focus-within {
+  border-color: var(--cron-blue);
+  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.1);
+}
+
+.amount-input {
+  flex: 1;
+  height: 100%;
+  padding: 0 16px;
+  background: transparent;
+  border: none;
+  color: var(--cron-text-main);
+  font-size: 16px;
+  font-weight: 600;
+  min-width: 0;
+  outline: none;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.amount-input:focus {
+  outline: none;
+}
+
+.amount-input.error {
+  color: var(--cron-error);
+}
+
+.amount-input::placeholder {
+  color: var(--cron-text-sub);
+  opacity: 0.7;
+}
+
+.currency-unit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--cron-text-sub);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 0 12px;
+  background: rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  border-left: 1px solid var(--cron-border);
+  box-sizing: border-box;
+}
+
+.max-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: var(--cron-blue);
+  color: white;
+  border: none;
+  padding: 0 16px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.max-btn:hover:not(:disabled) {
+  background: #1e7ed8;
+}
+
+.max-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--cron-btn-bg-disabled);
+}
+
+.error-hint {
+  color: var(--cron-error);
+  font-size: 12px;
+  margin-top: 6px;
+  display: block;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.success-hint {
+  color: var(--cron-green);
+  font-size: 12px;
+  margin-top: 6px;
+  display: block;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.max-info {
+  background: rgba(41, 151, 255, 0.08);
+  border: 1px solid rgba(41, 151, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.max-info .info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.max-info .info-row:last-child {
+  margin-bottom: 0;
+}
+
+.max-info .info-label {
+  color: var(--cron-text-sub);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.max-info .info-value {
+  color: var(--cron-blue);
+  font-weight: 600;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.calculation-details {
+  color: var(--cron-text-sub);
+  font-size: 11px;
+  line-height: 1.4;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+.realtime-calculation {
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.calc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.calc-row:last-child {
+  margin-bottom: 0;
+}
+
+.calc-label {
+  color: var(--cron-text-sub);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.calc-value {
+  color: var(--cron-text-main);
+  font-weight: 600;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.calc-value.highlight {
+  color: var(--cron-green);
+  background: rgba(48, 177, 138, 0.15);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+/* Enhanced frequency range styles for 1-1000 - Fixed alignment */
+.frequency-input-enhanced {
+  width: 100%;
+  padding: 0 16px;
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-input-border);
+  border-radius: 12px;
+  color: var(--cron-text-main);
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  text-align: center;
+  height: 48px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.frequency-input-enhanced:focus {
+  border-color: var(--cron-blue);
+  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.1);
+  outline: none;
+}
+
+.frequency-range-info {
+  background: rgba(48, 177, 138, 0.08);
+  border: 1px solid rgba(48, 177, 138, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+}
+
+.frequency-range-info .range-label {
+  color: var(--cron-green);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.frequency-range-info .range-examples {
+  color: var(--cron-text-sub);
+  font-size: 11px;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+/* Responsive Design - Improved for perfect alignment */
+@media (max-width: 768px) {
+  .amount-input-container {
+    height: 44px;
+  }
+  
+  .amount-input {
+    font-size: 14px;
+    padding: 0 12px;
+  }
+  
+  .currency-unit {
+    font-size: 11px;
+    padding: 0 10px;
+  }
+  
+  .max-btn {
+    font-size: 10px;
+    padding: 0 12px;
+  }
+  
+  .frequency-input-enhanced {
+    font-size: 14px;
+    height: 44px;
+    padding: 0 12px;
+  }
+  
+  .max-info .info-row,
+  .calc-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .max-info .info-value,
+  .calc-value {
+    text-align: right;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .amount-input-container {
+    height: 40px;
+  }
+  
+  .amount-input {
+    font-size: 14px;
+    padding: 0 10px;
+  }
+  
+  .currency-unit {
+    font-size: 10px;
+    padding: 0 8px;
+  }
+  
+  .max-btn {
+    font-size: 9px;
+    padding: 0 10px;
+  }
+  
+  .frequency-input-enhanced {
+    font-size: 14px;
+    height: 40px;
+    padding: 0 10px;
+  }
+}
+
+/* Animation for realtime updates */
+@keyframes highlightUpdate {
+  0% { background: rgba(41, 151, 255, 0.2); }
+  100% { background: transparent; }
+}
+
+.realtime-update {
+  animation: highlightUpdate 0.5s ease-out;
+}
+
+/* Fix layout glitches */
+.input-group {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.input-group label {
+  display: block;
+  color: var(--cron-blue);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.parameter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Ensure consistent sizing */
+.amount-deposit-form .input-group,
+.frequency-input-enhanced,
+.amount-input-container {
+  box-sizing: border-box;
+}
+
+/* Fix any overflow issues */
+* {
+  box-sizing: border-box;
+}

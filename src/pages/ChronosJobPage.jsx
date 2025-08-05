@@ -523,17 +523,16 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
   };
 
   // Handle cron job creation with Simple Test Contract
-  const handleCreateCronWithWarrior = () => {
+  const handleCreateCronWithWarrior = (amountToDeposit, calculatedExpirationBlock) => {
     try {
-      const args = deploymentManager.prepareCronArgsWithContract(
-        deployedWarriorAddress, 
-        selectedMethod, 
-        frequency, 
-        expirationOffset, 
-        blockNumber
-      );
+      // Use new amount-based logic from cronManager
+      const args = cronManager.createSimpleCronArgs(frequency, amountToDeposit);
       
       addLog(`Creating cron job with Simple Test Contract ${deployedWarriorAddress}...`, 'info');
+      addLog(`Method: ${selectedMethod}()`, 'info');
+      addLog(`Frequency: Every ${frequency} blocks`, 'info');
+      addLog(`Amount to Deposit: ${amountToDeposit} HLS`, 'info');
+      addLog(`Calculated Expiration: Block ${calculatedExpirationBlock}`, 'info');
       
       writeCreate({
         address: CHRONOS_ADDRESS,
@@ -543,26 +542,28 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
       });
     } catch (error) {
       addLog(`Cron creation failed: ${error.message}`, 'error');
+      setStatus({ message: `Cron Creation Error: ${error.message}`, type: 'error' });
     }
   };
 
-  // Handle cron job creation with Mintable Token - using standardized format
-  const handleCreateCronWithMintableToken = () => {
+  // Handle cron job creation with Mintable Token - updated to use amount
+  const handleCreateCronWithMintableToken = (amountToDeposit, calculatedExpirationBlock) => {
     try {
-      // Use standardized cron creation format (same as Simple Test Contract)
-      const args = mintableTokenManager.prepareCronArgsWithToken(
+      // Use new amount-based token cron creation
+      const args = mintableTokenManager.prepareCronArgsWithTokenAmount(
         deployedWarriorAddress, 
         selectedMethod, 
         tokenInfo.mintAmount,
         frequency, 
-        expirationOffset, 
-        blockNumber
+        amountToDeposit,
+        calculatedExpirationBlock
       );
       
       addLog(`Creating cron job with Mintable Token ${deployedWarriorAddress}...`, 'info');
       addLog(`Method: ${selectedMethod}(${tokenInfo.mintAmount} ${tokenInfo.tokenSymbol})`, 'info');
       addLog(`Frequency: Every ${frequency} blocks`, 'info');
-      addLog(`Expiration: Block ${blockNumber + Number(expirationOffset)}`, 'info');
+      addLog(`Amount to Deposit: ${amountToDeposit} HLS`, 'info');
+      addLog(`Calculated Expiration: Block ${calculatedExpirationBlock}`, 'info');
       
       if (selectedMethod === 'burn') {
         addLog('⚠️  Burn operations will only succeed if sufficient token balance exists', 'warning');
@@ -581,20 +582,15 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
   };
 
   // Handle simple cron creation with predefined contracts
-  const handleCreateSimpleCron = (targetAddress, targetMethod) => {
+  const handleCreateSimpleCron = (targetAddress, targetMethod, amountToDeposit, calculatedExpirationBlock) => {
     try {
-      const args = deploymentManager.prepareCronArgsWithContract(
-        targetAddress, 
-        targetMethod, 
-        frequency, 
-        expirationOffset, 
-        blockNumber
-      );
+      const args = cronManager.createSimpleCronArgs(frequency, amountToDeposit);
       
       addLog(`Creating simple cron job with Simple Test Contract ${targetAddress}...`, 'info');
       addLog(`Method: ${targetMethod}()`, 'info');
       addLog(`Frequency: Every ${frequency} blocks`, 'info');
-      addLog(`Expiration: Block ${blockNumber + Number(expirationOffset)}`, 'info');
+      addLog(`Amount to Deposit: ${amountToDeposit} HLS`, 'info');
+      addLog(`Calculated Expiration: Block ${calculatedExpirationBlock}`, 'info');
       
       writeCreate({
         address: CHRONOS_ADDRESS,
