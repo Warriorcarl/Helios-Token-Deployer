@@ -1,0 +1,631 @@
+/* Maintenance Page Styles */
+.maintenance-page {
+  text-align: center;
+  min-height: 500px;
+  justify-content: flex-start;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.maintenance-page .card-header-title {
+  color: #ff6b35;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.maintenance-icon-animated {
+  font-size: 2.5rem;
+  animation: maintenanceWobble 3s ease-in-out infinite;
+  margin-right: 0.5rem;
+}
+
+.maintenance-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.maintenance-message {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.maintenance-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+  animation: slideInLeft 1s ease-out 0.3s both;
+}
+
+.maintenance-description {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 0;
+  animation: slideInRight 1s ease-out 0.6s both;
+}
+
+.maintenance-status {
+  background: rgba(255, 107, 53, 0.1);
+  border: 1px solid rgba(255, 107, 53, 0.3);
+  border-radius: var(--input-radius);
+  padding: 1rem;
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-weight: 600;
+  color: #ff6b35;
+}
+
+.pulse-dot {
+  width: 12px;
+  height: 12px;
+  background: #ff6b35;
+  border-radius: 50%;
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+
+.maintenance-estimate {
+  background: var(--background-dark);
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  padding: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 350px;
+  animation: bounceIn 1.2s ease-out 0.9s both;
+}
+
+.estimate-icon {
+  font-size: 1.8rem;
+  animation: tickTock 2s ease-in-out infinite;
+}
+
+.maintenance-contact {
+  background: rgba(41, 151, 255, 0.1);
+  border: 1px solid rgba(41, 151, 255, 0.3);
+  border-radius: var(--input-radius);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 400px;
+  animation: slideInUp 1s ease-out 1.2s both;
+}
+
+.contact-icon {
+  font-size: 1.5rem;
+}
+
+/* Enhanced Maintenance Animation with Beautiful Gears */
+.maintenance-animation {
+  margin-top: 2rem;
+  position: relative;
+  height: 120px;
+  width: 280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(255,255,255,0.05));
+  border-radius: 20px;
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  overflow: hidden;
+}
+
+/* Enhanced Background Glow Effect */
+.maintenance-animation::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+  animation: rotatingGlow 8s linear infinite;
+  z-index: 0;
+}
+
+.gear {
+  position: absolute;
+  font-size: 3rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+/* Large Central Gear */
+.gear-1 {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3.5rem;
+  color: #ff6b35;
+  animation: gearRotateMain 6s linear infinite, gearPulse 3s ease-in-out infinite;
+  filter: drop-shadow(0 6px 12px rgba(255, 107, 53, 0.4));
+}
+
+/* Medium Top-Right Gear */
+.gear-2 {
+  top: 20%;
+  right: 15%;
+  font-size: 2.8rem;
+  color: #ffa500;
+  animation: gearRotateReverse 4s linear infinite, gearBounce 2s ease-in-out infinite;
+  animation-delay: 0s, 0.5s;
+  filter: drop-shadow(0 4px 8px rgba(255, 165, 0, 0.3));
+}
+
+/* Small Bottom-Left Gear */
+.gear-3 {
+  bottom: 15%;
+  left: 20%;
+  font-size: 2.2rem;
+  color: #ff8c42;
+  animation: gearRotateFast 3s linear infinite, gearFloat 2.5s ease-in-out infinite;
+  animation-delay: 0s, 1s;
+  filter: drop-shadow(0 3px 6px rgba(255, 140, 66, 0.3));
+}
+
+/* Additional Decorative Gears */
+.gear-4 {
+  top: 10%;
+  left: 25%;
+  font-size: 1.5rem;
+  color: #ffb366;
+  animation: gearRotateReverse 5s linear infinite, gearTwinkle 1.5s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(255, 179, 102, 0.2));
+}
+
+.gear-5 {
+  bottom: 20%;
+  right: 25%;
+  font-size: 1.8rem;
+  color: #ff9f66;
+  animation: gearRotateMain 7s linear infinite, gearSway 3s ease-in-out infinite;
+  animation-delay: 0s, 1.5s;
+  filter: drop-shadow(0 3px 6px rgba(255, 159, 102, 0.25));
+}
+
+/* Sparks Effect */
+.gear-spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #ffff66;
+  border-radius: 50%;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.spark-1 {
+  top: 30%;
+  left: 70%;
+  animation-delay: 0s;
+}
+
+.spark-2 {
+  top: 60%;
+  left: 30%;
+  animation-delay: 0.7s;
+}
+
+.spark-3 {
+  top: 80%;
+  left: 60%;
+  animation-delay: 1.4s;
+}
+
+/* Connection Lines Between Gears */
+.gear-connection {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 107, 53, 0.3), rgba(255, 165, 0, 0.3));
+  animation: energyFlow 2s ease-in-out infinite;
+}
+
+.connection-1 {
+  width: 60px;
+  top: 45%;
+  left: 40%;
+  transform: rotate(25deg);
+  animation-delay: 0s;
+}
+
+.connection-2 {
+  width: 45px;
+  top: 65%;
+  left: 55%;
+  transform: rotate(-30deg);
+  animation-delay: 0.5s;
+}
+
+/* Animation Keyframes */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes maintenanceWobble {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes searchWobble {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-10deg) scale(1.1);
+  }
+  75% {
+    transform: rotate(10deg) scale(0.9);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.6);
+  }
+}
+
+@keyframes errorPulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 71, 87, 0.6);
+  }
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.7;
+  }
+}
+
+@keyframes errorBlink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes tickTock {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(15deg);
+  }
+  75% {
+    transform: rotate(-15deg);
+  }
+}
+
+@keyframes lightBulb {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes rotateGear {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes floatAround {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(120deg);
+  }
+  66% {
+    transform: translateY(5px) rotate(240deg);
+  }
+}
+
+/* Enhanced Animation Keyframes */
+
+/* Main Gear Rotation with 3D Effect */
+@keyframes gearRotateMain {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(-50%, -50%) rotate(90deg) scale(1.02);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg) scale(1);
+  }
+  75% {
+    transform: translate(-50%, -50%) rotate(270deg) scale(0.98);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(1);
+  }
+}
+
+/* Reverse Rotation with Wobble */
+@keyframes gearRotateReverse {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-90deg) scale(1.05);
+  }
+  50% {
+    transform: rotate(-180deg) scale(1);
+  }
+  75% {
+    transform: rotate(-270deg) scale(0.95);
+  }
+  100% {
+    transform: rotate(-360deg) scale(1);
+  }
+}
+
+/* Fast Rotation with Momentum */
+@keyframes gearRotateFast {
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(72deg) scale(1.1);
+  }
+  40% {
+    transform: rotate(144deg) scale(1);
+  }
+  60% {
+    transform: rotate(216deg) scale(1.1);
+  }
+  80% {
+    transform: rotate(288deg) scale(1);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pulsing Effect for Main Gear */
+@keyframes gearPulse {
+  0%, 100% {
+    filter: drop-shadow(0 6px 12px rgba(255, 107, 53, 0.4)) brightness(1);
+  }
+  50% {
+    filter: drop-shadow(0 8px 16px rgba(255, 107, 53, 0.6)) brightness(1.2);
+  }
+}
+
+/* Bouncing Effect */
+@keyframes gearBounce {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Floating Effect */
+@keyframes gearFloat {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  33% {
+    transform: translateY(-3px) translateX(2px);
+  }
+  66% {
+    transform: translateY(2px) translateX(-2px);
+  }
+}
+
+/* Swaying Motion */
+@keyframes gearSway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(2deg);
+  }
+  75% {
+    transform: rotate(-2deg);
+  }
+}
+
+/* Twinkling Effect */
+@keyframes gearTwinkle {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Sparkling Particles */
+@keyframes sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(360deg);
+  }
+}
+
+/* Energy Flow Between Gears */
+@keyframes energyFlow {
+  0% {
+    opacity: 0.3;
+    transform: scaleX(0.8);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scaleX(1.2);
+  }
+  100% {
+    opacity: 0.3;
+    transform: scaleX(0.8);
+  }
+}
+
+/* Rotating Background Glow */
+@keyframes rotatingGlow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Hover Effects for Interactive Experience */
+.maintenance-animation:hover .gear-1 {
+  animation-duration: 3s;
+  filter: drop-shadow(0 8px 16px rgba(255, 107, 53, 0.6)) brightness(1.3);
+}
+
+.maintenance-animation:hover .gear-2 {
+  animation-duration: 2s;
+}
+
+.maintenance-animation:hover .gear-3 {
+  animation-duration: 1.5s;
+}
+
+/* Dark Theme Adjustments */
+[data-theme='dark'] .maintenance-page .card-header-title,
+[data-theme='dark'] .not-found-page .card-header-title {
+  color: inherit;
+}
+
+[data-theme='dark'] .maintenance-page .maintenance-icon-animated {
+  filter: brightness(1.2);
+}
+
+[data-theme='dark'] .not-found-page .not-found-icon-animated {
+  filter: brightness(1.2);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 700px) {
+  .maintenance-animation {
+    width: 220px;
+    height: 100px;
+  }
+  
+  .gear-1 {
+    font-size: 2.8rem;
+  }
+  
+  .gear-2 {
+    font-size: 2.2rem;
+  }
+  
+  .gear-3 {
+    font-size: 1.8rem;
+  }
+  
+  .gear-4 {
+    font-size: 1.2rem;
+  }
+  
+  .gear-5 {
+    font-size: 1.5rem;
+  }
+}
