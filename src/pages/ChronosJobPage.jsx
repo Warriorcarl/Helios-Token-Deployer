@@ -434,20 +434,25 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
     try {
       const { tokenName, tokenSymbol, selectedMethod, mintAmount } = tokenData;
       
+      addLog('🔍 Starting Mintable Token deployment validation...', 'info');
+      addLog(`📝 Input data: Name="${tokenName}", Symbol="${tokenSymbol}", Method="${selectedMethod}", Amount="${mintAmount}"`, 'info');
+      
       // Validate input
       const nameValidation = mintableTokenManager.validateTokenName(tokenName);
       const symbolValidation = mintableTokenManager.validateTokenSymbol(tokenSymbol);
       const amountValidation = mintableTokenManager.validateAmount(mintAmount);
       
       if (!nameValidation.isValid) {
-        throw new Error(nameValidation.error);
+        throw new Error(`Token name validation failed: ${nameValidation.error}`);
       }
       if (!symbolValidation.isValid) {
-        throw new Error(symbolValidation.error);
+        throw new Error(`Token symbol validation failed: ${symbolValidation.error}`);
       }
       if (!amountValidation.isValid) {
-        throw new Error(amountValidation.error);
+        throw new Error(`Amount validation failed: ${amountValidation.error}`);
       }
+      
+      addLog('✅ All input validations passed', 'info');
       
       // Store token info with method selection
       setTokenInfo({ 
@@ -460,8 +465,14 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
       setSelectedMethod(selectedMethod);
       setDeploymentError('');
       
+      addLog('🔧 Generating deployment bytecode...', 'info');
+      
       // Get deployment data from manager
       const deploymentData = mintableTokenManager.generateDeploymentData(tokenName, tokenSymbol, selectedMethod);
+      
+      addLog(`✅ Deployment data generated successfully`, 'info');
+      addLog(`📊 Bytecode length: ${deploymentData.data.length} characters`, 'info');
+      addLog(`⛽ Gas limit: ${deploymentData.gasLimit}`, 'info');
       
       addLog('Starting Mintable ERC20 Token deployment...', 'info');
       addLog(`Token Name: ${tokenName}`, 'info');
@@ -472,6 +483,17 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
         addLog('⚠️  Burn method selected - Initial mint will be performed after deployment', 'warning');
       }
       
+      // Validate deployment data before sending
+      if (!deploymentData.data || !deploymentData.data.startsWith('0x')) {
+        throw new Error('Invalid deployment bytecode generated');
+      }
+      
+      if (deploymentData.data.length < 100) {
+        throw new Error('Deployment bytecode appears to be too short');
+      }
+      
+      addLog('🚀 Sending deployment transaction...', 'info');
+      
       // Actual deployment call
       sendDeployTx({
         to: null, // null untuk contract creation
@@ -480,7 +502,8 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
       });
       
     } catch (error) {
-      addLog(`Mintable Token deployment preparation failed: ${error.message}`, 'error');
+      addLog(`❌ Mintable Token deployment preparation failed: ${error.message}`, 'error');
+      addLog(`🔍 Error details: ${error.stack || 'No stack trace available'}`, 'error');
       setDeploymentError(error.message);
       setStatus({ message: `Deployment Error: ${error.message}`, type: 'error' });
     }

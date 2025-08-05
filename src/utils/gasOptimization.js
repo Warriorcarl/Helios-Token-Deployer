@@ -11,7 +11,7 @@ import { parseUnits } from 'viem';
 export const OPTIMIZED_GAS_LIMITS = {
   // Contract Deployment
   SIMPLE_CONTRACT_DEPLOYMENT: 300000,    // Simple test contracts
-  MINTABLE_TOKEN_DEPLOYMENT: 500000,     // ERC20 with mint/burn
+  MINTABLE_TOKEN_DEPLOYMENT: 1500000,    // ERC20 with mint/burn (increased for complex contracts)
   
   // Token Operations
   ERC20_TRANSFER: 30000,                 // Standard transfer
