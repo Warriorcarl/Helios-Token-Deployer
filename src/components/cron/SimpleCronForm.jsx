@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const PREDEFINED_CONTRACT = {
-  address: '0x4dd09aC7dd08128A2c3A6267bd726B55F7A85d6B',
+  address: '0xAecE8330ae7AEecc6A5e59B9d1cCCa02f2dC6c38',
   name: 'Simple Test Contract',
   methods: ['increment', 'ping', 'trigger']
 };

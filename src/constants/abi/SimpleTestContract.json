@@ -1,0 +1,115 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "SimpleTestContract",
+  "sourceName": "contracts/SimpleTestContract.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "count",
+          "type": "uint256"
+        }
+      ],
+      "name": "Pinged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "count",
+          "type": "uint256"
+        }
+      ],
+      "name": "Triggered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newValue",
+          "type": "uint256"
+        }
+      ],
+      "name": "ValueIncremented",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "getPingCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getTriggerCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getValue",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "increment",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ping",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "trigger",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b50600080805560018190556002556101e98061002d6000396000f3fe608060405234801561001057600080fd5b50600436106100625760003560e01c806320965255146100675780635c36b1861461007d578063742cd89b146100875780637fec8d381461008f57806395a35bfa14610097578063d09de08a1461009f575b600080fd5b6000545b60405190815260200160405180910390f35b6100856100a7565b005b60025461006b565b6100856100f7565b60015461006b565b610085610142565b60018060008282546100b9919061018c565b90915550506001546040519081527f1c19e8a9b90b5653e27f42eb6f5bcfe290a3f1a06ada6df32c8c0d54173337c5906020015b60405180910390a1565b60016002600082825461010a919061018c565b90915550506002546040519081527fcdeba0448cafa891383055f46f2fec420e049fab5171b5b30b5458c0320f68fb906020016100ed565b6001600080828254610154919061018c565b90915550506000546040519081527fc8a7fc4cfa989096cf36e066e6c623624d76311b81dfc4cb4729dcaa383512de906020016100ed565b808201808211156101ad57634e487b7160e01b600052601160045260246000fd5b9291505056fea2646970667358221220c1a772465c9a1e55fb689572f3439aab2020300008bc179009da93ba815b249064736f6c63430008110033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100625760003560e01c806320965255146100675780635c36b1861461007d578063742cd89b146100875780637fec8d381461008f57806395a35bfa14610097578063d09de08a1461009f575b600080fd5b6000545b60405190815260200160405180910390f35b6100856100a7565b005b60025461006b565b6100856100f7565b60015461006b565b610085610142565b60018060008282546100b9919061018c565b90915550506001546040519081527f1c19e8a9b90b5653e27f42eb6f5bcfe290a3f1a06ada6df32c8c0d54173337c5906020015b60405180910390a1565b60016002600082825461010a919061018c565b90915550506002546040519081527fcdeba0448cafa891383055f46f2fec420e049fab5171b5b30b5458c0320f68fb906020016100ed565b6001600080828254610154919061018c565b90915550506000546040519081527fc8a7fc4cfa989096cf36e066e6c623624d76311b81dfc4cb4729dcaa383512de906020016100ed565b808201808211156101ad57634e487b7160e01b600052601160045260246000fd5b9291505056fea2646970667358221220c1a772465c9a1e55fb689572f3439aab2020300008bc179009da93ba815b249064736f6c63430008110033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
