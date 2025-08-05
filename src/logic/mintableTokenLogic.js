@@ -257,9 +257,23 @@ export class MintableTokenManager {
    * Optimize gas limits for specific operations using centralized utilities
    */
   getOptimizedGasLimit(operation, contractAddress = null) {
+    // Increase gas limits for mintable token operations
+    const gasLimits = {
+      'mint': 150000,        // Increased from 50,000 for complex ERC20
+      'burn': 120000,        // Increased from 45,000 for complex ERC20  
+      'mintAndBurn': 250000, // Increased for complex mint+burn operations
+      'deployment': 1500000  // Already correct for deployment
+    };
+    
+    // Check if operation is in our custom gas limits
+    if (gasLimits[operation]) {
+      return gasLimits[operation];
+    }
+    
+    // Fallback to centralized utilities with higher buffer for mintable tokens
     return getOptimizedGasLimit(operation, { 
       contractType: 'mintable',
-      buffer: 0.05  // Reduced buffer for better optimization
+      buffer: 0.2  // Increased buffer from 0.05 to 0.2 (20% safety margin)
     });
   }
 
@@ -371,6 +385,14 @@ export class MintableTokenManager {
       throw new Error('Expiration offset must be between 1-10000');
     }
 
+    // Convert amount to wei (18 decimals) for proper token amount
+    const amountInWei = ethers.parseEther(amount.toString());
+    
+    console.log(`🔧 Preparing cron args for ${methodName}:`);
+    console.log(`📝 Amount input: ${amount} tokens`);
+    console.log(`📝 Amount in wei: ${amountInWei.toString()}`);
+    console.log(`📝 Amount formatted: ${ethers.formatEther(amountInWei)} tokens`);
+
     const abiString = this.getCronJobAbi(methodName);
     const expirationBlock = blockNumber + expOffset;
 
@@ -378,12 +400,12 @@ export class MintableTokenManager {
       contractAddress,
       abiString,
       methodName,
-      [amount], // parameters array (amount as string) - same format as simple contract
+      [amountInWei.toString()], // ✅ Convert to wei string for proper token amount
       BigInt(freq),
       BigInt(expirationBlock),
       BigInt(this.getOptimizedGasLimit(methodName)), // optimized gas limit
       getOptimizedGasPrice('standard', 'cron_creation'), // optimized maxGasPrice
-      ethers.parseEther("0.1") // amountToDeposit = 0.001 HLS (minimal tapi valid untuk precompile)
+      ethers.parseEther("0.1") // amountToDeposit = 0.1 HLS
     ];
   }
 }

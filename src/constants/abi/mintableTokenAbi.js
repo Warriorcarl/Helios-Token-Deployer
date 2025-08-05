@@ -8,8 +8,8 @@ export const MINTABLE_ERC20_BYTECODE = MintableTokenArtifact.bytecode;
 // Configuration for Mintable Token - Gas Optimized
 export const MINTABLE_TOKEN_CONFIG = {
   DEPLOYMENT_GAS_LIMIT: 1500000,  // Increased from 500,000 for complex contract
-  MINT_GAS_LIMIT: 50000,         // Reduced from 100,000 - basic mint operation
-  BURN_GAS_LIMIT: 45000,         // Reduced from 100,000 - burn is slightly cheaper
+  MINT_GAS_LIMIT: 150000,         // Increased from 50,000 for complex ERC20 operations
+  BURN_GAS_LIMIT: 120000,         // Increased from 45,000 for complex ERC20 operations
   DEFAULT_MINT_AMOUNT: "1000000000000000000", // 1 token in wei
   DEFAULT_DECIMALS: 18,
   contractName: MintableTokenArtifact.contractName,

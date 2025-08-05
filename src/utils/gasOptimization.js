@@ -16,8 +16,8 @@ export const OPTIMIZED_GAS_LIMITS = {
   // Token Operations
   ERC20_TRANSFER: 30000,                 // Standard transfer
   ERC20_APPROVE: 25000,                  // Standard approve
-  ERC20_MINT: 50000,                     // Mint operation
-  ERC20_BURN: 45000,                     // Burn operation (slightly cheaper)
+  ERC20_MINT: 150000,                    // Mint operation (increased for complex ERC20)
+  ERC20_BURN: 120000,                    // Burn operation (increased for complex ERC20)
   
   // Contract Interactions
   SIMPLE_METHOD_CALL: 50000,             // increment, ping, trigger
