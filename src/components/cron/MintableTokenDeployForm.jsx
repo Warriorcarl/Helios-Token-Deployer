@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MINTABLE_TOKEN_METHODS, MINTABLE_TOKEN_CONFIG } from "../../constants/abi/mintableTokenAbi";
+import { MINTABLE_TOKEN_CONFIG } from "../../constants/abi/mintableTokenAbi";
 import { getOptimizedGasLimit, getOptimizedGasPrice } from "../../utils/gasOptimization";
 import GasMonitor from "../ui/GasMonitor";
 
@@ -12,8 +12,6 @@ export default function MintableTokenDeployForm({
 }) {
   const [tokenName, setTokenName] = useState('');
   const [tokenSymbol, setTokenSymbol] = useState('');
-  const [selectedMethod, setSelectedMethod] = useState('mint');
-  const [mintAmount, setMintAmount] = useState('1');
 
   const handleTokenNameChange = (e) => {
     const value = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
@@ -29,12 +27,7 @@ export default function MintableTokenDeployForm({
     }
   };
 
-  const handleMintAmountChange = (e) => {
-    const value = e.target.value.replace(/[^0-9.]/g, '');
-    setMintAmount(value);
-  };
-
-  const isFormValid = tokenName.length >= 3 && tokenSymbol.length >= 2 && parseFloat(mintAmount) > 0;
+  const isFormValid = tokenName.length >= 3 && tokenSymbol.length >= 2;
 
   return (
     <div className="oracle-warrior-deploy-form">
@@ -75,44 +68,6 @@ export default function MintableTokenDeployForm({
                   maxLength="5"
                 />
                 <span className="input-hint">2-5 characters, uppercase letters only</span>
-              </div>
-            </div>
-
-            <div className="cron-config-section">
-              <h4>Default Cron Job Settings</h4>
-              
-              <div className="method-selection">
-                <label>Primary Cron Method:</label>
-                <select 
-                  value={selectedMethod} 
-                  onChange={(e) => setSelectedMethod(e.target.value)}
-                  disabled={isDeploying}
-                  className="method-selector"
-                >
-                  {MINTABLE_TOKEN_METHODS.map(method => (
-                    <option key={method.value} value={method.value}>
-                      {method.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="input-group">
-                <label>Default {selectedMethod === 'mint' ? 'Mint' : 'Burn'} Amount</label>
-                <div className="amount-input-container">
-                  <input
-                    type="text"
-                    value={mintAmount}
-                    onChange={handleMintAmountChange}
-                    placeholder="1"
-                    disabled={isDeploying}
-                    className="amount-input"
-                  />
-                  <span className="token-unit">{tokenSymbol || 'TOKEN'}</span>
-                </div>
-                <span className="input-hint">
-                  Amount to {selectedMethod} per cron job execution
-                </span>
               </div>
             </div>
           </div>
@@ -157,7 +112,7 @@ export default function MintableTokenDeployForm({
 
           <button
             className="deploy-token-btn"
-            onClick={() => onDeploy({ tokenName, tokenSymbol, selectedMethod, mintAmount })}
+            onClick={() => onDeploy({ tokenName, tokenSymbol })}
             disabled={isDeploying || !isFormValid}
           >
             {isDeploying ? 'Deploying Mintable Token...' : 'Deploy Mintable ERC20 Token'}
@@ -194,10 +149,6 @@ export default function MintableTokenDeployForm({
               <span className="info-value">{tokenSymbol}</span>
             </div>
             <div className="info-row">
-              <span className="info-label">Selected Cron Method:</span>
-              <span className="info-value">{selectedMethod}({mintAmount} {tokenSymbol})</span>
-            </div>
-            <div className="info-row">
               <span className="info-label">Current Supply:</span>
               <span className="info-value">0 {tokenSymbol}</span>
             </div>
@@ -207,7 +158,7 @@ export default function MintableTokenDeployForm({
             <h5>What happens next:</h5>
             <ul>
               <li>✅ Token contract deployed with public mint/burn functions</li>
-              <li>🔄 Create cron job to automatically {selectedMethod} {mintAmount} {tokenSymbol} tokens</li>
+              <li>🔄 Configure cron job settings and token value</li>
               <li>⏱️ Cron will execute at specified intervals</li>
               <li>📊 Token supply will change dynamically based on mint/burn operations</li>
             </ul>
@@ -215,9 +166,9 @@ export default function MintableTokenDeployForm({
 
           <button
             className="continue-btn"
-            onClick={() => onContinue(deployedAddress, selectedMethod, { tokenName, tokenSymbol, mintAmount })}
+            onClick={() => onContinue(deployedAddress, null, { tokenName, tokenSymbol })}
           >
-            Continue to Create Cron Job →
+            Continue to Configure Cron Job →
           </button>
         </div>
       )}

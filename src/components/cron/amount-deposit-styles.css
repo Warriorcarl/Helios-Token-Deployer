@@ -245,6 +245,189 @@
   font-style: italic;
 }
 
+/* === CRON JOB SETTINGS STYLES === */
+.cron-job-settings {
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.cron-job-settings h4 {
+  color: var(--cron-text-main);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cron-border);
+}
+
+/* Token Value Section */
+.token-value-section {
+  margin-bottom: 20px;
+}
+
+.token-value-section > label {
+  display: block;
+  color: var(--cron-text-main);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* Value Mode Selector */
+.value-mode-selector {
+  margin-bottom: 16px;
+}
+
+.mode-options {
+  display: flex;
+  gap: 20px;
+  background: var(--cron-card);
+  border: 1px solid var(--cron-border);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.mode-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--cron-text-main);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.mode-option input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--cron-blue);
+}
+
+.mode-option span {
+  user-select: none;
+}
+
+/* Fixed Value Selector */
+.fixed-value-selector {
+  margin-bottom: 16px;
+}
+
+.fixed-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.fixed-option-btn {
+  padding: 16px 12px;
+  background: var(--cron-card);
+  border: 2px solid var(--cron-border);
+  border-radius: 12px;
+  color: var(--cron-text-main);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.fixed-option-btn:hover:not(:disabled) {
+  border-color: var(--cron-blue);
+  background: rgba(41, 151, 255, 0.1);
+}
+
+.fixed-option-btn.active {
+  background: var(--cron-blue);
+  border-color: var(--cron-blue);
+  color: white;
+}
+
+.fixed-option-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Custom Value Input */
+.custom-value-input {
+  margin-bottom: 16px;
+}
+
+.custom-input-container {
+  display: flex;
+  align-items: center;
+  background: var(--cron-card);
+  border: 1px solid var(--cron-border);
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  height: 48px;
+}
+
+.custom-input-container:focus-within {
+  border-color: var(--cron-blue);
+  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.1);
+}
+
+.custom-amount-input {
+  flex: 1;
+  height: 100%;
+  padding: 0 16px;
+  background: transparent;
+  border: none;
+  color: var(--cron-text-main);
+  font-size: 16px;
+  font-weight: 600;
+  outline: none;
+}
+
+.custom-amount-input::placeholder {
+  color: var(--cron-text-sub);
+  opacity: 0.7;
+}
+
+.custom-input-container .token-unit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--cron-text-sub);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 0 16px;
+  background: rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-left: 1px solid var(--cron-border);
+}
+
+/* Selected Value Display */
+.selected-value-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(41, 151, 255, 0.08);
+  border: 1px solid rgba(41, 151, 255, 0.2);
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+.selected-label {
+  color: var(--cron-text-sub);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.selected-value {
+  color: var(--cron-blue);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: monospace;
+}
+
 /* Responsive Design - Improved for perfect alignment */
 @media (max-width: 768px) {
   .amount-input-container {
@@ -285,6 +468,46 @@
     text-align: right;
     font-size: 13px;
   }
+  
+  .fixed-options {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .fixed-option-btn {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+  
+  .mode-options {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .custom-input-container {
+    height: 44px;
+  }
+  
+  .custom-amount-input {
+    font-size: 14px;
+    padding: 0 12px;
+  }
+  
+  .custom-input-container .token-unit {
+    font-size: 11px;
+    padding: 0 12px;
+  }
+  
+  .selected-value-display {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .selected-value {
+    align-self: flex-end;
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -311,6 +534,33 @@
     font-size: 14px;
     height: 40px;
     padding: 0 10px;
+  }
+  
+  .cron-job-settings {
+    padding: 16px;
+  }
+  
+  .cron-job-settings h4 {
+    font-size: 16px;
+  }
+  
+  .custom-input-container {
+    height: 40px;
+  }
+  
+  .custom-amount-input {
+    font-size: 14px;
+    padding: 0 10px;
+  }
+  
+  .custom-input-container .token-unit {
+    font-size: 10px;
+    padding: 0 10px;
+  }
+  
+  .fixed-option-btn {
+    padding: 10px 6px;
+    font-size: 12px;
   }
 }
 
@@ -355,4 +605,51 @@
 /* Fix any overflow issues */
 * {
   box-sizing: border-box;
+}
+
+/* Dark mode specific adjustments */
+[data-theme='dark'] .mode-options {
+  background: var(--cron-input-bg);
+  border-color: var(--cron-border);
+}
+
+[data-theme='dark'] .mode-option {
+  color: var(--cron-text-color);
+}
+
+[data-theme='dark'] .fixed-option-btn {
+  background: var(--cron-input-bg);
+  border-color: var(--cron-border);
+  color: var(--cron-text-color);
+}
+
+[data-theme='dark'] .fixed-option-btn:hover:not(:disabled) {
+  background: rgba(41, 151, 255, 0.15);
+}
+
+[data-theme='dark'] .custom-input-container {
+  background: var(--cron-input-bg);
+  border-color: var(--cron-border);
+}
+
+[data-theme='dark'] .custom-amount-input {
+  color: var(--cron-text-color);
+}
+
+[data-theme='dark'] .custom-input-container .token-unit {
+  color: var(--cron-text-sub);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] .selected-value-display {
+  background: rgba(41, 151, 255, 0.12);
+  border-color: rgba(41, 151, 255, 0.25);
+}
+
+[data-theme='dark'] .selected-label {
+  color: var(--cron-blue-light);
+}
+
+[data-theme='dark'] .selected-value {
+  color: var(--cron-blue-light);
 }

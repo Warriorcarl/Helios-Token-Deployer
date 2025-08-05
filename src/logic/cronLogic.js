@@ -60,6 +60,18 @@ export class CronJobManager {
     return numAmount;
   }
 
+  // Calculate expiration block based on offset - for backward compatibility
+  calculateExpirationBlock(expirationOffset) {
+    if (!this.currentBlock || !expirationOffset) return 0;
+    
+    const offset = parseInt(expirationOffset, 10);
+    if (isNaN(offset) || offset < 1) {
+      return this.currentBlock + 1000; // Default fallback
+    }
+    
+    return this.currentBlock + offset;
+  }
+
   // Calculate expiration block based on amount and frequency
   calculateExpirationBlockFromAmount(amountToDeposit, frequency) {
     if (!amountToDeposit || !frequency || !this.currentBlock) return 0;

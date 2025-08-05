@@ -429,18 +429,17 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
     }
   };
 
-  // Handle Mintable Token deployment
+  // Handle Mintable Token deployment - updated for step 1 only
   const handleDeployMintableToken = (tokenData) => {
     try {
-      const { tokenName, tokenSymbol, selectedMethod, mintAmount } = tokenData;
+      const { tokenName, tokenSymbol } = tokenData;
       
       addLog('🔍 Starting Mintable Token deployment validation...', 'info');
-      addLog(`📝 Input data: Name="${tokenName}", Symbol="${tokenSymbol}", Method="${selectedMethod}", Amount="${mintAmount}"`, 'info');
+      addLog(`📝 Input data: Name="${tokenName}", Symbol="${tokenSymbol}"`, 'info');
       
-      // Validate input
+      // Validate input - only name and symbol for step 1
       const nameValidation = mintableTokenManager.validateTokenName(tokenName);
       const symbolValidation = mintableTokenManager.validateTokenSymbol(tokenSymbol);
-      const amountValidation = mintableTokenManager.validateAmount(mintAmount);
       
       if (!nameValidation.isValid) {
         throw new Error(`Token name validation failed: ${nameValidation.error}`);
@@ -448,27 +447,22 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
       if (!symbolValidation.isValid) {
         throw new Error(`Token symbol validation failed: ${symbolValidation.error}`);
       }
-      if (!amountValidation.isValid) {
-        throw new Error(`Amount validation failed: ${amountValidation.error}`);
-      }
       
       addLog('✅ All input validations passed', 'info');
       
-      // Store token info with method selection
+      // Store basic token info (method and amount will be configured in step 2)
       setTokenInfo({ 
         tokenName, 
         tokenSymbol, 
-        mintAmount, 
-        selectedMethod,
-        requiresInitialMint: selectedMethod === 'burn' 
+        mintAmount: '100', // default value for step 2
+        selectedMethod: 'mint' // default value for step 2
       });
-      setSelectedMethod(selectedMethod);
       setDeploymentError('');
       
       addLog('🔧 Generating deployment bytecode...', 'info');
       
-      // Get deployment data from manager
-      const deploymentData = mintableTokenManager.generateDeploymentData(tokenName, tokenSymbol, selectedMethod);
+      // Get deployment data from manager - using defaults for deployment
+      const deploymentData = mintableTokenManager.generateDeploymentData(tokenName, tokenSymbol, 'mint');
       
       addLog(`✅ Deployment data generated successfully`, 'info');
       addLog(`📊 Bytecode length: ${deploymentData.data.length} characters`, 'info');
@@ -477,11 +471,7 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
       addLog('Starting Mintable ERC20 Token deployment...', 'info');
       addLog(`Token Name: ${tokenName}`, 'info');
       addLog(`Token Symbol: ${tokenSymbol}`, 'info');
-      addLog(`Selected Cron Method: ${selectedMethod}(${mintAmount} ${tokenSymbol})`, 'info');
-      
-      if (selectedMethod === 'burn') {
-        addLog('⚠️  Burn method selected - Initial mint will be performed after deployment', 'warning');
-      }
+      addLog('Cron method and amount will be configured in Step 2', 'info');
       
       // Validate deployment data before sending
       if (!deploymentData.data || !deploymentData.data.startsWith('0x')) {
@@ -546,21 +536,21 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
     }
   };
 
-  // Handle cron job creation with Mintable Token - updated to use amount
-  const handleCreateCronWithMintableToken = (amountToDeposit, calculatedExpirationBlock) => {
+  // Handle cron job creation with Mintable Token - updated to use amount and new parameters
+  const handleCreateCronWithMintableToken = (amountToDeposit, calculatedExpirationBlock, selectedMethod, tokenAmount) => {
     try {
-      // Use new amount-based token cron creation
+      // Use new amount-based token cron creation with updated parameters
       const args = mintableTokenManager.prepareCronArgsWithTokenAmount(
         deployedWarriorAddress, 
-        selectedMethod, 
-        tokenInfo.mintAmount,
+        selectedMethod || 'mint', 
+        tokenAmount || '100',
         frequency, 
         amountToDeposit,
         calculatedExpirationBlock
       );
       
       addLog(`Creating cron job with Mintable Token ${deployedWarriorAddress}...`, 'info');
-      addLog(`Method: ${selectedMethod}(${tokenInfo.mintAmount} ${tokenInfo.tokenSymbol})`, 'info');
+      addLog(`Method: ${selectedMethod || 'mint'}(${tokenAmount || '100'} tokens)`, 'info');
       addLog(`Frequency: Every ${frequency} blocks`, 'info');
       addLog(`Amount to Deposit: ${amountToDeposit} HLS`, 'info');
       addLog(`Calculated Expiration: Block ${calculatedExpirationBlock}`, 'info');
@@ -568,6 +558,13 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
       if (selectedMethod === 'burn') {
         addLog('⚠️  Burn operations will only succeed if sufficient token balance exists', 'warning');
       }
+      
+      // Store updated token info for success message
+      setTokenInfo(prev => ({
+        ...prev,
+        selectedMethod: selectedMethod || 'mint',
+        mintAmount: tokenAmount || '100'
+      }));
       
       writeCreate({
         address: CHRONOS_ADDRESS,

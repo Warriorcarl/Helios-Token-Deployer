@@ -320,6 +320,23 @@ export class MintableTokenManager {
   }
 
   /**
+   * Get method ABI for specific mintable token method
+   */
+  getMethodAbi(methodName) {
+    try {
+      if (!this.SUPPORTED_METHODS.includes(methodName)) {
+        throw new Error(`Unsupported method: ${methodName}. Supported: ${this.SUPPORTED_METHODS.join(', ')}`);
+      }
+      
+      // Use the existing getCronJobAbi method which already handles this
+      return this.getCronJobAbi(methodName);
+    } catch (error) {
+      console.error('Error getting method ABI:', error);
+      throw new Error(`Failed to get method ABI: ${error.message}`);
+    }
+  }
+
+  /**
    * Generate cron job ABI string for specific method
    */
   getCronJobAbi(method) {

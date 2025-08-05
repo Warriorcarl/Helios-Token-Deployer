@@ -1,11 +1,10 @@
 import React from "react";
-import { MINTABLE_TOKEN_CONFIG } from "../../constants/abi/mintableTokenAbi";
+import { MINTABLE_TOKEN_CONFIG, MINTABLE_TOKEN_METHODS } from "../../constants/abi/mintableTokenAbi";
 import AmountToDepositForm from "./AmountToDepositForm";
 import "./amount-deposit-styles.css";
 
 export default function MintableTokenCronForm({
   targetAddress,
-  targetMethod,
   tokenInfo,
   frequency,
   setFrequency,
@@ -16,6 +15,12 @@ export default function MintableTokenCronForm({
 }) {
   const [amountToDeposit, setAmountToDeposit] = React.useState("");
   const [calculatedExpirationBlock, setCalculatedExpirationBlock] = React.useState(0);
+  
+  // Default Cron Job Settings - moved from step 1
+  const [selectedMethod, setSelectedMethod] = React.useState('mint');
+  const [tokenValueMode, setTokenValueMode] = React.useState('fixed'); // 'fixed' or 'custom'
+  const [fixedTokenValue, setFixedTokenValue] = React.useState('100');
+  const [customTokenValue, setCustomTokenValue] = React.useState('');
 
   const handleAmountChange = (amount, expirationBlock) => {
     setAmountToDeposit(amount);
@@ -24,23 +29,36 @@ export default function MintableTokenCronForm({
 
   const handleCreateCron = () => {
     if (amountToDeposit && calculatedExpirationBlock > 0) {
-      onCreateCron(amountToDeposit, calculatedExpirationBlock);
+      const tokenAmount = tokenValueMode === 'fixed' ? fixedTokenValue : customTokenValue;
+      onCreateCron(amountToDeposit, calculatedExpirationBlock, selectedMethod, tokenAmount);
+    }
+  };
+
+  const getCurrentTokenAmount = () => {
+    return tokenValueMode === 'fixed' ? fixedTokenValue : customTokenValue;
+  };
+
+  const handleCustomTokenValueChange = (e) => {
+    const value = e.target.value.replace(/[^0-9]/g, '');
+    if (parseInt(value) <= 100000 || value === '') {
+      setCustomTokenValue(value);
     }
   };
 
   const getMethodDescription = () => {
-    if (targetMethod === 'mint') {
-      return `Mint ${tokenInfo.mintAmount} ${tokenInfo.tokenSymbol} tokens every ${frequency} blocks`;
-    } else if (targetMethod === 'burn') {
-      return `Burn ${tokenInfo.mintAmount} ${tokenInfo.tokenSymbol} tokens every ${frequency} blocks`;
-    } else if (targetMethod === 'mintAndBurn') {
-      return `Mint & Burn ${tokenInfo.mintAmount} ${tokenInfo.tokenSymbol} tokens every ${frequency} blocks (net +${tokenInfo.mintAmount})`;
+    const amount = getCurrentTokenAmount();
+    if (selectedMethod === 'mint') {
+      return `Mint ${amount} ${tokenInfo.tokenSymbol} tokens every ${frequency} blocks`;
+    } else if (selectedMethod === 'burn') {
+      return `Burn ${amount} ${tokenInfo.tokenSymbol} tokens every ${frequency} blocks`;
+    } else if (selectedMethod === 'mintAndBurn') {
+      return `Mint & Burn ${amount} ${tokenInfo.tokenSymbol} tokens every ${frequency} blocks (net +${amount})`;
     }
-    return `Execute ${targetMethod}() every ${frequency} blocks`;
+    return `Execute ${selectedMethod}() every ${frequency} blocks`;
   };
 
   const getMethodDetails = () => {
-    if (targetMethod === 'mint') {
+    if (selectedMethod === 'mint') {
       return {
         icon: "🪙",
         action: "Minting",
@@ -48,7 +66,7 @@ export default function MintableTokenCronForm({
         effect: "Supply increases",
         gasUsage: MINTABLE_TOKEN_CONFIG.MINT_GAS_LIMIT
       };
-    } else if (targetMethod === 'burn') {
+    } else if (selectedMethod === 'burn') {
       return {
         icon: "🔥",
         action: "Burning", 
@@ -56,7 +74,7 @@ export default function MintableTokenCronForm({
         effect: "Supply decreases",
         gasUsage: MINTABLE_TOKEN_CONFIG.BURN_GAS_LIMIT
       };
-    } else if (targetMethod === 'mintAndBurn') {
+    } else if (selectedMethod === 'mintAndBurn') {
       return {
         icon: "🔄",
         action: "Minting & Burning",
@@ -79,14 +97,17 @@ export default function MintableTokenCronForm({
   const isFormValid = () => {
     const freq = parseInt(frequency);
     const amount = parseFloat(amountToDeposit);
-    return freq >= 1 && freq <= 1000 && amount >= 0.001 && calculatedExpirationBlock > 0;
+    const tokenAmount = getCurrentTokenAmount();
+    const validTokenAmount = tokenAmount && parseFloat(tokenAmount) > 0;
+    
+    return freq >= 1 && freq <= 1000 && amount >= 0.001 && calculatedExpirationBlock > 0 && validTokenAmount;
   };
 
   return (
     <div className="mintable-token-cron-form">
       <div className="deploy-step-header">
-        <h3>Step 2: Create Mintable Token Cron Job</h3>
-        <p>Configure your cron job to automatically manage your mintable ERC20 token.</p>
+        <h3>Step 2: Configure Mintable Token Cron Job</h3>
+        <p>Configure your cron job settings and token value to automatically manage your mintable ERC20 token.</p>
       </div>
 
       <div className="target-info">
@@ -112,10 +133,98 @@ export default function MintableTokenCronForm({
             <span className="info-label">Token Symbol:</span>
             <span className="info-value">{tokenInfo.tokenSymbol}</span>
           </div>
-          <div className="info-row">
-            <span className="info-label">Cron Method:</span>
-            <span className="info-value method-value">
-              {methodDetails.icon} {targetMethod}({tokenInfo.mintAmount} {tokenInfo.tokenSymbol})
+        </div>
+      </div>
+
+      {/* Default Cron Job Settings - moved from step 1 */}
+      <div className="cron-job-settings">
+        <h4>Cron Job Settings</h4>
+        
+        <div className="method-selection">
+          <label>Cron Method:</label>
+          <select 
+            value={selectedMethod} 
+            onChange={(e) => setSelectedMethod(e.target.value)}
+            disabled={isCreating}
+            className="method-selector"
+          >
+            {MINTABLE_TOKEN_METHODS.map(method => (
+              <option key={method.value} value={method.value}>
+                {method.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="token-value-section">
+          <label>Token Value per Execution:</label>
+          
+          <div className="value-mode-selector">
+            <div className="mode-options">
+              <label className="mode-option">
+                <input
+                  type="radio"
+                  name="tokenValueMode"
+                  value="fixed"
+                  checked={tokenValueMode === 'fixed'}
+                  onChange={(e) => setTokenValueMode(e.target.value)}
+                  disabled={isCreating}
+                />
+                <span>Fixed Options</span>
+              </label>
+              <label className="mode-option">
+                <input
+                  type="radio"
+                  name="tokenValueMode"
+                  value="custom"
+                  checked={tokenValueMode === 'custom'}
+                  onChange={(e) => setTokenValueMode(e.target.value)}
+                  disabled={isCreating}
+                />
+                <span>Custom Value</span>
+              </label>
+            </div>
+          </div>
+
+          {tokenValueMode === 'fixed' && (
+            <div className="fixed-value-selector">
+              <div className="fixed-options">
+                {['100', '1000', '10000'].map(value => (
+                  <button
+                    key={value}
+                    type="button"
+                    className={`fixed-option-btn ${fixedTokenValue === value ? 'active' : ''}`}
+                    onClick={() => setFixedTokenValue(value)}
+                    disabled={isCreating}
+                  >
+                    {parseInt(value).toLocaleString()} {tokenInfo.tokenSymbol}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {tokenValueMode === 'custom' && (
+            <div className="custom-value-input">
+              <div className="custom-input-container">
+                <input
+                  type="text"
+                  value={customTokenValue}
+                  onChange={handleCustomTokenValueChange}
+                  placeholder="Enter custom amount"
+                  disabled={isCreating}
+                  className="custom-amount-input"
+                />
+                <span className="token-unit">{tokenInfo.tokenSymbol}</span>
+              </div>
+              <span className="input-hint">Maximum: 100,000 tokens</span>
+            </div>
+          )}
+
+          <div className="selected-value-display">
+            <span className="selected-label">Selected Amount:</span>
+            <span className="selected-value">
+              {getCurrentTokenAmount() ? `${parseInt(getCurrentTokenAmount()).toLocaleString()} ${tokenInfo.tokenSymbol}` : 'Not selected'}
             </span>
           </div>
         </div>
@@ -136,7 +245,7 @@ export default function MintableTokenCronForm({
               </div>
               <div className="stat-item">
                 <span className="stat-label">Amount per execution:</span>
-                <span className="stat-value">{tokenInfo.mintAmount} {tokenInfo.tokenSymbol}</span>
+                <span className="stat-value">{getCurrentTokenAmount() || '0'} {tokenInfo.tokenSymbol}</span>
               </div>
               <div className="stat-item">
                 <span className="stat-label">Estimated gas:</span>
@@ -170,7 +279,7 @@ export default function MintableTokenCronForm({
           {/* Amount to Deposit Form */}
           <AmountToDepositForm
             frequency={frequency}
-            tokenMethod={targetMethod}
+            tokenMethod={selectedMethod}
             maxGasPrice={methodDetails.gasUsage}
             blockNumber={blockNumber}
             onAmountChange={handleAmountChange}
@@ -198,58 +307,62 @@ export default function MintableTokenCronForm({
       <div className="projected-impact">
         <h4>Projected Token Supply Impact</h4>
         <div className="impact-calculation">
-          {targetMethod === 'mint' ? (
-            <div className="impact-info">
-              <div className="impact-row">
-                <span>Per execution:</span>
-                <span className="positive">+{tokenInfo.mintAmount} {tokenInfo.tokenSymbol}</span>
-              </div>
-              <div className="impact-row">
-                <span>After 10 executions:</span>
-                <span className="positive">+{(parseFloat(tokenInfo.mintAmount) * 10).toFixed(2)} {tokenInfo.tokenSymbol}</span>
-              </div>
-              <div className="impact-row">
-                <span>After 100 executions:</span>
-                <span className="positive">+{(parseFloat(tokenInfo.mintAmount) * 100).toFixed(2)} {tokenInfo.tokenSymbol}</span>
-              </div>
-            </div>
-          ) : targetMethod === 'burn' ? (
-            <div className="impact-info">
-              <div className="impact-row">
-                <span>Per execution:</span>
-                <span className="negative">-{tokenInfo.mintAmount} {tokenInfo.tokenSymbol}</span>
-              </div>
-              <div className="impact-note">
-                <span className="note-icon">⚠️</span>
-                <span>Burn operations require sufficient token balance</span>
-              </div>
-            </div>
-          ) : targetMethod === 'mintAndBurn' ? (
-            <div className="impact-info">
-              <div className="impact-row">
-                <span>Per execution:</span>
-                <span className="positive">+{tokenInfo.mintAmount} {tokenInfo.tokenSymbol} (net effect)</span>
-              </div>
-              <div className="impact-row">
-                <span>After 10 executions:</span>
-                <span className="positive">+{(parseFloat(tokenInfo.mintAmount) * 10).toFixed(2)} {tokenInfo.tokenSymbol}</span>
-              </div>
-              <div className="impact-row">
-                <span>After 100 executions:</span>
-                <span className="positive">+{(parseFloat(tokenInfo.mintAmount) * 100).toFixed(2)} {tokenInfo.tokenSymbol}</span>
-              </div>
-              <div className="impact-note">
-                <span className="note-icon">🔄</span>
-                <span>Mint & Burn operations: Creates 2x amount, burns 1x amount (net +1x)</span>
-              </div>
-            </div>
-          ) : (
-            <div className="impact-info">
-              <div className="impact-row">
-                <span>Per execution:</span>
-                <span className="neutral">Unknown impact</span>
-              </div>
-            </div>
+          {getCurrentTokenAmount() && (
+            <>
+              {selectedMethod === 'mint' ? (
+                <div className="impact-info">
+                  <div className="impact-row">
+                    <span>Per execution:</span>
+                    <span className="positive">+{parseInt(getCurrentTokenAmount()).toLocaleString()} {tokenInfo.tokenSymbol}</span>
+                  </div>
+                  <div className="impact-row">
+                    <span>After 10 executions:</span>
+                    <span className="positive">+{(parseInt(getCurrentTokenAmount()) * 10).toLocaleString()} {tokenInfo.tokenSymbol}</span>
+                  </div>
+                  <div className="impact-row">
+                    <span>After 100 executions:</span>
+                    <span className="positive">+{(parseInt(getCurrentTokenAmount()) * 100).toLocaleString()} {tokenInfo.tokenSymbol}</span>
+                  </div>
+                </div>
+              ) : selectedMethod === 'burn' ? (
+                <div className="impact-info">
+                  <div className="impact-row">
+                    <span>Per execution:</span>
+                    <span className="negative">-{parseInt(getCurrentTokenAmount()).toLocaleString()} {tokenInfo.tokenSymbol}</span>
+                  </div>
+                  <div className="impact-note">
+                    <span className="note-icon">⚠️</span>
+                    <span>Burn operations require sufficient token balance</span>
+                  </div>
+                </div>
+              ) : selectedMethod === 'mintAndBurn' ? (
+                <div className="impact-info">
+                  <div className="impact-row">
+                    <span>Per execution:</span>
+                    <span className="positive">+{parseInt(getCurrentTokenAmount()).toLocaleString()} {tokenInfo.tokenSymbol} (net effect)</span>
+                  </div>
+                  <div className="impact-row">
+                    <span>After 10 executions:</span>
+                    <span className="positive">+{(parseInt(getCurrentTokenAmount()) * 10).toLocaleString()} {tokenInfo.tokenSymbol}</span>
+                  </div>
+                  <div className="impact-row">
+                    <span>After 100 executions:</span>
+                    <span className="positive">+{(parseInt(getCurrentTokenAmount()) * 100).toLocaleString()} {tokenInfo.tokenSymbol}</span>
+                  </div>
+                  <div className="impact-note">
+                    <span className="note-icon">🔄</span>
+                    <span>Mint & Burn operations: Creates 2x amount, burns 1x amount (net +1x)</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="impact-info">
+                  <div className="impact-row">
+                    <span>Per execution:</span>
+                    <span className="neutral">Unknown impact</span>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
