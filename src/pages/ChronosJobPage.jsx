@@ -500,7 +500,7 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
   };
 
   // Handle continue to cron creation
-  const handleContinueTostep2 = (address, method, tokenData = null) => {
+  const handleContinueToStep2 = (address, method, tokenData = null) => {
     setDeployedWarriorAddress(address);
     setSelectedMethod(method);
     
