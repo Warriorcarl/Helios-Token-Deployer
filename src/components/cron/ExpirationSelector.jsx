@@ -44,11 +44,10 @@ export default function ExpirationSelector({
   // Find the current selection or default to first option
   const currentSelection = EXPIRATION_OPTIONS.find(opt => opt.blocks.toString() === value?.toString()) || EXPIRATION_OPTIONS[0];
 
-  const handleSelectionChange = (e) => {
-    const selectedOption = EXPIRATION_OPTIONS.find(opt => opt.blocks.toString() === e.target.value);
-    if (selectedOption && onChange) {
+  const handleOptionSelect = (option) => {
+    if (onChange && !disabled) {
       // Pass the block value to parent component
-      onChange(selectedOption.blocks.toString());
+      onChange(option.blocks.toString());
     }
   };
 
@@ -59,18 +58,19 @@ export default function ExpirationSelector({
     <div className="expiration-selector">
       <div className="input-group">
         <label className="expiration-label">{label}</label>
-        <select
-          value={currentSelection.blocks}
-          onChange={handleSelectionChange}
-          disabled={disabled}
-          className="expiration-select"
-        >
+        <div className="expiration-options">
           {EXPIRATION_OPTIONS.map((option) => (
-            <option key={option.value} value={option.blocks}>
-              {option.label} (~{option.blocks.toLocaleString()} blocks)
-            </option>
+            <button
+              key={option.value}
+              onClick={() => handleOptionSelect(option)}
+              disabled={disabled}
+              className={`expiration-option-btn ${currentSelection.blocks === option.blocks ? 'active' : ''}`}
+            >
+              <span className="option-label">{option.label}</span>
+              <span className="option-blocks">~{option.blocks.toLocaleString()} blocks</span>
+            </button>
           ))}
-        </select>
+        </div>
         <div className="expiration-info">
           <div className="expiration-details">
             <small>

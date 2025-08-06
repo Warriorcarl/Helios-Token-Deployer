@@ -66,16 +66,18 @@ export default function SimpleCronForm({
       {/* Method Selection */}
       <div className="method-selection">
         <h4>Select Method</h4>
-        <select
-          value={selectedMethod}
-          onChange={(e) => setSelectedMethod(e.target.value)}
-          className="method-select"
-          disabled={isCreating}
-        >
+        <div className="method-options">
           {PREDEFINED_CONTRACT.methods.map(method => (
-            <option key={method} value={method}>{method}()</option>
+            <button
+              key={method}
+              onClick={() => setSelectedMethod(method)}
+              disabled={isCreating}
+              className={`method-option-btn ${selectedMethod === method ? 'active' : ''}`}
+            >
+              <span className="method-name">{method}()</span>
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
       {/* Target Info */}

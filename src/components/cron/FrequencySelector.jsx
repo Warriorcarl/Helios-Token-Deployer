@@ -26,11 +26,10 @@ export default function FrequencySelector({
   // Find the current selection or default to first option
   const currentSelection = FREQUENCY_OPTIONS.find(opt => opt.blocks.toString() === value?.toString()) || FREQUENCY_OPTIONS[0];
 
-  const handleSelectionChange = (e) => {
-    const selectedOption = FREQUENCY_OPTIONS.find(opt => opt.blocks.toString() === e.target.value);
-    if (selectedOption && onChange) {
+  const handleOptionSelect = (option) => {
+    if (onChange && !disabled) {
       // Pass the block value to parent component
-      onChange(selectedOption.blocks.toString());
+      onChange(option.blocks.toString());
     }
   };
 
@@ -38,18 +37,19 @@ export default function FrequencySelector({
     <div className="frequency-selector">
       <div className="input-group">
         <label className="frequency-label">{label}</label>
-        <select
-          value={currentSelection.blocks}
-          onChange={handleSelectionChange}
-          disabled={disabled}
-          className="frequency-select"
-        >
+        <div className="frequency-options">
           {FREQUENCY_OPTIONS.map((option) => (
-            <option key={option.value} value={option.blocks}>
-              {option.label} (~{option.blocks} blocks)
-            </option>
+            <button
+              key={option.value}
+              onClick={() => handleOptionSelect(option)}
+              disabled={disabled}
+              className={`frequency-option-btn ${currentSelection.blocks === option.blocks ? 'active' : ''}`}
+            >
+              <span className="option-label">{option.label}</span>
+              <span className="option-blocks">~{option.blocks} blocks</span>
+            </button>
           ))}
-        </select>
+        </div>
         <div className="frequency-info">
           <small>
             Selected: Every {currentSelection.label} ({currentSelection.blocks} blocks)

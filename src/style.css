@@ -1426,3 +1426,67 @@ body {
     opacity: 1;
   }
 }
+
+/* Logo Selector Button Styles */
+.logo-selector-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.logo-option-btn {
+  padding: 8px 16px;
+  background: var(--background-card);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  flex: 1;
+}
+
+.logo-option-btn:hover:not(:disabled) {
+  border-color: #2997ff;
+  background: rgba(41, 151, 255, 0.1);
+}
+
+.logo-option-btn.active {
+  border-color: #2997ff;
+  background: rgba(41, 151, 255, 0.15);
+  color: #2997ff;
+  font-weight: 600;
+}
+
+.logo-option-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Dark theme support for logo selector */
+[data-theme='dark'] .logo-option-btn {
+  background: var(--background-secondary);
+  border-color: var(--border-secondary);
+  color: var(--text-secondary);
+}
+
+[data-theme='dark'] .logo-option-btn.active {
+  background: rgba(41, 151, 255, 0.2);
+  border-color: #2997ff;
+  color: #4da3ff;
+}
+
+/* Mobile responsive for logo selector */
+@media (max-width: 768px) {
+  .logo-selector-buttons {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .logo-option-btn {
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+}

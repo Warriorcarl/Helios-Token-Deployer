@@ -92,13 +92,17 @@ export const TokenFormElements = {
 
   // Logo option selector
   LogoSelector: ({ value, onChange, options }) => (
-    <select value={value} onChange={onChange} className="logo-selector">
+    <div className="logo-selector-buttons">
       {options.map(option => (
-        <option key={option.value} value={option.value}>
+        <button
+          key={option.value}
+          onClick={() => onChange({ target: { value: option.value } })}
+          className={`logo-option-btn ${value === option.value ? 'active' : ''}`}
+        >
           {option.label}
-        </option>
+        </button>
       ))}
-    </select>
+    </div>
   ),
 
   // Hidden file input for image upload

@@ -428,6 +428,61 @@
   font-family: monospace;
 }
 
+/* Method Selection Styles */
+.method-selection {
+  margin-bottom: 20px;
+}
+
+.method-selection h4 {
+  color: var(--cron-text-main);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.method-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.method-option-btn {
+  padding: 16px 12px;
+  background: var(--cron-card);
+  border: 2px solid var(--cron-border);
+  border-radius: 12px;
+  color: var(--cron-text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.method-option-btn:hover:not(:disabled) {
+  border-color: var(--cron-blue);
+  background: rgba(41, 151, 255, 0.1);
+}
+
+.method-option-btn.active {
+  border-color: var(--cron-blue);
+  background: rgba(41, 151, 255, 0.15);
+  box-shadow: 0 0 0 1px var(--cron-blue);
+}
+
+.method-option-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.method-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cron-text-main);
+}
+
 /* Responsive Design - Improved for perfect alignment */
 @media (max-width: 768px) {
   .amount-input-container {
@@ -506,6 +561,19 @@
   
   .selected-value {
     align-self: flex-end;
+    font-size: 13px;
+  }
+  
+  .method-options {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .method-option-btn {
+    padding: 12px 10px;
+  }
+  
+  .method-name {
     font-size: 13px;
   }
 }
@@ -652,4 +720,32 @@
 
 [data-theme='dark'] .selected-value {
   color: var(--cron-blue-light);
+}
+
+/* Dark mode adjustments for method selector */
+[data-theme='dark'] .method-option-btn {
+  background: var(--cron-input-bg);
+  border-color: var(--cron-border);
+  color: var(--cron-text-color);
+}
+
+[data-theme='dark'] .method-option-btn.active {
+  background: rgba(41, 151, 255, 0.2);
+  border-color: var(--cron-blue);
+}
+
+/* Mobile responsive for method selector */
+@media (max-width: 768px) {
+  .method-options {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .method-option-btn {
+    padding: 12px 10px;
+  }
+  
+  .method-name {
+    font-size: 13px;
+  }
 }

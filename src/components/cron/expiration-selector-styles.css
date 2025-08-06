@@ -18,40 +18,54 @@
   margin-bottom: 8px;
 }
 
-.expiration-select {
-  width: 100%;
-  padding: 12px 16px;
-  background: var(--cron-input-bg);
-  border: 1px solid var(--cron-input-border);
+/* Button-based options instead of dropdown */
+.expiration-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.expiration-option-btn {
+  padding: 16px 12px;
+  background: var(--cron-card);
+  border: 2px solid var(--cron-border);
   border-radius: 12px;
   color: var(--cron-text-main);
-  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 16px;
-  padding-right: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.expiration-select:focus {
+.expiration-option-btn:hover:not(:disabled) {
   border-color: var(--cron-blue);
-  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.1);
-  outline: none;
+  background: rgba(41, 151, 255, 0.1);
 }
 
-.expiration-select:disabled {
+.expiration-option-btn.active {
+  border-color: var(--cron-blue);
+  background: rgba(41, 151, 255, 0.15);
+  box-shadow: 0 0 0 1px var(--cron-blue);
+}
+
+.expiration-option-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  background-color: var(--cron-input-bg);
 }
 
-.expiration-select option {
-  background: var(--cron-input-bg);
+.option-label {
+  font-size: 14px;
+  font-weight: 600;
   color: var(--cron-text-main);
-  padding: 8px;
+}
+
+.option-blocks {
+  font-size: 12px;
+  color: var(--cron-text-sub);
+  font-weight: 500;
 }
 
 .expiration-info {
@@ -79,25 +93,35 @@
 }
 
 /* Dark mode adjustments */
-[data-theme='dark'] .expiration-select {
+[data-theme='dark'] .expiration-option-btn {
   background: var(--cron-input-bg);
   border-color: var(--cron-border);
   color: var(--cron-text-color);
 }
 
-[data-theme='dark'] .expiration-select option {
-  background: var(--cron-input-bg);
-  color: var(--cron-text-color);
+[data-theme='dark'] .expiration-option-btn.active {
+  background: rgba(41, 151, 255, 0.2);
+  border-color: var(--cron-blue);
 }
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-  .expiration-select {
-    font-size: 14px;
-    padding: 10px 12px;
-    padding-right: 36px;
-    background-size: 14px;
-    background-position: right 10px center;
+  .expiration-options {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .expiration-option-btn {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+  
+  .option-label {
+    font-size: 13px;
+  }
+  
+  .option-blocks {
+    font-size: 11px;
   }
   
   .expiration-details small {

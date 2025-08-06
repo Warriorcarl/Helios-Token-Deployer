@@ -138,18 +138,18 @@ export default function MintableTokenCronForm({
         
         <div className="method-selection">
           <label>Cron Method:</label>
-          <select 
-            value={selectedMethod} 
-            onChange={(e) => setSelectedMethod(e.target.value)}
-            disabled={isCreating}
-            className="method-selector"
-          >
+          <div className="method-options">
             {MINTABLE_TOKEN_METHODS.map(method => (
-              <option key={method.value} value={method.value}>
-                {method.label}
-              </option>
+              <button
+                key={method.value}
+                onClick={() => setSelectedMethod(method.value)}
+                disabled={isCreating}
+                className={`method-option-btn ${selectedMethod === method.value ? 'active' : ''}`}
+              >
+                <span className="method-name">{method.label}</span>
+              </button>
             ))}
-          </select>
+          </div>
         </div>
 
         <div className="token-value-section">

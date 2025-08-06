@@ -21,18 +21,18 @@ export default function SimpleTestDeployForm({
         <div className="deploy-section">
           <div className="method-selection">
             <label>Select Target Method for Cron Job:</label>
-            <select 
-              value={selectedMethod} 
-              onChange={(e) => setSelectedMethod(e.target.value)}
-              disabled={isDeploying}
-              className="method-selector"
-            >
+            <div className="method-options">
               {SIMPLE_CONTRACT_METHODS.map(method => (
-                <option key={method.value} value={method.value}>
-                  {method.label}
-                </option>
+                <button
+                  key={method.value}
+                  onClick={() => setSelectedMethod(method.value)}
+                  disabled={isDeploying}
+                  className={`method-option-btn ${selectedMethod === method.value ? 'active' : ''}`}
+                >
+                  <span className="method-name">{method.label}</span>
+                </button>
               ))}
-            </select>
+            </div>
             <div className="method-hint">
               This method will be called by your cron job
             </div>
