@@ -13,14 +13,14 @@ export const MINTABLE_TOKEN_CONFIG = {
   DEFAULT_MINT_AMOUNT: "1000000000000000000", // 1 token in wei
   DEFAULT_DECIMALS: 18,
   contractName: MintableTokenArtifact.contractName,
-  description: "ERC20 token with public mint and burn functions",
+  description: "ERC20 token with public mint functions",
   version: "1.0.0"
 };
 
-// Available methods for cron jobs - dynamically extracted from ABI
+// Available methods for cron jobs - only mint and mintAndBurn
 export const MINTABLE_TOKEN_METHODS = MintableTokenArtifact.abi
   .filter(item => item.type === 'function' && item.stateMutability === 'nonpayable')
-  .filter(func => ['mint', 'burn', 'mintAndBurn'].includes(func.name))
+  .filter(func => ['mint', 'mintAndBurn'].includes(func.name))
   .map(func => ({
     value: func.name,
     label: `${func.name}(amount) - ${func.name === 'mintAndBurn' ? 'Mint 2x amount then burn 1x amount (ratio 2:1)' : func.name.charAt(0).toUpperCase() + func.name.slice(1) + ' tokens'}`,

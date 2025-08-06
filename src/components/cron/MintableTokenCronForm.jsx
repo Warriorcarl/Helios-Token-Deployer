@@ -54,8 +54,6 @@ export default function MintableTokenCronForm({
     const amount = getCurrentTokenAmount();
     if (selectedMethod === 'mint') {
       return `Mint ${amount} ${tokenInfo.tokenSymbol} tokens every frequency interval`;
-    } else if (selectedMethod === 'burn') {
-      return `Burn ${amount} ${tokenInfo.tokenSymbol} tokens every frequency interval`;
     } else if (selectedMethod === 'mintAndBurn') {
       return `Mint & Burn ${amount} ${tokenInfo.tokenSymbol} tokens every frequency interval (net +${amount})`;
     }
@@ -70,14 +68,6 @@ export default function MintableTokenCronForm({
         description: "Creates new tokens and adds them to the total supply",
         effect: "Supply increases",
         gasUsage: MINTABLE_TOKEN_CONFIG.MINT_GAS_LIMIT
-      };
-    } else if (selectedMethod === 'burn') {
-      return {
-        icon: "🔥",
-        action: "Burning", 
-        description: "Destroys tokens from the caller's balance",
-        effect: "Supply decreases",
-        gasUsage: MINTABLE_TOKEN_CONFIG.BURN_GAS_LIMIT
       };
     } else if (selectedMethod === 'mintAndBurn') {
       return {
@@ -331,21 +321,6 @@ export default function MintableTokenCronForm({
                   <div className="impact-row">
                     <span>After {executionCount} executions (full duration):</span>
                     <span className="positive">+{(parseInt(getCurrentTokenAmount()) * executionCount).toLocaleString()} {tokenInfo.tokenSymbol}</span>
-                  </div>
-                </div>
-              ) : selectedMethod === 'burn' ? (
-                <div className="impact-info">
-                  <div className="impact-row">
-                    <span>Per execution:</span>
-                    <span className="negative">-{parseInt(getCurrentTokenAmount()).toLocaleString()} {tokenInfo.tokenSymbol}</span>
-                  </div>
-                  <div className="impact-row">
-                    <span>After {executionCount} executions (full duration):</span>
-                    <span className="negative">-{(parseInt(getCurrentTokenAmount()) * executionCount).toLocaleString()} {tokenInfo.tokenSymbol}</span>
-                  </div>
-                  <div className="impact-note">
-                    <span className="note-icon">⚠️</span>
-                    <span>Burn operations require sufficient token balance</span>
                   </div>
                 </div>
               ) : selectedMethod === 'mintAndBurn' ? (

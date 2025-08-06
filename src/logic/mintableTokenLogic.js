@@ -14,7 +14,7 @@ import { getOptimizedGasLimit, getOptimizedGasPrice } from '../utils/gasOptimiza
 export class MintableTokenManager {
   constructor() {
     this.deployedTokens = new Map();
-    this.SUPPORTED_METHODS = ['mint', 'burn', 'mintAndBurn'];
+    this.SUPPORTED_METHODS = ['mint', 'mintAndBurn'];
   }
 
   /**
@@ -357,13 +357,6 @@ export class MintableTokenManager {
         symbol: '+',
         description: `Supply will increase by ${totalImpact} tokens after ${executions} executions`
       };
-    } else if (method === 'burn') {
-      return {
-        type: 'decrease',
-        amount: totalImpact,
-        symbol: '-',
-        description: `Supply will decrease by ${totalImpact} tokens after ${executions} executions (if sufficient balance exists)`
-      };
     } else if (method === 'mintAndBurn') {
       return {
         type: 'increase',
@@ -389,8 +382,8 @@ export class MintableTokenManager {
       throw new Error('Invalid contract address');
     }
 
-    if (!['mint', 'burn', 'mintAndBurn'].includes(methodName)) {
-      throw new Error(`Invalid method. Supported methods: mint, burn, mintAndBurn`);
+    if (!['mint', 'mintAndBurn'].includes(methodName)) {
+      throw new Error(`Invalid method. Supported methods: mint, mintAndBurn`);
     }
 
     const freq = parseInt(frequency, 10);
