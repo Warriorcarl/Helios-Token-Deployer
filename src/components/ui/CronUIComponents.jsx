@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAccount } from 'wagmi';
 import ThemeToggleButton from './ThemeToggleButton.jsx';
 
 // UI Components for Cron interface
@@ -111,16 +112,20 @@ export const ButtonElements = {
     disabled = false, 
     loading = false,
     style = {} 
-  }) => (
-    <button 
-      onClick={onClick}
-      disabled={disabled || loading}
-      className="cron-btn-main"
-      style={style}
-    >
-      {loading ? 'Loading...' : children}
-    </button>
-  ),
+  }) => {
+    const { isConnected } = useAccount();
+    
+    return (
+      <button 
+        onClick={onClick}
+        disabled={disabled || loading}
+        className="cron-btn-main"
+        style={style}
+      >
+        {loading ? 'Loading...' : (!isConnected ? 'Connect Wallet' : children)}
+      </button>
+    );
+  },
 
   // Secondary action button
   SecondaryButton: ({ 

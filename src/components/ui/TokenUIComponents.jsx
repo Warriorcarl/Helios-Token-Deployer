@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAccount } from 'wagmi';
 import ThemeToggleButton from './ThemeToggleButton.jsx';
 
 // Token Deployer specific UI components
@@ -149,15 +150,19 @@ export const TokenButtonElements = {
   ),
 
   // Deploy token button
-  DeployButton: ({ onClick, disabled = false, loading = false }) => (
-    <button 
-      onClick={onClick}
-      disabled={disabled}
-      className="deploy-button"
-    >
-      {loading ? 'Deploying...' : 'Deploy Token'}
-    </button>
-  )
+  DeployButton: ({ onClick, disabled = false, loading = false }) => {
+    const { isConnected } = useAccount();
+    
+    return (
+      <button 
+        onClick={onClick}
+        disabled={disabled}
+        className="deploy-button"
+      >
+        {!isConnected ? 'Connect Wallet' : (loading ? 'Deploying...' : 'Deploy Token')}
+      </button>
+    );
+  }
 };
 
 // Layout components for token deployer

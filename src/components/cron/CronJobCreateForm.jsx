@@ -1,4 +1,5 @@
 import React from "react";
+import { useAccount } from 'wagmi';
 import FrequencySelector from "./FrequencySelector";
 import ExpirationSelector from "./ExpirationSelector";
 import AutoDepositCalculator from "./AutoDepositCalculator";
@@ -14,6 +15,7 @@ export default function CronJobCreateForm({
   isCreating,
   onBack
 }) {
+  const { isConnected } = useAccount();
   const [expirationBlocks, setExpirationBlocks] = React.useState("7200"); // Default to 6 hours
   const [calculatedAmount, setCalculatedAmount] = React.useState("0");
   const [executionCount, setExecutionCount] = React.useState(0);
@@ -128,7 +130,7 @@ export default function CronJobCreateForm({
           onClick={handleCreateCron}
           disabled={isCreating || !isFormValid()}
         >
-          {isCreating ? 'Creating Cron Job...' : 'Create Cron Job'}
+          {!isConnected ? 'Connect Wallet' : (isCreating ? 'Creating Cron Job...' : 'Create Cron Job')}
         </button>
       </div>
     </div>

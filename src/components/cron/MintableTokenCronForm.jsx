@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useAccount } from 'wagmi';
 import { MINTABLE_TOKEN_CONFIG, MINTABLE_TOKEN_METHODS } from "../../constants/abi/mintableTokenAbi";
 import FrequencySelector from "./FrequencySelector";
 import ExpirationSelector from "./ExpirationSelector";
@@ -15,6 +16,7 @@ export default function MintableTokenCronForm({
   isCreating,
   onBack
 }) {
+  const { isConnected } = useAccount();
   const [expirationBlocks, setExpirationBlocks] = React.useState("7200"); // Default to 6 hours
   const [calculatedAmount, setCalculatedAmount] = React.useState("0");
   const [executionCount, setExecutionCount] = React.useState(0);
@@ -369,7 +371,7 @@ export default function MintableTokenCronForm({
           onClick={handleCreateCron}
           disabled={isCreating || !isFormValid()}
         >
-          {isCreating ? 'Creating Token Cron Job...' : `Create ${methodDetails.action} Cron Job`}
+          {!isConnected ? 'Connect Wallet' : (isCreating ? 'Creating Token Cron Job...' : `Create ${methodDetails.action} Cron Job`)}
         </button>
       </div>
     </div>

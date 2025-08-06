@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAccount } from 'wagmi';
 import { MINTABLE_TOKEN_CONFIG } from "../../constants/abi/mintableTokenAbi";
 import { getOptimizedGasLimit, getOptimizedGasPrice } from "../../utils/gasOptimization";
 import { MintableTokenUtils } from "../../logic/mintableTokenLogic";
@@ -11,6 +12,7 @@ export default function MintableTokenDeployForm({
   onContinue,
   deploymentError
 }) {
+  const { isConnected } = useAccount();
   const [tokenName, setTokenName] = useState('');
   const [tokenSymbol, setTokenSymbol] = useState('');
 
@@ -140,7 +142,7 @@ export default function MintableTokenDeployForm({
             onClick={() => onDeploy({ tokenName, tokenSymbol })}
             disabled={isDeploying || !isFormValid}
           >
-            {isDeploying ? 'Deploying Mintable Token...' : 'Deploy Mintable ERC20 Token'}
+            {!isConnected ? 'Connect Wallet' : (isDeploying ? 'Deploying Mintable Token...' : 'Deploy Mintable ERC20 Token')}
           </button>
         </div>
       )}

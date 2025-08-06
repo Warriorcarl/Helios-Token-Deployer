@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAccount } from 'wagmi';
 import { SIMPLE_CONTRACT_METHODS } from "../../constants/abi/simpleTestAbi";
 
 export default function SimpleTestDeployForm({
@@ -8,6 +9,7 @@ export default function SimpleTestDeployForm({
   onContinue,
   deploymentError
 }) {
+  const { isConnected } = useAccount();
   const [selectedMethod, setSelectedMethod] = useState('increment');
 
   return (
@@ -65,7 +67,7 @@ export default function SimpleTestDeployForm({
             onClick={() => onDeploy(selectedMethod)}
             disabled={isDeploying}
           >
-            {isDeploying ? 'Deploying Simple Contract...' : 'Deploy Simple Test Contract'}
+            {!isConnected ? 'Connect Wallet' : (isDeploying ? 'Deploying Simple Contract...' : 'Deploy Simple Test Contract')}
           </button>
         </div>
       )}

@@ -1,4 +1,5 @@
 import React from "react";
+import { useAccount } from 'wagmi';
 
 export default function CronActionButtons({
   cronId,
@@ -8,6 +9,7 @@ export default function CronActionButtons({
   isCancelling,
   isAnyFormOpen
 }) {
+  const { isConnected } = useAccount();
   const isInactive = false; // This would be determined by checking if cron was already cancelled
   
   return (
@@ -15,9 +17,9 @@ export default function CronActionButtons({
       <button
         className="cron-action-btn cancel full-width"
         onClick={onCancel}
-        disabled={isCancelling || isAnyFormOpen || isInactive}
+        disabled={isCancelling || isAnyFormOpen || isInactive || !isConnected}
       >
-        {isCancelling ? "Cancelling..." : "Cancel"}
+        {!isConnected ? "Connect Wallet" : (isCancelling ? "Cancelling..." : "Cancel")}
       </button>
     </div>
   );
