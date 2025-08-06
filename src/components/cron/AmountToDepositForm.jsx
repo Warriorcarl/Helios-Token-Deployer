@@ -4,9 +4,9 @@ import { formatEther, parseEther } from "viem";
 // Konstanta untuk kalkulasi
 const BLOCK_TIME_SECONDS = 3; // Rata-rata waktu per block dalam detik
 const SECONDS_PER_DAY = 86400;
-const DAYS_IN_3_MONTHS = 90;
-const MAX_DURATION_SECONDS = DAYS_IN_3_MONTHS * SECONDS_PER_DAY;
-const MAX_BLOCKS_3_MONTHS = Math.floor(MAX_DURATION_SECONDS / BLOCK_TIME_SECONDS);
+const DAYS_IN_1_DAY = 1; // Mengubah dari 90 hari menjadi 1 hari
+const MAX_DURATION_SECONDS = DAYS_IN_1_DAY * SECONDS_PER_DAY;
+const MAX_BLOCKS_1_DAY = Math.floor(MAX_DURATION_SECONDS / BLOCK_TIME_SECONDS);
 
 // Estimasi gas cost per execution (dalam wei)
 const BASE_GAS_COST = parseEther("0.0001"); // 0.0001 HLS per execution
@@ -48,10 +48,10 @@ export default function AmountToDepositForm({
     return baseCost;
   };
 
-  // Kalkulasi maksimum amount untuk 3 bulan
+  // Kalkulasi maksimum amount untuk 1 hari
   const calculateMaxAmount = () => {
     const gasCostPerExecution = calculateGasCostPerExecution();
-    const maxExecutions = Math.floor(MAX_BLOCKS_3_MONTHS / parseInt(frequency || 1));
+    const maxExecutions = Math.floor(MAX_BLOCKS_1_DAY / parseInt(frequency || 1));
     const totalGasCost = gasCostPerExecution * BigInt(maxExecutions);
     
     // Add 20% buffer untuk safety
@@ -74,8 +74,8 @@ export default function AmountToDepositForm({
       const possibleExecutions = Number(amountWei / gasCostPerExecution);
       const totalBlocks = possibleExecutions * parseInt(frequency);
       
-      // Cap at maximum 3 months
-      const cappedBlocks = Math.min(totalBlocks, MAX_BLOCKS_3_MONTHS);
+      // Cap at maximum 1 hari
+      const cappedBlocks = Math.min(totalBlocks, MAX_BLOCKS_1_DAY);
       
       return parseInt(blockNumber) + cappedBlocks;
     } catch (error) {
@@ -115,7 +115,7 @@ export default function AmountToDepositForm({
     
     if (numAmount > maxAmountNum) {
       setIsValid(false);
-      setValidationMessage(`Amount exceeds maximum for 3 months (${maxAmountNum} HLS)`);
+      setValidationMessage(`Amount exceeds maximum for 1 day (${maxAmountNum} HLS)`);
       return false;
     }
     
@@ -223,7 +223,7 @@ export default function AmountToDepositForm({
       {showMaxInfo && (
         <div className="max-info">
           <div className="info-row">
-            <span className="info-label">Maximum for 3 months:</span>
+            <span className="info-label">Maximum for 1 day:</span>
             <span className="info-value">{parseFloat(maxAmount).toFixed(6)} HLS</span>
           </div>
           <div className="calculation-details">
