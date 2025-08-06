@@ -139,47 +139,52 @@ export default function AutoDepositCalculator({
 
       {showDetails && (
         <div className="calculation-details">
-          <div className="detail-section">
-            <h5>📊 Calculation Breakdown</h5>
-            
-            <div className="detail-row">
-              <span className="detail-label">Execution Frequency:</span>
-              <span className="detail-value">Every {frequencyDuration} ({frequencyBlocks} blocks)</span>
-            </div>
-            
-            <div className="detail-row">
-              <span className="detail-label">Total Duration:</span>
-              <span className="detail-value">{expirationDuration} ({parseInt(expirationBlocks || 0).toLocaleString()} blocks)</span>
-            </div>
-            
-            <div className="detail-row">
-              <span className="detail-label">Estimated Executions:</span>
-              <span className="detail-value">{executionCount} times</span>
-            </div>
-            
-            <div className="detail-row">
-              <span className="detail-label">Gas Cost per Execution:</span>
-              <span className="detail-value">{parseFloat(gasCostPerExecution).toFixed(6)} HLS</span>
-            </div>
-            
-            <div className="detail-row">
-              <span className="detail-label">Total Gas Cost:</span>
-              <span className="detail-value">{parseFloat(totalGasCost).toFixed(6)} HLS</span>
-            </div>
-            
-            <div className="detail-row safety-buffer">
-              <span className="detail-label">Safety Buffer (20%):</span>
-              <span className="detail-value">
-                +{(parseFloat(calculatedAmount) - parseFloat(totalGasCost)).toFixed(6)} HLS
-              </span>
-            </div>
+          <div className="breakdown-header">
+            <span className="breakdown-icon">📊</span>
+            <span>Calculation Summary</span>
+          </div>
+          
+          <div className="breakdown-row">
+            <span className="breakdown-label">Execution Frequency:</span>
+            <span className="breakdown-value">Every {frequencyDuration} ({frequencyBlocks} blocks)</span>
+          </div>
+          
+          <div className="breakdown-row">
+            <span className="breakdown-label">Total Duration:</span>
+            <span className="breakdown-value">{expirationDuration} ({parseInt(expirationBlocks || 0).toLocaleString()} blocks)</span>
+          </div>
+          
+          <div className="breakdown-row">
+            <span className="breakdown-label">Estimated Executions:</span>
+            <span className="breakdown-value">{executionCount} times</span>
+          </div>
+          
+          <div className="breakdown-row">
+            <span className="breakdown-label">Gas Cost per Execution:</span>
+            <span className="breakdown-value">{parseFloat(gasCostPerExecution).toFixed(4)} HLS</span>
+          </div>
+          
+          <div className="breakdown-row">
+            <span className="breakdown-label">Total Gas Cost:</span>
+            <span className="breakdown-value">{parseFloat(totalGasCost).toFixed(4)} HLS</span>
+          </div>
+          
+          <div className="breakdown-row safety-buffer">
+            <span className="breakdown-label">
+              <span className="safety-icon">🛡️</span>
+              Safety Buffer (20%):
+            </span>
+            <span className="breakdown-value">+{(parseFloat(calculatedAmount) - parseFloat(totalGasCost)).toFixed(4)} HLS</span>
           </div>
 
           {tokenMethod && tokenMethod !== 'increment' && tokenMethod !== 'ping' && tokenMethod !== 'trigger' && (
-            <div className="token-method-info">
-              <div className="info-badge">
-                <span className="badge-icon">🪙</span>
-                <span>Token method detected - Gas cost increased by {((TOKEN_GAS_MULTIPLIER - 1) * 100).toFixed(0)}%</span>
+            <div className="token-notice">
+              <div className="notice-content">
+                <span className="notice-icon">🪙</span>
+                <div className="notice-text">
+                  <span className="notice-title">Token Operation</span>
+                  <span className="notice-desc">Gas cost increased by {((TOKEN_GAS_MULTIPLIER - 1) * 100).toFixed(0)}% for token methods</span>
+                </div>
               </div>
             </div>
           )}

@@ -149,6 +149,108 @@
   font-size: 14px;
 }
 
+/* Calculation Breakdown Styles - Simple row format selaras dengan calc-row */
+.breakdown-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cron-text-main);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.breakdown-icon {
+  font-size: 14px;
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.breakdown-row:last-child {
+  margin-bottom: 0;
+}
+
+.breakdown-label {
+  color: var(--cron-text-sub);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.breakdown-value {
+  color: var(--cron-text-main);
+  font-weight: 600;
+  font-family: monospace;
+  font-size: 14px;
+  text-align: right;
+}
+
+.breakdown-row.safety-buffer {
+  background: rgba(48, 177, 138, 0.15);
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.breakdown-row.safety-buffer .breakdown-label,
+.breakdown-row.safety-buffer .breakdown-value {
+  color: var(--cron-green);
+  font-weight: 700;
+}
+
+.safety-icon {
+  font-size: 12px;
+}
+
+/* Token Notice - tetap sama */
+.token-notice {
+  margin-top: 8px;
+}
+
+.notice-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(255, 165, 0, 0.08);
+  border: 1px solid rgba(255, 165, 0, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.notice-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.notice-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.notice-title {
+  color: var(--cron-text-main);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.notice-desc {
+  color: var(--cron-text-sub);
+  font-size: 11px;
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
 /* Dark mode adjustments */
 [data-theme='dark'] .auto-deposit-calculator {
   background: var(--cron-card);
@@ -164,7 +266,31 @@
   border-bottom-color: rgba(var(--cron-border-rgb, 36, 49, 92), 0.3);
 }
 
-/* Mobile responsive */
+[data-theme='dark'] .stat-card {
+  background: var(--cron-card);
+  border-color: var(--cron-border);
+}
+
+[data-theme='dark'] .stat-card:hover {
+  border-color: var(--cron-blue);
+  box-shadow: 0 2px 8px rgba(41, 151, 255, 0.12);
+}
+
+[data-theme='dark'] .cost-breakdown {
+  background: rgba(41, 151, 255, 0.1);
+  border-color: rgba(41, 151, 255, 0.3);
+}
+
+[data-theme='dark'] .cost-item:not(:last-child) {
+  border-bottom-color: rgba(var(--cron-border-rgb, 36, 49, 92), 0.3);
+}
+
+[data-theme='dark'] .notice-content {
+  background: rgba(255, 165, 0, 0.1);
+  border-color: rgba(255, 165, 0, 0.25);
+}
+
+/* Mobile responsive - selaras dengan calc-row mobile */
 @media (max-width: 768px) {
   .auto-deposit-calculator {
     padding: 16px;
@@ -195,5 +321,84 @@
     align-items: flex-start;
     gap: 4px;
     text-align: left;
+  }
+  
+  .breakdown-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .stat-card {
+    padding: 12px;
+    min-height: 44px;
+    align-items: center;
+  }
+  
+  .stat-icon {
+    font-size: 16px;
+  }
+  
+  .stat-value {
+    font-size: 13px;
+  }
+  
+  .stat-label {
+    font-size: 11px;
+  }
+  
+  .stat-sub {
+    font-size: 11px;
+  }
+  
+  .cost-breakdown {
+    padding: 12px;
+  }
+  
+  .cost-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .cost-label {
+    font-size: 13px;
+  }
+  
+  .cost-value {
+    text-align: right;
+    font-size: 13px;
+  }
+  
+  .notice-content {
+    padding: 10px;
+  }
+  
+  .notice-title {
+    font-size: 11px;
+  }
+  
+  .notice-desc {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .breakdown-header {
+    font-size: 13px;
+  }
+  
+  .breakdown-icon {
+    font-size: 13px;
+  }
+  
+  .breakdown-label {
+    font-size: 12px;
+  }
+  
+  .breakdown-value {
+    font-size: 12px;
   }
 }
