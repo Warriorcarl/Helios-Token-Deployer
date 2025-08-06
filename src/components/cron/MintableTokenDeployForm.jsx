@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MINTABLE_TOKEN_CONFIG } from "../../constants/abi/mintableTokenAbi";
 import { getOptimizedGasLimit, getOptimizedGasPrice } from "../../utils/gasOptimization";
+import { MintableTokenUtils } from "../../logic/mintableTokenLogic";
 import GasMonitor from "../ui/GasMonitor";
 
 export default function MintableTokenDeployForm({
@@ -17,6 +18,13 @@ export default function MintableTokenDeployForm({
     const value = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
     if (value.length <= 30) {
       setTokenName(value);
+      // Auto-generate symbol when name changes
+      if (value.trim()) {
+        const autoSymbol = MintableTokenUtils.generateSymbolFromName(value);
+        setTokenSymbol(autoSymbol);
+      } else {
+        setTokenSymbol('');
+      }
     }
   };
 
@@ -25,6 +33,12 @@ export default function MintableTokenDeployForm({
     if (value.length <= 5) {
       setTokenSymbol(value);
     }
+  };
+
+  const handleRandomizeToken = () => {
+    const randomData = MintableTokenUtils.generateRandomTokenData();
+    setTokenName(randomData.name);
+    setTokenSymbol(randomData.symbol);
   };
 
   const isFormValid = tokenName.length >= 3 && tokenSymbol.length >= 2;
@@ -39,7 +53,18 @@ export default function MintableTokenDeployForm({
       {!deployedAddress && (
         <div className="deploy-section">
           <div className="token-config-section">
-            <h4>Token Configuration</h4>
+            <div className="config-header">
+              <h4>Token Configuration</h4>
+              <button
+                type="button"
+                className="randomize-btn"
+                onClick={handleRandomizeToken}
+                disabled={isDeploying}
+                title="Generate random token name and symbol"
+              >
+                🎲 Randomize
+              </button>
+            </div>
             
             <div className="parameter-group">
               <div className="input-group">
@@ -57,7 +82,7 @@ export default function MintableTokenDeployForm({
               </div>
 
               <div className="input-group">
-                <label>Token Symbol</label>
+                <label>Token Symbol (Auto-generated)</label>
                 <input
                   type="text"
                   value={tokenSymbol}
@@ -67,7 +92,7 @@ export default function MintableTokenDeployForm({
                   className="token-symbol-input"
                   maxLength="5"
                 />
-                <span className="input-hint">2-5 characters, uppercase letters only</span>
+                <span className="input-hint">2-5 characters, auto-follows token name or edit manually</span>
               </div>
             </div>
           </div>

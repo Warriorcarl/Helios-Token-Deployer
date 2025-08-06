@@ -509,31 +509,61 @@ export const MintableTokenUtils = {
   },
 
   /**
-   * Generate random token name
+   * Generate random token name with human-readable words (3-5 characters)
    */
   generateRandomTokenName: () => {
-    const adjectives = ['Super', 'Mega', 'Ultra', 'Dynamic', 'Quantum', 'Infinite'];
-    const nouns = ['Token', 'Coin', 'Cash', 'Credit', 'Point', 'Unit'];
-    const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
-    const noun = nouns[Math.floor(Math.random() * nouns.length)];
-    return `${adj} ${noun}`;
+    const words3 = ['Gem', 'Orb', 'Key', 'Ace', 'Sky', 'Sun', 'Sea', 'Fox', 'Cat', 'Dog', 'Bee', 'Owl', 'Ray', 'Bay', 'Joy', 'Win', 'Max', 'Neo', 'Rex', 'Zen'];
+    const words4 = ['Gold', 'Star', 'Moon', 'Fire', 'Wave', 'Rock', 'Bold', 'Fast', 'Pure', 'Blue', 'Pink', 'Lime', 'Ruby', 'Jade', 'Epic', 'Core', 'Flow', 'Glow', 'Hope', 'Peak'];
+    const words5 = ['Magic', 'Power', 'Light', 'Swift', 'Smart', 'Lucky', 'Brave', 'Noble', 'Fresh', 'Shiny', 'Happy', 'Spark', 'Flash', 'Quick', 'Boost', 'Prime', 'Elite', 'Ultra', 'Super', 'Turbo'];
+    
+    const allWords = [...words3, ...words4, ...words5];
+    const randomWord = allWords[Math.floor(Math.random() * allWords.length)];
+    
+    return `${randomWord} Token`;
   },
 
   /**
-   * Generate random token symbol
+   * Generate token symbol from name (auto-follow)
    */
-  generateRandomSymbol: (name) => {
-    if (!name) return 'MTK';
+  generateSymbolFromName: (name) => {
+    if (!name) return '';
     
-    const words = name.split(' ').filter(word => word.length > 0);
-    if (words.length >= 2) {
-      return words.map(word => word[0].toUpperCase()).join('').slice(0, 5);
-    } else if (words.length === 1) {
+    // Remove "Token" suffix if present and clean the name
+    const cleanName = name.replace(/\s*token\s*$/i, '').trim();
+    
+    if (!cleanName) return '';
+    
+    // If single word, take first 3-4 characters + 'T' or 'K'
+    const words = cleanName.split(/\s+/).filter(word => word.length > 0);
+    
+    if (words.length === 1) {
       const word = words[0].toUpperCase();
-      return word.slice(0, 3) + (word.length > 3 ? 'K' : '');
+      if (word.length <= 3) {
+        return word + 'T';
+      } else if (word.length === 4) {
+        return word + 'K';
+      } else {
+        return word.slice(0, 3) + 'K';
+      }
+    } else if (words.length >= 2) {
+      // Take first letter of each word
+      return words.map(word => word[0].toUpperCase()).join('').slice(0, 5);
     }
     
-    return 'MTK';
+    return cleanName.slice(0, 3).toUpperCase() + 'T';
+  },
+
+  /**
+   * Generate complete random token data
+   */
+  generateRandomTokenData: () => {
+    const name = MintableTokenUtils.generateRandomTokenName();
+    const symbol = MintableTokenUtils.generateSymbolFromName(name);
+    
+    return {
+      name,
+      symbol
+    };
   },
 
   /**
