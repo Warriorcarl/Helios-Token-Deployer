@@ -1,4 +1,5 @@
 import React from 'react';
+import ThemeToggleButton from './ThemeToggleButton.jsx';
 
 // UI Components for Cron interface
 export const CronUIElements = {
@@ -37,6 +38,13 @@ export const CronUIElements = {
     <div className={`status ${type}`}>
       <span>{message}</span>
     </div>
+  ),
+
+  // Theme toggle button component
+  ThemeToggleButton: ({ isDarkMode, onToggle }) => (
+    <button onClick={onToggle} className="theme-toggle-btn">
+      {isDarkMode ? '🌙' : '☀️'}
+    </button>
   )
 };
 
@@ -158,12 +166,17 @@ export const LayoutElements = {
   ),
 
   // Header row
-  HeaderRow: ({ title, icon, style = {} }) => (
+  HeaderRow: ({ title, icon, showThemeToggle = false, theme, onToggleTheme, style = {} }) => (
     <div className="cron-header-row" style={style}>
       <span className="cron-header-title">
         {icon && icon}
         {title}
       </span>
+      {showThemeToggle && (
+        <div className="cron-header-actions">
+          <ThemeToggleButton theme={theme} onToggle={onToggleTheme} variant="compact" />
+        </div>
+      )}
     </div>
   ),
 

@@ -56,7 +56,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <Routes>
                     <Route path="/" element={<LandingPage connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />
                     <Route path="/token" element={<TokenDeployerPage />} />
-                    <Route path="/chronos" element={<ChronosJobPage title="Cron Job" connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />
+                    <Route path="/chronos" element={<ChronosJobPage connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />
                     <Route path="/deploy-nft" element={<PlaceholderPage title="Deploy NFT" connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />
                     <Route path="/swap" element={<PlaceholderPage title="Swap" connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />
                     <Route path="/stake" element={<PlaceholderPage title="Stake" connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />

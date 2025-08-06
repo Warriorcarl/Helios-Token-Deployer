@@ -90,6 +90,51 @@ body {
   gap: 0.7rem;
 }
 
+/* Card header styles */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card-header-title {
+  display: flex;
+  align-items: center;
+  font-family: 'Panchang', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2997ff;
+}
+
+.card-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cron-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.cron-header-title {
+  display: flex;
+  align-items: center;
+  font-family: 'Panchang', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2997ff;
+}
+
+.cron-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* --- INPUTS --- */
 .token-card input,
 .token-card select {
@@ -1334,5 +1379,22 @@ body {
   .logo-option-btn {
     padding: 10px 12px;
     font-size: 11px;
+  }
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 700px) {
+  .mobile-title-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  
+  .card-header-actions,
+  .cron-header-actions {
+    /* Ensure theme toggle is visible on mobile */
+    position: relative;
+    z-index: 1;
   }
 }

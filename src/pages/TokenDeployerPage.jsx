@@ -246,6 +246,9 @@ export default function TokenDeployerPage() {
       <TokenLayoutElements.CardHeader 
         title="Token Parameters" 
         icon={<TokenUIElements.DiamondIcon />} 
+        showThemeToggle={true}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
       
       <TokenFormElements.TokenNameInput

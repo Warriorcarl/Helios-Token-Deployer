@@ -607,6 +607,23 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
     addLog('Returning to Simple Test Contract deployment step', 'info');
   };
 
+  // Theme management - MOVED TO TOP BEFORE USE
+  useEffect(() => {
+    if (themeProp) setTheme(themeProp);
+    else {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      setTheme(savedTheme);
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  }, [themeProp]);
+  
+  const handleToggleTheme = onToggleTheme || (() => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+  });
+
   // Tab configuration
   const tabs = [
     { key: 'create', label: '⚡ Create Cron' },
@@ -618,6 +635,9 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
       <LayoutElements.HeaderRow 
         title="Cron Job Manager" 
         icon={<CronUIElements.ClockIcon />} 
+        showThemeToggle={true}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
       
       <LayoutElements.TabNavigation
@@ -853,23 +873,6 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
       <ConsoleElements.FooterLinks links={footerLinks} />
     </ConsoleElements.ConsoleContainer>
   );
-
-  // Theme management
-  useEffect(() => {
-    if (themeProp) setTheme(themeProp);
-    else {
-      const savedTheme = localStorage.getItem('theme') || 'dark';
-      setTheme(savedTheme);
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    }
-  }, [themeProp]);
-  
-  const handleToggleTheme = onToggleTheme || (() => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-  });
 
   return (
     <DefaultLayout

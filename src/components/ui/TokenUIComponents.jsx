@@ -1,4 +1,5 @@
 import React from 'react';
+import ThemeToggleButton from './ThemeToggleButton.jsx';
 
 // Token Deployer specific UI components
 export const TokenUIElements = {
@@ -168,13 +169,18 @@ export const TokenLayoutElements = {
     </div>
   ),
 
-  // Card header
-  CardHeader: ({ title, icon }) => (
+  // Card header with optional theme toggle
+  CardHeader: ({ title, icon, showThemeToggle = false, theme, onToggleTheme }) => (
     <div className="card-header">
       <span className="card-header-title">
         {icon && icon}
         {title}
       </span>
+      {showThemeToggle && (
+        <div className="card-header-actions">
+          <ThemeToggleButton theme={theme} onToggle={onToggleTheme} variant="compact" />
+        </div>
+      )}
     </div>
   ),
 

@@ -28,16 +28,15 @@ export default function DefaultLayout({ title, left, right, connectButton, theme
               <div className="mobile-connect-center">
                 {connectButton}
               </div>
-              <ThemeToggleButton theme={theme} onToggle={onToggleTheme} variant="compact" />
             </div>
             <div className="mobile-header-titlelogo">
               <HeliosLogo />
               <span className="right-panel-title">{title}</span>
-              {showBackButton && (
-                <div className="mobile-back-button">
+              <div className="mobile-title-actions">
+                {showBackButton && (
                   <BackToHomeButton variant="compact" />
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
           <div>{left}</div>
@@ -53,7 +52,6 @@ export default function DefaultLayout({ title, left, right, connectButton, theme
               <div className="connect-wallet-override">
                 {showBackButton && <BackToHomeButton variant="compact" />}
                 {connectButton}
-                <ThemeToggleButton theme={theme} onToggle={onToggleTheme} variant="default" />
               </div>
             </div>
             {right}
