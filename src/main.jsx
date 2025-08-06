@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage.jsx';
 import TokenDeployerPage from './pages/TokenDeployerPage.jsx';
 import PlaceholderPage from './pages/PlaceholderPage.jsx';
 import ChronosJobPage from './pages/ChronosJobPage.jsx';
@@ -19,7 +20,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { NETWORK_CONFIG } from './logic';
 
 const config = getDefaultConfig({
-  appName: 'Helios Daily Tasks assistant',
+  appName: 'Helios Task Helper',
   projectId: '4d50c7253cc77e946ec2ef8569b79ce6',
   chains: [NETWORK_CONFIG.HELIOS_TESTNET],
   ssr: false,
@@ -53,7 +54,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <BrowserRouter>
                 <MaintenanceGuard>
                   <Routes>
-                    <Route path="/" element={<TokenDeployerPage />} />
+                    <Route path="/" element={<LandingPage connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />
                     <Route path="/token" element={<TokenDeployerPage />} />
                     <Route path="/chronos" element={<ChronosJobPage title="Cron Job" connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />
                     <Route path="/deploy-nft" element={<PlaceholderPage title="Deploy NFT" connectButton={<ConnectButton />} theme={theme} onToggleTheme={handleToggleTheme} />} />

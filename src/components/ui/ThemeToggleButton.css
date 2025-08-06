@@ -1,0 +1,95 @@
+/* Theme Toggle Button Styles */
+
+/* Simple variant (untuk landing page) */
+.theme-toggle-simple {
+  background: var(--background-dark);
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-simple:hover {
+  border-color: var(--primary-blue);
+  background: var(--primary-blue);
+}
+
+/* Default variant (untuk halaman lain dengan DefaultLayout) */
+.theme-toggle-default {
+  background: var(--background-card);
+  color: var(--text-primary);
+  border: 1.5px solid var(--primary-blue);
+  border-radius: var(--input-radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 54px;
+  width: 54px;
+  padding: 0;
+  outline: none;
+  transition: all 0.2s ease;
+  font-size: 1.25rem;
+}
+
+.theme-toggle-default:hover {
+  background: var(--primary-blue);
+  color: white;
+}
+
+/* Compact variant (untuk mobile) */
+.theme-toggle-compact {
+  background: var(--background-card);
+  color: var(--text-primary);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  padding: 0;
+  outline: none;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+}
+
+.theme-toggle-compact:hover {
+  background: var(--primary-blue);
+  color: white;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .theme-toggle-simple {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
+  
+  .theme-toggle-default {
+    width: 48px;
+    height: 48px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Light theme adjustments */
+[data-theme='light'] .theme-toggle-simple,
+[data-theme='light'] .theme-toggle-default,
+[data-theme='light'] .theme-toggle-compact {
+  box-shadow: 0 2px 8px rgba(41, 151, 255, 0.1);
+}
+
+[data-theme='light'] .theme-toggle-simple:hover,
+[data-theme='light'] .theme-toggle-default:hover,
+[data-theme='light'] .theme-toggle-compact:hover {
+  box-shadow: 0 4px 12px rgba(41, 151, 255, 0.2);
+}

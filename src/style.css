@@ -270,33 +270,6 @@ body {
   white-space: nowrap;
   transition: background 0.2s, color 0.2s;
 }
-.menu-icon-btn,
-.theme-switcher {
-  background: var(--background-card);
-  color: var(--text-primary);
-  border: 1.5px solid var(--primary-blue) !important;
-  border-radius: var(--input-radius);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 54px;
-  width: 54px;
-  padding: 0;
-  outline: none;
-  transition: background 0.2s, color 0.2s;
-}
-.menu-icon-btn svg,
-.theme-switcher svg {
-  fill: var(--text-primary);
-  color: var(--text-primary);
-  transition: fill 0.2s, color 0.2s;
-}
-.menu-icon-btn svg path,
-.theme-switcher svg path {
-  stroke: var(--text-primary);
-  transition: stroke 0.2s;
-}
 
 /* --- RIGHT PANEL HEADER --- */
 .right-panel-header {
@@ -328,48 +301,6 @@ body {
   align-items: center;
   gap: 0.7rem;
   position: relative;
-}
-
-/* --- MENU DROPDOWN --- */
-.menu-dropdown {
-  position: absolute;
-  background: var(--background-card);
-  border-radius: var(--menu-radius);
-  border: 1.5px solid var(--border-color);
-  box-shadow: 0 0 24px #2997ff22;
-  min-width: 180px;
-  z-index: 1001;
-  padding: 1rem 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  top: calc(100% + 0.6rem);
-  right: 0;
-}
-.menu-dropdown-item {
-  font-size: 1.08rem;
-  color: var(--text-primary);
-  padding: 0.75rem 1rem;
-  border-radius: 13px;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  text-align: left;
-  transition: background 0.15s;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.menu-dropdown-item.active {
-  background: #23304a;
-  color: var(--primary-blue);
-  font-weight: 700;
-}
-.menu-dropdown-dev {
-  font-size: 0.95rem;
-  color: #8ca7d1;
-  font-style: italic;
-  margin-left: 0.5rem;
 }
 
 /* --- DEPLOYMENT CONSOLE CARD --- */
@@ -792,67 +723,11 @@ body {
   .mobile-header-actions {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     width: 100%;
     min-width: 0;
     padding-bottom: 2px;
-  }
-  .menu-icon-btn {
-    flex: 0 0 auto;
-    margin-right: 0;
-    background: var(--background-card);
-    color: var(--text-primary);
-    border: 1.5px solid var(--primary-blue) !important;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
-    width: 40px;
-    padding: 0;
-    outline: none;
-    transition: background 0.2s, color 0.2s;
-  }
-  .menu-icon-btn svg {
-    width: 28px;
-    height: 28px;
-    fill: var(--text-primary);
-    color: var(--text-primary);
-    transition: fill 0.2s, color 0.2s;
-  }
-  .menu-icon-btn svg path {
-    stroke: var(--text-primary);
-    transition: stroke 0.2s;
-  }
-  .theme-switcher {
-    flex: 0 0 auto;
-    margin-left: 0;
-    margin-right: 20px;
-    background: var(--background-card);
-    color: var(--text-primary);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
-    width: 40px;
-    padding: 0;
-    outline: none;
-    transition: background 0.2s, color 0.2s;
-  }
-  .theme-switcher svg {
-    width: 28px;
-    height: 28px;
-    fill: var(--text-primary);
-    color: var(--text-primary);
-    transition: fill 0.2s, color 0.2s;
-  }
-  .theme-switcher svg path {
-    stroke: var(--text-primary);
-    transition: stroke 0.2s;
+    gap: 1rem;
   }
   .mobile-connect-center {
     flex: 1 1 0%;
@@ -886,6 +761,13 @@ body {
     margin-top: 7px;
     margin-bottom: 3px;
     min-width: 0;
+    position: relative;
+  }
+  .mobile-back-button {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
   }
   .helios-logo-img {
     width: 32px;
@@ -904,43 +786,7 @@ body {
     text-overflow: ellipsis;
     letter-spacing: 0.01em;
     margin-bottom: 0;
-  }
-  .menu-dropdown {
-    position: absolute;
-    top: 44px;
-    right: 10px;
-    background: var(--background-card);
-    color: var(--text-primary);
-    border-radius: 14px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    z-index: 99;
-    min-width: 160px;
-    padding: 6px 0;
-    display: flex;
-    flex-direction: column;
-  }
-  .menu-dropdown-item {
-    padding: 9px 16px;
-    font-size: 1rem;
-    color: var(--text-primary);
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: background 0.13s;
-    min-width: 0;
-  }
-  .menu-dropdown-item.active {
-    background: var(--border-color);
-    color: var(--primary-blue);
-    font-weight: bold;
-  }
-  .menu-dropdown-dev {
-    margin-left: 9px;
-    font-size: 0.92em;
-    color: #b2b7cf;
-    font-style: italic;
+    margin-right: 80px; /* Add space for back button */
   }
 
   /* Card responsif */

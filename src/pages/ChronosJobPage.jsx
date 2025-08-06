@@ -500,7 +500,7 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
   };
 
   // Handle continue to cron creation
-  const handleContinueToStep2 = (address, method, tokenData = null) => {
+  const handleContinueTostep2 = (address, method, tokenData = null) => {
     setDeployedWarriorAddress(address);
     setSelectedMethod(method);
     
@@ -873,7 +873,7 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
 
   return (
     <DefaultLayout
-      title="Helios Chronos Manager"
+      title="Helios Chronos"
       left={leftPanel}
       right={rightPanel}
       connectButton={connectButton || <ConnectButton />}

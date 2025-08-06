@@ -1,0 +1,115 @@
+/* Back to Home Button Styles */
+
+.back-to-home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--background-card);
+  color: var(--text-primary);
+  border: 1.5px solid var(--primary-blue);
+  border-radius: var(--button-radius);
+  font-family: 'Satoshi', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  outline: none;
+}
+
+.back-to-home-btn:hover {
+  background: var(--primary-blue);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(41, 151, 255, 0.3);
+}
+
+.back-to-home-btn:active {
+  transform: translateY(0);
+}
+
+.home-icon {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.back-to-home-btn:hover .home-icon {
+  transform: scale(1.1);
+}
+
+/* Compact Variant */
+.back-to-home-btn.compact {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.back-to-home-btn.compact .home-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.back-to-home-btn.compact .home-text {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .back-to-home-btn.compact .home-text {
+    display: inline;
+  }
+}
+
+/* Floating Variant */
+.back-to-home-btn.floating {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  border-radius: 50px;
+  padding: 1rem;
+  box-shadow: 0 4px 20px rgba(41, 151, 255, 0.2);
+}
+
+.back-to-home-btn.floating .home-text {
+  display: none;
+}
+
+.back-to-home-btn.floating:hover {
+  box-shadow: 0 6px 25px rgba(41, 151, 255, 0.4);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .back-to-home-btn {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .back-to-home-btn.floating {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.8rem;
+  }
+  
+  .home-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Light theme adjustments */
+[data-theme='light'] .back-to-home-btn {
+  box-shadow: 0 2px 8px rgba(41, 151, 255, 0.1);
+}
+
+[data-theme='light'] .back-to-home-btn:hover {
+  box-shadow: 0 4px 12px rgba(41, 151, 255, 0.2);
+}
+
+[data-theme='light'] .back-to-home-btn.floating {
+  box-shadow: 0 4px 20px rgba(41, 151, 255, 0.15);
+}
+
+[data-theme='light'] .back-to-home-btn.floating:hover {
+  box-shadow: 0 6px 25px rgba(41, 151, 255, 0.3);
+}

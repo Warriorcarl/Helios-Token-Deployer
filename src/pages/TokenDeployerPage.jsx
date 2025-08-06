@@ -326,7 +326,7 @@ export default function TokenDeployerPage() {
   return (
     <DefaultLayout
       title="Helios Token Creator"
-      description="Create and deploy your own ERC20 tokens easily (PRECOMPILED)."
+      description="Create and deploy your own ERC20 tokens easily with Helios Task Helper."
       
       left={leftPanel}
       right={rightPanel}
