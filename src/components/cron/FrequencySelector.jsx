@@ -1,8 +1,8 @@
 import React from "react";
 import "./frequency-selector-styles.css";
 
-// Convert minutes to blocks (assuming 3 seconds per block)
-const BLOCK_TIME_SECONDS = 3;
+// Convert minutes to blocks (assuming 15 seconds per block - 10-20 range average)
+const BLOCK_TIME_SECONDS = 15;
 const SECONDS_PER_MINUTE = 60;
 
 const FREQUENCY_OPTIONS = [

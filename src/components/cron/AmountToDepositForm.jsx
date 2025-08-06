@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { formatEther, parseEther } from "viem";
 
 // Konstanta untuk kalkulasi
-const BLOCK_TIME_SECONDS = 3; // Rata-rata waktu per block dalam detik
+const BLOCK_TIME_SECONDS = 15; // Rata-rata waktu per block dalam detik (10-20 detik)
 const SECONDS_PER_DAY = 86400;
 const DAYS_IN_1_DAY = 1; // Mengubah dari 90 hari menjadi 1 hari
 const MAX_DURATION_SECONDS = DAYS_IN_1_DAY * SECONDS_PER_DAY;

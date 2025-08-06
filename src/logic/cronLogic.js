@@ -83,8 +83,8 @@ export class CronJobManager {
       const possibleExecutions = Number(amountWei / gasCostPerExecution);
       const totalBlocks = possibleExecutions * parseInt(frequency);
       
-      // Maximum 1 day (approximately 28,800 blocks: 24 hours * 60 minutes * 60 seconds / 3 seconds per block)
-      const maxBlocks = 28800;
+      // Maximum 1 day (approximately 5,760 blocks: 24 hours * 60 minutes * 60 seconds / 15 seconds per block)
+      const maxBlocks = 5760;
       const cappedBlocks = Math.min(totalBlocks, maxBlocks);
       
       return this.currentBlock + cappedBlocks;

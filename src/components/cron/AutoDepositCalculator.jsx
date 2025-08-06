@@ -102,7 +102,7 @@ export default function AutoDepositCalculator({
 
   // Format time duration from blocks
   const formatDuration = (blocks) => {
-    const seconds = blocks * 3; // 3 seconds per block
+    const seconds = blocks * 15; // 15 seconds per block (10-20 range average)
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     

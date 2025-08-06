@@ -1,8 +1,8 @@
 import React from "react";
 import "./expiration-selector-styles.css";
 
-// Convert hours/days to blocks (assuming 3 seconds per block)
-const BLOCK_TIME_SECONDS = 3;
+// Convert hours/days to blocks (assuming 15 seconds per block - 10-20 range average)
+const BLOCK_TIME_SECONDS = 15;
 const SECONDS_PER_HOUR = 3600;
 const SECONDS_PER_DAY = 86400;
 
