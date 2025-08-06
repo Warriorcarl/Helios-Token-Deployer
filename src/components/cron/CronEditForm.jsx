@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import FrequencySelector, { FREQUENCY_OPTIONS } from "./FrequencySelector";
+import ExpirationSelector, { EXPIRATION_OPTIONS } from "./ExpirationSelector";
 
 export default function CronEditForm({
   formVals,
@@ -8,51 +10,90 @@ export default function CronEditForm({
   isUpdating,
   currentBlock
 }) {
+  // Find current frequency selection from block value
+  const getCurrentFrequencySelection = () => {
+    const currentFreq = parseInt(formVals.newFrequency);
+    const match = FREQUENCY_OPTIONS.find(opt => opt.blocks === currentFreq);
+    return match ? match.blocks.toString() : FREQUENCY_OPTIONS[0].blocks.toString();
+  };
+
+  // Find current expiration selection from offset value
+  const getCurrentExpirationSelection = () => {
+    const currentExp = parseInt(formVals.newExpiration);
+    const match = EXPIRATION_OPTIONS.find(opt => opt.blocks === currentExp);
+    return match ? match.blocks.toString() : EXPIRATION_OPTIONS[0].blocks.toString();
+  };
+
+  const [selectedFrequency, setSelectedFrequency] = useState(getCurrentFrequencySelection());
+  const [selectedExpiration, setSelectedExpiration] = useState(getCurrentExpirationSelection());
+
+  // Update formVals when dropdown selections change
+  useEffect(() => {
+    setFormVals(v => ({ 
+      ...v, 
+      newFrequency: selectedFrequency,
+      newExpiration: selectedExpiration
+    }));
+  }, [selectedFrequency, selectedExpiration, setFormVals]);
+
+  const isFormValid = () => {
+    const freq = parseInt(selectedFrequency);
+    const exp = parseInt(selectedExpiration);
+    return freq > 0 && exp > 0;
+  };
+
   return (
     <div className="cron-edit-row">
-      <div className="input-group">
-        <label>Frequency</label>
-        <input
-          type="number"
-          min="1"
-          max="1000"
-          value={formVals.newFrequency}
-          onChange={e => setFormVals(v => ({ ...v, newFrequency: e.target.value }))}
-        />
-        <span className="hint">1-1000</span>
-      </div>
-      
-      <div className="input-group">
-        <label>Expiration Block</label>
-        <input
-          type="number"
-          min="1"
-          max="10000"
-          value={formVals.newExpiration}
-          onChange={e => setFormVals(v => ({ ...v, newExpiration: e.target.value }))}
-        />
-        <span className="hint">+ Block (1-10000)</span>
-      </div>
-      
-      <span className="current-block">Current Block: <b>{currentBlock || "-"}</b></span>
-      
-      <div className="button-group">
-        <button
-          className="cron-action-btn save"
-          onClick={onSubmit}
-          disabled={
-            isUpdating ||
-            parseInt(formVals.newFrequency) < 1 || 
-            parseInt(formVals.newFrequency) > 1000 ||
-            parseInt(formVals.newExpiration) < 1 || 
-            parseInt(formVals.newExpiration) > 10000
-          }
-        >Save</button>
+      <div className="edit-form-container">
+        <h4>Edit Cron Job Settings</h4>
         
-        <button
-          className="cron-action-btn cancel-edit"
-          onClick={onCancel}
-        >Cancel</button>
+        <div className="edit-selectors">
+          {/* Frequency Selector */}
+          <FrequencySelector
+            value={selectedFrequency}
+            onChange={setSelectedFrequency}
+            disabled={isUpdating}
+            label="New Execution Frequency"
+          />
+
+          {/* Expiration Selector */}
+          <ExpirationSelector
+            value={selectedExpiration}
+            onChange={setSelectedExpiration}
+            disabled={isUpdating}
+            label="New Job Duration"
+            currentBlock={currentBlock}
+          />
+        </div>
+
+        <div className="edit-info">
+          <div className="info-row">
+            <span className="info-label">Current Block:</span>
+            <span className="info-value">{currentBlock?.toLocaleString() || "-"}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">New Expiration Block:</span>
+            <span className="info-value">{((currentBlock || 0) + parseInt(selectedExpiration))?.toLocaleString() || "-"}</span>
+          </div>
+        </div>
+        
+        <div className="button-group">
+          <button
+            className="cron-action-btn save"
+            onClick={onSubmit}
+            disabled={isUpdating || !isFormValid()}
+          >
+            {isUpdating ? 'Saving...' : 'Save Changes'}
+          </button>
+          
+          <button
+            className="cron-action-btn cancel-edit"
+            onClick={onCancel}
+            disabled={isUpdating}
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );

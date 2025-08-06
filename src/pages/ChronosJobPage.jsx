@@ -52,8 +52,8 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
   // Create cron tab mode
   const [createCronTab, setCreateCronTab] = useState('simple'); // 'simple' or 'advanced'
   
-  // Original create cron states
-  const [frequency, setFrequency] = useState('10'); // Mengubah dari '1' menjadi '10' untuk placeorder default
+  // Original create cron states - Updated to use time-based frequency defaults
+  const [frequency, setFrequency] = useState('300'); // Default to 15 minutes (300 blocks)
   const [expirationOffset, setExpirationOffset] = useState('1000');
 
   // New deployment states
@@ -378,7 +378,7 @@ export default function ChronosJobManager({ theme: themeProp, onToggleTheme, con
     setCompletedSteps([]);
     setDeployedWarriorAddress('');
     setSelectedMethod('testConnection');
-    setFrequency('10'); // Mengubah dari '1' menjadi '10' untuk konsistensi
+    setFrequency('300'); // Default to 15 minutes (300 blocks) for consistency
     setExpirationOffset('1000');
     setDeploymentError('');
     

@@ -1,0 +1,199 @@
+/* Auto Deposit Calculator Styles */
+.auto-deposit-calculator {
+  background: var(--cron-card);
+  border: 1px solid var(--cron-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.calculator-header {
+  margin-bottom: 16px;
+}
+
+.calculator-header h4 {
+  color: var(--cron-text-main);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.calculator-header p {
+  color: var(--cron-text-sub);
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.calculation-result {
+  background: rgba(41, 151, 255, 0.08);
+  border: 1px solid rgba(41, 151, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.amount-display {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.amount-display label {
+  color: var(--cron-text-sub);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.amount-value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.amount-number {
+  color: var(--cron-blue);
+  font-size: 24px;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.amount-currency {
+  color: var(--cron-text-main);
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.calculation-details {
+  border-top: 1px solid var(--cron-border);
+  padding-top: 16px;
+}
+
+.detail-section {
+  margin-bottom: 16px;
+}
+
+.detail-section h5 {
+  color: var(--cron-text-main);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(var(--cron-border-rgb, 220, 231, 250), 0.3);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row.safety-buffer {
+  background: rgba(48, 177, 138, 0.1);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  border: 1px solid rgba(48, 177, 138, 0.2);
+}
+
+.detail-label {
+  color: var(--cron-text-sub);
+  font-size: 13px;
+  font-weight: 500;
+  flex: 1;
+}
+
+.detail-value {
+  color: var(--cron-text-main);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  font-family: monospace;
+}
+
+.safety-buffer .detail-label,
+.safety-buffer .detail-value {
+  color: var(--cron-green);
+}
+
+.token-method-info {
+  margin-top: 12px;
+}
+
+.info-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--cron-text-main);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-icon {
+  font-size: 14px;
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .auto-deposit-calculator {
+  background: var(--cron-card);
+  border-color: var(--cron-border);
+}
+
+[data-theme='dark'] .calculation-result {
+  background: rgba(41, 151, 255, 0.1);
+  border-color: rgba(41, 151, 255, 0.3);
+}
+
+[data-theme='dark'] .detail-row {
+  border-bottom-color: rgba(var(--cron-border-rgb, 36, 49, 92), 0.3);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .auto-deposit-calculator {
+    padding: 16px;
+  }
+  
+  .amount-number {
+    font-size: 20px;
+  }
+  
+  .amount-currency {
+    font-size: 14px;
+  }
+  
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 8px 0;
+  }
+  
+  .detail-value {
+    text-align: left;
+    width: 100%;
+  }
+  
+  .info-badge {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    text-align: left;
+  }
+}

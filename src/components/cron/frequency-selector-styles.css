@@ -1,0 +1,176 @@
+/* Frequency Selector Styles */
+.frequency-selector {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.frequency-selector .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.frequency-label {
+  display: block;
+  color: var(--cron-blue);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.frequency-select {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-input-border);
+  border-radius: 12px;
+  color: var(--cron-text-main);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.frequency-select:focus {
+  border-color: var(--cron-blue);
+  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.1);
+  outline: none;
+}
+
+.frequency-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--cron-input-bg);
+}
+
+.frequency-select option {
+  background: var(--cron-input-bg);
+  color: var(--cron-text-main);
+  padding: 8px;
+}
+
+.frequency-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.frequency-info small {
+  color: var(--cron-text-sub);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+/* Edit Form Styles */
+.edit-form-container {
+  background: var(--cron-card);
+  border: 1px solid var(--cron-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 8px 0;
+}
+
+.edit-form-container h4 {
+  color: var(--cron-text-main);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+}
+
+.edit-selectors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.edit-info {
+  background: var(--cron-input-bg);
+  border: 1px solid var(--cron-border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.edit-info .info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.edit-info .info-row:not(:last-child) {
+  border-bottom: 1px solid var(--cron-border);
+  margin-bottom: 4px;
+  padding-bottom: 8px;
+}
+
+.edit-info .info-label {
+  color: var(--cron-text-sub);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.edit-info .info-value {
+  color: var(--cron-blue);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.button-group {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .frequency-select {
+  background: var(--cron-input-bg);
+  border-color: var(--cron-border);
+  color: var(--cron-text-color);
+}
+
+[data-theme='dark'] .frequency-select option {
+  background: var(--cron-input-bg);
+  color: var(--cron-text-color);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .frequency-select {
+    font-size: 14px;
+    padding: 10px 12px;
+    padding-right: 36px;
+    background-size: 14px;
+    background-position: right 10px center;
+  }
+  
+  .frequency-info small {
+    font-size: 11px;
+  }
+  
+  .edit-selectors {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .edit-form-container {
+    padding: 16px;
+  }
+  
+  .button-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .cron-action-btn {
+    width: 100%;
+  }
+}

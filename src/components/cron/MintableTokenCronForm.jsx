@@ -1,6 +1,8 @@
 import React from "react";
 import { MINTABLE_TOKEN_CONFIG, MINTABLE_TOKEN_METHODS } from "../../constants/abi/mintableTokenAbi";
-import AmountToDepositForm from "./AmountToDepositForm";
+import FrequencySelector from "./FrequencySelector";
+import ExpirationSelector from "./ExpirationSelector";
+import AutoDepositCalculator from "./AutoDepositCalculator";
 import "./amount-deposit-styles.css";
 
 export default function MintableTokenCronForm({
@@ -13,8 +15,9 @@ export default function MintableTokenCronForm({
   isCreating,
   onBack
 }) {
-  const [amountToDeposit, setAmountToDeposit] = React.useState("");
-  const [calculatedExpirationBlock, setCalculatedExpirationBlock] = React.useState(0);
+  const [expirationBlocks, setExpirationBlocks] = React.useState("7200"); // Default to 6 hours
+  const [calculatedAmount, setCalculatedAmount] = React.useState("0");
+  const [executionCount, setExecutionCount] = React.useState(0);
   
   // Default Cron Job Settings - moved from step 1
   const [selectedMethod, setSelectedMethod] = React.useState('mint');
@@ -22,15 +25,17 @@ export default function MintableTokenCronForm({
   const [fixedTokenValue, setFixedTokenValue] = React.useState('100');
   const [customTokenValue, setCustomTokenValue] = React.useState('');
 
-  const handleAmountChange = (amount, expirationBlock) => {
-    setAmountToDeposit(amount);
-    setCalculatedExpirationBlock(expirationBlock);
+  const handleAmountCalculated = (amount, executions) => {
+    setCalculatedAmount(amount);
+    setExecutionCount(executions);
   };
 
   const handleCreateCron = () => {
-    if (amountToDeposit && calculatedExpirationBlock > 0) {
+    if (calculatedAmount && parseFloat(calculatedAmount) > 0) {
       const tokenAmount = tokenValueMode === 'fixed' ? fixedTokenValue : customTokenValue;
-      onCreateCron(amountToDeposit, calculatedExpirationBlock, selectedMethod, tokenAmount);
+      // Calculate expiration block from current block + selected duration
+      const expirationBlock = blockNumber + parseInt(expirationBlocks);
+      onCreateCron(calculatedAmount, expirationBlock, selectedMethod, tokenAmount);
     }
   };
 
@@ -48,13 +53,13 @@ export default function MintableTokenCronForm({
   const getMethodDescription = () => {
     const amount = getCurrentTokenAmount();
     if (selectedMethod === 'mint') {
-      return `Mint ${amount} ${tokenInfo.tokenSymbol} tokens every ${frequency} blocks`;
+      return `Mint ${amount} ${tokenInfo.tokenSymbol} tokens every frequency interval`;
     } else if (selectedMethod === 'burn') {
-      return `Burn ${amount} ${tokenInfo.tokenSymbol} tokens every ${frequency} blocks`;
+      return `Burn ${amount} ${tokenInfo.tokenSymbol} tokens every frequency interval`;
     } else if (selectedMethod === 'mintAndBurn') {
-      return `Mint & Burn ${amount} ${tokenInfo.tokenSymbol} tokens every ${frequency} blocks (net +${amount})`;
+      return `Mint & Burn ${amount} ${tokenInfo.tokenSymbol} tokens every frequency interval (net +${amount})`;
     }
-    return `Execute ${selectedMethod}() every ${frequency} blocks`;
+    return `Execute ${selectedMethod}() every frequency interval`;
   };
 
   const getMethodDetails = () => {
@@ -96,18 +101,19 @@ export default function MintableTokenCronForm({
 
   const isFormValid = () => {
     const freq = parseInt(frequency);
-    const amount = parseFloat(amountToDeposit);
+    const amount = parseFloat(calculatedAmount);
+    const expiration = parseInt(expirationBlocks);
     const tokenAmount = getCurrentTokenAmount();
     const validTokenAmount = tokenAmount && parseFloat(tokenAmount) > 0;
     
-    return freq >= 1 && freq <= 1000 && amount >= 0.001 && calculatedExpirationBlock > 0 && validTokenAmount;
+    return freq > 0 && amount > 0 && expiration > 0 && executionCount > 0 && validTokenAmount;
   };
 
   return (
     <div className="mintable-token-cron-form">
       <div className="deploy-step-header">
         <h3>Step 2: Configure Mintable Token Cron Job</h3>
-        <p>Configure your cron job settings and token value to automatically manage your mintable ERC20 token.</p>
+        <p>Configure your cron job settings with fixed time-based scheduling to automatically manage your mintable ERC20 token.</p>
       </div>
 
       <div className="target-info">
@@ -256,37 +262,36 @@ export default function MintableTokenCronForm({
         </div>
       </div>
 
+      {/* Cron Parameters - New Fixed Time Options */}
       <div className="cron-parameters">
         <div className="parameter-group">
-          <div className="input-group">
-            <label>Frequency (blocks)</label>
-            <input
-              type="number"
-              min="1"
-              max="1000"
-              value={frequency}
-              onChange={e => setFrequency(e.target.value.replace(/[^0-9]/g,''))}
-              className="frequency-input-enhanced"
-            />
-            <div className="frequency-range-info">
-              <div className="range-label">Range: 1-1000 blocks</div>
-              <div className="range-examples">
-                Examples: 1 (fastest), 10 (every ~30s), 100 (every ~5min), 1000 (every ~50min)
-              </div>
-            </div>
-          </div>
-
-          {/* Amount to Deposit Form */}
-          <AmountToDepositForm
-            frequency={frequency}
-            tokenMethod={selectedMethod}
-            maxGasPrice={methodDetails.gasUsage}
-            blockNumber={blockNumber}
-            onAmountChange={handleAmountChange}
-            value={amountToDeposit}
+          {/* Frequency Selector - Fixed time options */}
+          <FrequencySelector
+            value={frequency}
+            onChange={setFrequency}
             disabled={isCreating}
+            label="Execution Frequency"
+          />
+
+          {/* Expiration Selector - Fixed time options */}
+          <ExpirationSelector
+            value={expirationBlocks}
+            onChange={setExpirationBlocks}
+            disabled={isCreating}
+            label="Job Duration"
+            currentBlock={blockNumber}
           />
         </div>
+
+        {/* Automatic Deposit Calculator */}
+        <AutoDepositCalculator
+          frequencyBlocks={frequency}
+          expirationBlocks={expirationBlocks}
+          tokenMethod={selectedMethod}
+          onAmountCalculated={handleAmountCalculated}
+          disabled={isCreating}
+          showDetails={true}
+        />
 
         <div className="calculation-info">
           <div className="info-row">
@@ -294,8 +299,12 @@ export default function MintableTokenCronForm({
             <span className="info-value">{blockNumber?.toLocaleString() || "-"}</span>
           </div>
           <div className="info-row">
-            <span className="info-label">Calculated Expiration:</span>
-            <span className="info-value">{calculatedExpirationBlock?.toLocaleString() || "-"}</span>
+            <span className="info-label">Calculated Expiration Block:</span>
+            <span className="info-value">{(blockNumber + parseInt(expirationBlocks || 0))?.toLocaleString() || "-"}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Estimated Executions:</span>
+            <span className="info-value">{executionCount} times</span>
           </div>
           <div className="info-row">
             <span className="info-label">Job Description:</span>
@@ -320,8 +329,8 @@ export default function MintableTokenCronForm({
                     <span className="positive">+{(parseInt(getCurrentTokenAmount()) * 10).toLocaleString()} {tokenInfo.tokenSymbol}</span>
                   </div>
                   <div className="impact-row">
-                    <span>After 100 executions:</span>
-                    <span className="positive">+{(parseInt(getCurrentTokenAmount()) * 100).toLocaleString()} {tokenInfo.tokenSymbol}</span>
+                    <span>After {executionCount} executions (full duration):</span>
+                    <span className="positive">+{(parseInt(getCurrentTokenAmount()) * executionCount).toLocaleString()} {tokenInfo.tokenSymbol}</span>
                   </div>
                 </div>
               ) : selectedMethod === 'burn' ? (
@@ -329,6 +338,10 @@ export default function MintableTokenCronForm({
                   <div className="impact-row">
                     <span>Per execution:</span>
                     <span className="negative">-{parseInt(getCurrentTokenAmount()).toLocaleString()} {tokenInfo.tokenSymbol}</span>
+                  </div>
+                  <div className="impact-row">
+                    <span>After {executionCount} executions (full duration):</span>
+                    <span className="negative">-{(parseInt(getCurrentTokenAmount()) * executionCount).toLocaleString()} {tokenInfo.tokenSymbol}</span>
                   </div>
                   <div className="impact-note">
                     <span className="note-icon">⚠️</span>
@@ -346,8 +359,8 @@ export default function MintableTokenCronForm({
                     <span className="positive">+{(parseInt(getCurrentTokenAmount()) * 10).toLocaleString()} {tokenInfo.tokenSymbol}</span>
                   </div>
                   <div className="impact-row">
-                    <span>After 100 executions:</span>
-                    <span className="positive">+{(parseInt(getCurrentTokenAmount()) * 100).toLocaleString()} {tokenInfo.tokenSymbol}</span>
+                    <span>After {executionCount} executions (full duration):</span>
+                    <span className="positive">+{(parseInt(getCurrentTokenAmount()) * executionCount).toLocaleString()} {tokenInfo.tokenSymbol}</span>
                   </div>
                   <div className="impact-note">
                     <span className="note-icon">🔄</span>
