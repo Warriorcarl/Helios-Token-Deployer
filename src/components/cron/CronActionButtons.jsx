@@ -5,7 +5,6 @@ export default function CronActionButtons({
   isExpired,
   isLowBalance,
   onCancel,
-  onDeposit,
   isCancelling,
   isAnyFormOpen
 }) {
@@ -14,18 +13,12 @@ export default function CronActionButtons({
   return (
     <div className="cron-action-group">
       <button
-        className="cron-action-btn cancel"
+        className="cron-action-btn cancel full-width"
         onClick={onCancel}
         disabled={isCancelling || isAnyFormOpen || isInactive}
       >
         {isCancelling ? "Cancelling..." : "Cancel"}
       </button>
-      
-      <button
-        className={`cron-action-btn deposit ${isLowBalance ? "low-balance" : ""}`}
-        onClick={onDeposit}
-        disabled={isAnyFormOpen || isInactive}
-      >Deposit</button>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAccount } from "wagmi";
 import useCronData from "../hooks/useCronData";
 import useCronOperations from "../hooks/useCronOperations";
@@ -10,8 +10,6 @@ import { ListElements } from "./ui/CronUIComponents";
 
 export default function MyCronsList({ onAction, blockNumber }) {
   const { address, isConnected } = useAccount();
-  const [depositingId, setDepositingId] = useState(null);
-  const [depositValue, setDepositValue] = useState("");
 
   // Get cron data from custom hook
   const { 
@@ -22,21 +20,12 @@ export default function MyCronsList({ onAction, blockNumber }) {
     refreshData 
   } = useCronData(address, isConnected);
   
-  // Get operation functions from custom hook
+  // Get operation functions from custom hook - only cancel operations
   const { 
     handleCancel, 
-    handleDeposit, 
-    sendDeposit,
     cancelingId, 
-    cancelStatus, 
-    depositStatus 
+    cancelStatus
   } = useCronOperations(onAction, blockNumber, refreshData);
-  
-  const openDepositForm = (cronId, aliasAddr) => {
-    setDepositingId(cronId);
-    setDepositValue("");
-    handleDeposit(cronId, aliasAddr);
-  };
   
   // Render states using separated UI components
   if (!isConnected) return <ListElements.EmptyState message="Connect your wallet to see your cron jobs." />;
@@ -53,15 +42,8 @@ export default function MyCronsList({ onAction, blockNumber }) {
             cron={cron}
             balance={balances[cron.address]}
             currentBlock={blockNumber}
-            depositingId={depositingId}
-            depositValue={depositValue}
-            setDepositValue={setDepositValue}
-            onCloseDeposit={() => setDepositingId(null)}
             onCancel={(cronId) => handleCancel(cronId, cron)}
-            onDeposit={() => openDepositForm(cron.id, cron.address)}
-            onSendDeposit={(aliasAddr) => sendDeposit(aliasAddr, depositValue, setDepositingId)}
             isCancelling={cancelingId === cron.id || cancelStatus.isPending || cancelStatus.isLoading}
-            isDepositing={depositStatus.isPending || depositStatus.isLoading}
           />
         ))}
       </ListElements.ListWrapper>

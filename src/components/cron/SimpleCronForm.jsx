@@ -51,14 +51,27 @@ export default function SimpleCronForm({
 
       {/* Contract Info Display */}
       <div className="contract-info-display">
-        <h4>Target Contract</h4>
-        <div className="contract-card">
-          <div className="contract-info">
-            <div className="contract-name">{PREDEFINED_CONTRACT.name}</div>
-            <div className="contract-address">{PREDEFINED_CONTRACT.address}</div>
+        <div className="info-section">
+          <h4>Target Contract</h4>
+          <div className="info-row">
+            <span className="info-label">Contract Address:</span>
+            <span className="info-value address-value">
+              <a 
+                href={`https://explorer.helioschainlabs.org/address/${PREDEFINED_CONTRACT.address}`}
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                {PREDEFINED_CONTRACT.address}
+              </a>
+            </span>
           </div>
-          <div className="contract-methods">
-            Available methods: {PREDEFINED_CONTRACT.methods.join(', ')}
+          <div className="info-row">
+            <span className="info-label">Contract Type:</span>
+            <span className="info-value">{PREDEFINED_CONTRACT.name}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Available Methods:</span>
+            <span className="info-value">{PREDEFINED_CONTRACT.methods.join(', ')}</span>
           </div>
         </div>
       </div>
@@ -77,29 +90,6 @@ export default function SimpleCronForm({
               <span className="method-name">{method}()</span>
             </button>
           ))}
-        </div>
-      </div>
-
-      {/* Target Info */}
-      <div className="target-info">
-        <div className="info-section">
-          <h4>Target Contract Information</h4>
-          <div className="info-row">
-            <span className="info-label">Contract Address:</span>
-            <span className="info-value address-value">
-              <a 
-                href={`https://explorer.helioschainlabs.org/address/${PREDEFINED_CONTRACT.address}`}
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                {PREDEFINED_CONTRACT.address}
-              </a>
-            </span>
-          </div>
-          <div className="info-row">
-            <span className="info-label">Target Method:</span>
-            <span className="info-value method-value">{selectedMethod}()</span>
-          </div>
         </div>
       </div>
 
@@ -146,6 +136,10 @@ export default function SimpleCronForm({
           <div className="info-row">
             <span className="info-label">Estimated Executions:</span>
             <span className="info-value">{executionCount} times</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Target Method:</span>
+            <span className="info-value method-value">{selectedMethod}()</span>
           </div>
         </div>
       </div>

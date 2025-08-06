@@ -1,6 +1,5 @@
 import React from "react";
 import CronDetailView from "./CronDetailView";
-import CronDepositForm from "./CronDepositForm";
 import CronActionButtons from "./CronActionButtons";
 import { formatAddr, isCronExpired, hasLowBalance } from "../../utils/cronUtils";
 
@@ -8,15 +7,8 @@ export default function CronListItem({
   cron,
   balance,
   currentBlock,
-  depositingId,
-  depositValue,
-  setDepositValue,
-  onCloseDeposit,
   onCancel,
-  onDeposit,
-  onSendDeposit,
-  isCancelling,
-  isDepositing
+  isCancelling
 }) {
   // Determine cron status
   const isExpired = isCronExpired(cron, currentBlock);
@@ -37,25 +29,14 @@ export default function CronListItem({
         />
       </div>
       
-      {depositingId === cron.id ? (
-        <CronDepositForm 
-          depositValue={depositValue}
-          setDepositValue={setDepositValue}
-          onSubmit={() => onSendDeposit(cron.address)}
-          onCancel={onCloseDeposit}
-          isDepositing={isDepositing}
-        />
-      ) : (
-        <CronActionButtons 
-          cronId={cron.id}
-          isExpired={isExpired}
-          isLowBalance={isLowBalance}
-          onCancel={() => onCancel(cron.id, cron)}
-          onDeposit={onDeposit}
-          isCancelling={isCancelling}
-          isAnyFormOpen={depositingId !== null}
-        />
-      )}
+      <CronActionButtons 
+        cronId={cron.id}
+        isExpired={isExpired}
+        isLowBalance={isLowBalance}
+        onCancel={() => onCancel(cron.id, cron)}
+        isCancelling={isCancelling}
+        isAnyFormOpen={false}
+      />
     </div>
   );
 }
