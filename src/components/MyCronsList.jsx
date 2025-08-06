@@ -10,9 +10,7 @@ import { ListElements } from "./ui/CronUIComponents";
 
 export default function MyCronsList({ onAction, blockNumber }) {
   const { address, isConnected } = useAccount();
-  const [editingId, setEditingId] = useState(null);
   const [depositingId, setDepositingId] = useState(null);
-  const [formVals, setFormVals] = useState({});
   const [depositValue, setDepositValue] = useState("");
 
   // Get cron data from custom hook
@@ -26,26 +24,13 @@ export default function MyCronsList({ onAction, blockNumber }) {
   
   // Get operation functions from custom hook
   const { 
-    handleUpdate, 
     handleCancel, 
     handleDeposit, 
     sendDeposit,
     cancelingId, 
-    updateStatus, 
     cancelStatus, 
     depositStatus 
   } = useCronOperations(onAction, blockNumber, refreshData);
-  
-  // Handle form open/close
-  const openEditForm = (cron) => {
-    setEditingId(cron.id);
-    setFormVals({
-      newFrequency: cron.frequency,
-      newExpiration: "",
-      blockNow: blockNumber || 0,
-      currentExp: cron.expirationBlock
-    });
-  };
   
   const openDepositForm = (cronId, aliasAddr) => {
     setDepositingId(cronId);
@@ -68,20 +53,13 @@ export default function MyCronsList({ onAction, blockNumber }) {
             cron={cron}
             balance={balances[cron.address]}
             currentBlock={blockNumber}
-            editingId={editingId}
             depositingId={depositingId}
-            formVals={formVals}
             depositValue={depositValue}
-            setFormVals={setFormVals}
             setDepositValue={setDepositValue}
-            onEdit={() => openEditForm(cron)}
-            onCloseEdit={() => setEditingId(null)}
-            onDeposit={() => openDepositForm(cron.id, cron.address)}
             onCloseDeposit={() => setDepositingId(null)}
-            onUpdate={(c) => handleUpdate(c, formVals, setEditingId)}
             onCancel={(cronId) => handleCancel(cronId, cron)}
+            onDeposit={() => openDepositForm(cron.id, cron.address)}
             onSendDeposit={(aliasAddr) => sendDeposit(aliasAddr, depositValue, setDepositingId)}
-            isUpdating={updateStatus.isPending || updateStatus.isLoading}
             isCancelling={cancelingId === cron.id || cancelStatus.isPending || cancelStatus.isLoading}
             isDepositing={depositStatus.isPending || depositStatus.isLoading}
           />

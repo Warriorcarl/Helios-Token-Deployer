@@ -4,7 +4,6 @@ export default function CronActionButtons({
   cronId,
   isExpired,
   isLowBalance,
-  onEdit,
   onCancel,
   onDeposit,
   isCancelling,
@@ -14,12 +13,6 @@ export default function CronActionButtons({
   
   return (
     <div className="cron-action-group">
-      <button
-        className="cron-action-btn update"
-        onClick={onEdit}
-        disabled={isAnyFormOpen || isInactive}
-      >Update</button>
-      
       <button
         className="cron-action-btn cancel"
         onClick={onCancel}

@@ -92,27 +92,14 @@ export const cronStyles = `
   }
   
   .cron-action-btn {
-    padding: 8px 16px;
-    border-radius: 4px;
+    padding: 12px 24px;
+    border-radius: 6px;
     border: none;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
-  }
-  
-  .cron-action-btn.view {
-    position: absolute;
-    right: 20px;
-    top: 14px;
-    background: #f1f1f1;
-    color: #666;
-    font-size: 12px;
-    padding: 4px 10px;
-  }
-  
-  .cron-action-btn.update {
-    background: #2997ff;
-    color: white;
+    font-size: 14px;
+    min-width: 120px;
   }
   
   .cron-action-btn.cancel {
@@ -120,13 +107,25 @@ export const cronStyles = `
     color: #666;
   }
   
+  .cron-action-btn.cancel:hover:not(:disabled) {
+    background: #e0e0e0;
+  }
+  
   .cron-action-btn.deposit {
     background: #1dc185;
     color: white;
   }
   
+  .cron-action-btn.deposit:hover:not(:disabled) {
+    background: #17a76f;
+  }
+  
   .cron-action-btn.deposit.low-balance {
     background: #ff9900;
+  }
+  
+  .cron-action-btn.deposit.low-balance:hover:not(:disabled) {
+    background: #e68a00;
   }
   
   .cron-action-btn.save {
@@ -141,8 +140,8 @@ export const cronStyles = `
   }
   
   .cron-action-btn:hover:not(:disabled) {
-    opacity: 0.9;
     transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   }
   
   .cron-action-btn:disabled {
@@ -153,8 +152,9 @@ export const cronStyles = `
   .cron-action-group {
     width: 100%;
     display: flex;
-    gap: 10px;
-    margin-top: 16px;
+    gap: 16px;
+    margin-top: 20px;
+    justify-content: center;
   }
   
   .cron-edit-row,
@@ -232,13 +232,11 @@ export const cronStyles = `
     
     .cron-action-btn {
       width: 100%;
+      min-width: auto;
     }
     
-    .cron-action-btn.view {
-      position: static;
-      width: auto;
-      align-self: flex-end;
-      margin-bottom: 10px;
+    .cron-action-group {
+      gap: 12px;
     }
   }
 `;
